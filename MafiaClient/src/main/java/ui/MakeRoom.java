@@ -1,14 +1,13 @@
-package Frame;
+package ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.WindowConstants;
-
 import handling.netty.ClientHandler;
 import handlinig.packet.RobyPacket;
 
-public class MakeRoom extends JFrame { // * 방만들기 프레임 * //
+public class MakeRoom extends JFrame { 
 
 	private JButton cancelBtn;
 	private JButton makeRoomBtn;

@@ -1,4 +1,4 @@
-package Frame;
+package ui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -15,6 +15,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+/**
+ *  btnInvisible() - 버튼 투명화
+ *  isSamePassword() - 비밀번호 똑같이 입력했는지 확인
+ *  checkBtnEnabled() 중복확인 , 이메일 인증 완료됐는지 확인 
+ * 
+ **/
 
 public class SignUpFrame {
 	public JFrame frame;
@@ -240,7 +247,7 @@ public class SignUpFrame {
 
 		idDoubleCheckBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ClientHandler.send(SignUpPacket.makeidOverlapPacket(idTf.getText()));
+				ClientHandler.send(SignUpPacket.makeIdOverlapPacket(idTf.getText()));
 			}
 		});
 	}
@@ -254,4 +261,5 @@ public class SignUpFrame {
 			g.drawImage(background, 0, 0, this);
 		}
 	}
+	
 }

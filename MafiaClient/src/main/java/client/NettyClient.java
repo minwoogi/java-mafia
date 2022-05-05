@@ -1,6 +1,5 @@
 package client;
 
-import Frame.LoginFrame;
 import handling.netty.ClientHandler;
 import handling.netty.MafiaNettyDecoder;
 import handling.netty.MafiaNettyEncoder;
@@ -12,11 +11,11 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import ui.LoginFrame;
 
 /**
- * connect server
- * 
- *
+ * class for server connection
+ * 서버 연결을 위한 클래스
  */
 
 public class NettyClient {
@@ -54,9 +53,5 @@ public class NettyClient {
 		} finally {
 			workerGroup.shutdownGracefully();
 		}
-	}
-
-	public static void main(String[] args) {
-		new NettyClient();
 	}
 }

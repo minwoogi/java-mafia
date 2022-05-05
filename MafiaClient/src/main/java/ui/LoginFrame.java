@@ -1,4 +1,4 @@
-package Frame;
+package ui;
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -14,6 +14,16 @@ import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import handling.netty.ClientHandler;
 import handlinig.packet.LoginPacket;
+
+/**
+ * 		frame for login
+ * 
+ * 		Initialize()     초기화
+ *		newComponents()  새로운 컴포넌트 생성
+ * 		setComponents()  컴포넌트 셋팅
+ * 		addComponents()  컴포넌트 추가
+ * 		addActionBtn();  버튼에 액션리스너 추가
+ */
 
 public class LoginFrame {
 

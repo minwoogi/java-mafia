@@ -1,8 +1,13 @@
 package information;
 
-import javax.swing.JPanel;
 
-public class RoomInf { // * 대기중,개임중 방 객체 정보 * //
+/**
+ * 
+ *   대기중,게임중 방 객체 정보
+ *
+ */
+
+public class RoomInf { 
 
 	private int roomId;
 	private int headCount;

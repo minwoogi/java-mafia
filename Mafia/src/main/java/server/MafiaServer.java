@@ -1,6 +1,6 @@
 package server;
 
-import java.util.Scanner;
+
 
 import handling.lobby.Lobby;
 import handling.lobby.WaitingRoom;

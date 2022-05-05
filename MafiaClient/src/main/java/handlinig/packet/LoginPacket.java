@@ -3,6 +3,13 @@ package handlinig.packet;
 import packet.MafiaPacketWriter;
 import packet.SendHeader;
 
+/**
+ * 				로그인 화면에서 만드는 패킷
+ * makeLoginPacket() - 로그인시 서버로 (id,password)정보 패킷 생성
+ * 
+ */
+
+
 public class LoginPacket {
 
 	public static byte[] makeLoginPacket(String id, String password) {

@@ -3,9 +3,18 @@ package handlinig.packet;
 import packet.MafiaPacketWriter;
 import packet.SendHeader;
 
+/**
+ * 					 회원가입 화면에서 만드는 패킷
+ * makeioOverlapPacket() - 아이디 중복 확인을 위해 id정보 패킷 생성
+ * makeNickOverlapPacket() - 닉네임 중복 확인을 위해 nickName정보 패킹 생성
+ * makeEmailPacket() - 이메일 전송위해 email정보 패킷 생성
+ * makeCertificationPakcet() - 이메일 인증코드 맞는지 확인위해 인증코드(int)정보 패킷 생성 
+ * makeSignUpPacket() - 회원가입 완료버튼을 누를때 id,pwd,nick,email정보가 담긴 패킷을 생성
+ */
+
 public class SignUpPacket {
 
-	public static byte[] makeidOverlapPacket(String id) {
+	public static byte[] makeIdOverlapPacket(String id) {
 		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.OVERLAP);
 		writer.writeString(id);
 		return writer.getPacket();
