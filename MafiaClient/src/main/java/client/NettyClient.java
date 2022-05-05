@@ -14,15 +14,15 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 /**
+ * connect server
  * 
- * @author csc19
  *
  */
 
 public class NettyClient {
 
 	private final static int PORT = 7777;
-	private final static String HOST = "211.52.166.160";   // "192.168.0.93 ≥Î∆Æ∫œ ip";
+	private final static String HOST = "localhost";  
 
 	public NettyClient() {
 		try {
