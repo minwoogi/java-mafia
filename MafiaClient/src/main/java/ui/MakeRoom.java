@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -40,6 +41,7 @@ public class MakeRoom extends JFrame {
 
 	public void setComponents() {
 		setLayout(null);
+		
 
 		roomNameTf.setBounds(65, 30, 260, 40);
 		NumberOfPeople.setBounds(130, 100,150, 40);

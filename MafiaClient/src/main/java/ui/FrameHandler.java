@@ -3,6 +3,7 @@ package ui;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -90,7 +91,7 @@ public class FrameHandler {
 	}
 
 	public static void updateTierImage(int tier, JLabel lbl) { // * 로비나 방안에서 tier 표시 * //
-		lbl.setIcon(new ImageIcon("tierImage/" + tier + ".jpg"));
+		lbl.setIcon(new ImageIcon("tierImage/" + tier + ".png"));
 	}
 
 	public static void updateLevel(int level, JLabel lbl) { // * 로비나 방안에서 level 표시 * //
@@ -102,8 +103,8 @@ public class FrameHandler {
 		bar.setValue(exp);
 	}
 
-	public static void UpdateNickName(String nickName, JLabel lbl) { // * 로비나 방안에서 닉네임 표시 * //
-		lbl.setText(nickName);
+	public static void UpdateNickName(String nickName, JButton btn) { // * 로비나 방안에서 닉네임 표시 * //
+		btn.setText(nickName);
 	}
 
 	public static void setTfEditable(JTextField tf) { // * 회원가입시 사용할 ID나 NICKNAME결정되면 색변경 * //

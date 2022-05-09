@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -11,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -21,9 +24,7 @@ public class LobbyFrame extends JFrame {
 	private JPanel bottomPanel;
 	private JPanel centerPanel;
 	private JPanel levelPanel;
-	private JPanel nickNamePanel;
 	private JPanel tierPanel;
-	private JPanel nicklevelPanel;
 	private JScrollPane scroll;
 	private JTextField searchRoomTf;
 	private JButton rankMatchBtn;
@@ -32,7 +33,7 @@ public class LobbyFrame extends JFrame {
 	private JButton makeRoomBtn;
 	private JLabel tierLabel;
 	private JLabel levelLabel;
-	private JLabel nickNameLabel;
+	private JButton nickNameLabel;
 	private JProgressBar expBar;
 	private Image leftBackImg;
 	private Image rightBackImg;
@@ -47,7 +48,7 @@ public class LobbyFrame extends JFrame {
 		return levelLabel;
 	}
 
-	public JLabel getNickNameLabel() {
+	public JButton getNickNameLabel() {
 		return nickNameLabel;
 	}
 
@@ -77,24 +78,24 @@ public class LobbyFrame extends JFrame {
 		centerPanel = new CenterPanelBackground();
 		bottomPanel = new BottomPanelBackground();
 		tierPanel = new JPanel();
-		nickNamePanel = new JPanel();
 		levelPanel = new JPanel();
-		nicklevelPanel = new JPanel();
 		rowsPanel = new RowsPanel();
 		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		rankMatchBtn = new JButton("랭크 매칭(준비중)");
+		rankMatchBtn = new JButton(new ImageIcon("btnImg/rankMatchBtn.png"));
 		searchRoomTf = new JTextField("일반 방 검색(키워드)");
-		viewRankingBtn = new JButton("랭킹 보기(준비중)");
-		searchRoomBtn = new JButton("방검색");
-		makeRoomBtn = new JButton("방만들기");
+		viewRankingBtn = new JButton(new ImageIcon("btnImg/viewRank.png"));
+		searchRoomBtn = new JButton(new ImageIcon("btnImg/searchRoom.png"));
+		makeRoomBtn = new JButton(new ImageIcon("btnImg/makeRoom.png"));
 
 		tierLabel = new JLabel("");
-		levelLabel = new JLabel("");
-		nickNameLabel = new JLabel("");
+		levelLabel = new JLabel(" LV.100");
+		nickNameLabel = new JButton("NICKNAME");
 
 		expBar = new JProgressBar(0, 100);
+		expBar.setForeground(new Color(212, 211, 210));
+		expBar.setFont(new Font("", Font.BOLD, 20));
 
 		leftBackImg = new ImageIcon("backgroundImage/leftPanelBack.png").getImage();
 		rightBackImg = new ImageIcon("backgroundImage/rightPanelBack.png").getImage();
@@ -102,34 +103,64 @@ public class LobbyFrame extends JFrame {
 	}
 
 	public void setComponents() {
-		leftPanel.setBackground(Color.GRAY);
 		tierPanel.setBackground(Color.black);
-		levelPanel.setBackground(Color.pink);
+		levelPanel.setBackground(new Color(212, 211, 210));
 
 		leftPanel.setLayout(null);
 		bottomPanel.setLayout(new FlowLayout());
 		rightPanel.setLayout(new BorderLayout());
-		nicklevelPanel.setLayout(new GridLayout(2, 0));
 		tierPanel.setLayout(new BorderLayout());
+		levelPanel.setLayout(new BorderLayout());
 
 		rankMatchBtn.setBounds(50, 40, 450, 60);
-		searchRoomTf.setBounds(50, 130, 380, 60);
-		searchRoomBtn.setBounds(440, 130, 60, 60);
+		searchRoomTf.setBounds(60, 130, 370, 60);
+		searchRoomBtn.setBounds(430, 125, 75, 70);
 		viewRankingBtn.setBounds(50, 220, 450, 60);
 		tierPanel.setBounds(50, 315, 180, 200);
-		nicklevelPanel.setBounds(250, 315, 250, 200);
+		levelLabel.setBounds(250, 375, 80, 30);
+		nickNameLabel.setBounds(250, 410, 250, 70);
+
+		btnInvisible(rankMatchBtn);
+		btnInvisible(makeRoomBtn);
+		btnInvisible(searchRoomBtn);
+		btnInvisible(viewRankingBtn);
+		btnInvisible(nickNameLabel);
+
+		searchRoomTf.setOpaque(false);
+		searchRoomTf.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		searchRoomTf.setFont(new Font("", Font.BOLD, 20));
 
 		makeRoomBtn.setPreferredSize(new Dimension(100, 40)); // * 방만들기 버튼 크기조정 * //
 
+		levelLabel.setFont(new Font("", Font.BOLD, 18));
+		levelLabel.setForeground(new Color(212, 211, 210));
+		nickNameLabel.setFont(new Font("", Font.BOLD, 30));
+
 		tierLabel.setIcon(new ImageIcon("tierImage/0.jpg"));
+		rankMatchBtn.setPressedIcon(new ImageIcon("btnImg/rankMatchPush.png"));
+		makeRoomBtn.setPressedIcon(new ImageIcon("btnImg/makeRoomPush.png"));
+		searchRoomBtn.setPressedIcon(new ImageIcon("btnImg/searchRoomPush.png"));
+		viewRankingBtn.setPressedIcon(new ImageIcon("btnImg/viewRankPush.png"));
+		nickNameLabel.setIcon(new ImageIcon("btnImg/nickNameLabel.png"));
+
+		nickNameLabel.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 
 		scroll.setBorder(BorderFactory.createEmptyBorder()); // * 스크롤팬 테두리 제거 * //
 
 		Border border = BorderFactory.createTitledBorder("EXP");
 		expBar.setValue(50);
 		expBar.setBorder(border);
+		expBar.setBorderPainted(true);
 		expBar.setStringPainted(true);
 		expBar.setOpaque(false);
+		expBar.setBounds(317, 360, 180, 50);
+
+		tierPanel.setOpaque(true);
+		tierPanel.setBackground(new Color(0, 0, 0, 0));
+		levelPanel.setOpaque(true);
+		levelPanel.setBackground(new Color(0, 0, 0, 0));
+
+		btnInvisible(nickNameLabel);
 
 	}
 
@@ -142,10 +173,9 @@ public class LobbyFrame extends JFrame {
 		leftPanel.add(searchRoomBtn);
 		leftPanel.add(viewRankingBtn);
 		leftPanel.add(tierPanel);
-		leftPanel.add(nicklevelPanel);
-
-		nicklevelPanel.add(levelPanel);
-		nicklevelPanel.add(nickNamePanel);
+		leftPanel.add(nickNameLabel);
+		leftPanel.add(levelLabel);
+		leftPanel.add(expBar);
 
 		rightPanel.add(scroll, BorderLayout.CENTER);
 		rightPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -154,9 +184,13 @@ public class LobbyFrame extends JFrame {
 		centerPanel.add(rowsPanel);
 
 		tierPanel.add(tierLabel, BorderLayout.CENTER);
-		levelPanel.add(levelLabel);
-		levelPanel.add(expBar);
-		nickNamePanel.add(nickNameLabel);
+
+	}
+
+	public void btnInvisible(JButton btn) { // * 버튼 투명화(이미지 보이게) * //
+		btn.setFocusPainted(false);
+		btn.setContentAreaFilled(false);
+		btn.setBorderPainted(false);
 	}
 
 	public void addActionBtn() {
@@ -180,7 +214,7 @@ public class LobbyFrame extends JFrame {
 		});
 	}
 
-	class CenterPanelBackground extends JPanel {
+	class CenterPanelBackground extends JPanel { // * 로비 오른쪽 배경 이미지 * //
 		public CenterPanelBackground() {
 		}
 

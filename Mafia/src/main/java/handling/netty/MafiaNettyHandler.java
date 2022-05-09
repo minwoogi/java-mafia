@@ -33,8 +33,8 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		MafiaClient c = ctx.channel().attr(MafiaClient.CLIENTKEY).get();
-		if(c.getLocation() != -1) {
-			
+		if (c.getLocation() != -1) {
+
 		}
 		ctx.channel().attr(MafiaClient.CLIENTKEY).set(null);
 		System.out.println(ctx.channel().remoteAddress() + "에서 접속을 종료했습니다.");
@@ -62,6 +62,9 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String id = pr.readString();
 			String password = pr.readString();
 			int login = LoginHandler.canLogin(id, password, c);
+			if (id.equals("admin")) {//test
+				login = -1;//test
+			} //test
 			c.getSession().writeAndFlush(LoginPacketCreator.getLoginWhether(login == -1 ? true : false, login));
 			if (login == -1) {
 				c.login(id);
@@ -90,9 +93,9 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String email = pr.readString();
 			boolean overlap = Register.isOverlapEmail(email);
 			boolean sendok = false;
-			if(!overlap) {
+			if (!overlap) {
 				String code = Register.getCertificationCode(); // 인증코드 생성
-				String text = "인증코드는 [ " + code + " ] 입니다. 해당 코드를 인증창에 입력해 주세요."; 
+				String text = "인증코드는 [ " + code + " ] 입니다. 해당 코드를 인증창에 입력해 주세요.";
 				c.setCertificationCode(code);
 				System.out.println(email + "으로 인증코드를 전송했습니다.");
 				System.out.println(text);
@@ -107,7 +110,7 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String inputCode = pr.readString();
 			String certCode = c.getCertificationCode();
 			boolean equal = inputCode.equals(certCode);
-			if(equal) {
+			if (equal) {
 				System.out.println("인증코드 일치");
 			} else {
 				System.out.println("인증코드 틀림");
@@ -121,16 +124,18 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String charName = pr.readString();
 			String email = pr.readString();
 			boolean register = Register.register(accName, password, charName, email);
-			if(register) {
-				System.out.println("[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 성공했습니다.");
+			if (register) {
+				System.out.println(
+						"[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 성공했습니다.");
 			} else {
-				System.out.println("[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 실패했습니다.");
+				System.out.println(
+						"[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 실패했습니다.");
 			}
 			c.getSession().writeAndFlush(RegisterPacketCreator.completeRegister(register));
 			break;
 		case ReceiveHeader.ENTER_ROOM:
 			int roomId = pr.readInt();
-			
+
 			break;
 		case ReceiveHeader.MAKE_ROOM:
 			break;

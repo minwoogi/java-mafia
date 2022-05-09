@@ -116,7 +116,7 @@ public class SignUpFrame {
 		nickNameCheckBtn = new JButton(new ImageIcon("btnImg/doubleCheckBtn.png"));
 		idDoubleCheckBtn = new JButton(new ImageIcon("btnImg/doubleCheckBtn.png"));
 		emailBtn = new JButton(new ImageIcon("btnImg/sendBtn.png"));
-		backBtn = new JButton("back");
+		backBtn = new JButton(new ImageIcon("btnImg/backBtn.png"));
 
 	}
 
@@ -157,12 +157,15 @@ public class SignUpFrame {
 		btnInvisible(signUpBtn);
 		btnInvisible(nickNameCheckBtn);
 		btnInvisible(certificationBtn);
+		btnInvisible(backBtn);
 		nickNameTf.setColumns(10);
 		idDoubleCheckBtn.setPressedIcon(new ImageIcon("btnImg/doubleCheckPush.png"));
 		emailBtn.setPressedIcon(new ImageIcon("btnImg/sendPush.png"));
 		signUpBtn.setPressedIcon(new ImageIcon("btnImg/signUpPush.png"));
 		nickNameCheckBtn.setPressedIcon(new ImageIcon("btnImg/doubleCheckPush.png"));
 		certificationBtn.setPressedIcon(new ImageIcon("btnImg/cerPush.png"));
+		backBtn.setPressedIcon(new ImageIcon("btnImg/backBtnPush.png"));
+		
 	}
 
 	public void setTfFont() {
@@ -261,5 +264,4 @@ public class SignUpFrame {
 			g.drawImage(background, 0, 0, this);
 		}
 	}
-	
 }

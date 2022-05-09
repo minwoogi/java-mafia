@@ -4,6 +4,12 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
+
+/**
+ * 
+ * ´ë±â½Ç
+ *
+ */
 public class WaitingRoomFrame {
 
 	private JFrame frame;

@@ -1,8 +1,11 @@
 package ui;
 
 import java.awt.GridLayout;
-
 import javax.swing.*;
+
+/**
+ *   RoomPanel을 RowsPanel에 추가
+ **/
 
 public class RowsPanel extends JPanel {
 
