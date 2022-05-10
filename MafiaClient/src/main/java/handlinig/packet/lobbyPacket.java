@@ -11,7 +11,7 @@ import packet.SendHeader;
  * 
  */
 
-public class RobyPacket {
+public class lobbyPacket {
 
 	public static byte[] writePacket(String id) {
 		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.LOBBY_UPDATE);

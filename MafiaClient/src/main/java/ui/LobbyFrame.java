@@ -38,6 +38,7 @@ public class LobbyFrame extends JFrame {
 	private Image leftBackImg;
 	private Image rightBackImg;
 	private Image bottomBackImg;
+	private JButton levelBack;
 	RowsPanel rowsPanel;
 
 	public JLabel getTierLabel() {
@@ -62,6 +63,7 @@ public class LobbyFrame extends JFrame {
 		setSize(1100, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		setResizable(false);
 		setLayout(new GridLayout(0, 2));
 
 		newComponents();
@@ -74,8 +76,8 @@ public class LobbyFrame extends JFrame {
 
 	public void newComponents() {
 		leftPanel = new RobyLeftPanelBackground();
-		rightPanel = new JPanel();
-		centerPanel = new CenterPanelBackground();
+		rightPanel = new CenterPanelBackground();
+		centerPanel = new JPanel();
 		bottomPanel = new BottomPanelBackground();
 		tierPanel = new JPanel();
 		levelPanel = new JPanel();
@@ -94,12 +96,13 @@ public class LobbyFrame extends JFrame {
 		nickNameLabel = new JButton("NICKNAME");
 
 		expBar = new JProgressBar(0, 100);
-		expBar.setForeground(new Color(212, 211, 210));
+		expBar.setForeground(Color.BLACK);
 		expBar.setFont(new Font("", Font.BOLD, 20));
 
 		leftBackImg = new ImageIcon("backgroundImage/leftPanelBack.png").getImage();
 		rightBackImg = new ImageIcon("backgroundImage/rightPanelBack.png").getImage();
 		bottomBackImg = new ImageIcon("backgroundImage/bottomBack.png").getImage();
+		levelBack = new JButton(new ImageIcon("btnImg/nickNameLabel.png"));
 	}
 
 	public void setComponents() {
@@ -117,7 +120,7 @@ public class LobbyFrame extends JFrame {
 		searchRoomBtn.setBounds(430, 125, 75, 70);
 		viewRankingBtn.setBounds(50, 220, 450, 60);
 		tierPanel.setBounds(50, 315, 180, 200);
-		levelLabel.setBounds(250, 375, 80, 30);
+		levelLabel.setBounds(253, 360, 80, 30);
 		nickNameLabel.setBounds(250, 410, 250, 70);
 
 		btnInvisible(rankMatchBtn);
@@ -133,7 +136,7 @@ public class LobbyFrame extends JFrame {
 		makeRoomBtn.setPreferredSize(new Dimension(100, 40)); // * 방만들기 버튼 크기조정 * //
 
 		levelLabel.setFont(new Font("", Font.BOLD, 18));
-		levelLabel.setForeground(new Color(212, 211, 210));
+		levelLabel.setForeground(Color.BLACK);
 		nickNameLabel.setFont(new Font("", Font.BOLD, 30));
 
 		tierLabel.setIcon(new ImageIcon("tierImage/0.jpg"));
@@ -153,7 +156,8 @@ public class LobbyFrame extends JFrame {
 		expBar.setBorderPainted(true);
 		expBar.setStringPainted(true);
 		expBar.setOpaque(false);
-		expBar.setBounds(317, 360, 180, 50);
+		expBar.setBounds(320, 350, 170, 50);
+		expBar.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
 		tierPanel.setOpaque(true);
 		tierPanel.setBackground(new Color(0, 0, 0, 0));
@@ -161,6 +165,21 @@ public class LobbyFrame extends JFrame {
 		levelPanel.setBackground(new Color(0, 0, 0, 0));
 
 		btnInvisible(nickNameLabel);
+
+		levelBack.setBounds(250, 340, 250, 70);
+		btnInvisible(levelBack);
+
+		centerPanel.setOpaque(false);
+		centerPanel.setBackground(new Color(0, 0, 0, 0));
+		scroll.setOpaque(false);
+		scroll.setBackground(new Color(0, 0, 0, 0));
+		scroll.getViewport().setOpaque(false);
+		rowsPanel.setOpaque(false);
+		rowsPanel.setBackground(new Color(0, 0, 0, 0));
+		tierPanel.setBackground(new Color(0,0,0,0));
+		tierPanel.setOpaque(false);
+		tierLabel.setOpaque(false);
+		tierLabel.setBackground(new Color(0,0,0,0));
 
 	}
 
@@ -184,6 +203,8 @@ public class LobbyFrame extends JFrame {
 		centerPanel.add(rowsPanel);
 
 		tierPanel.add(tierLabel, BorderLayout.CENTER);
+
+		leftPanel.add(levelBack);
 
 	}
 
@@ -242,11 +263,6 @@ public class LobbyFrame extends JFrame {
 			super.paintComponent(g);
 			g.drawImage(bottomBackImg, 0, 0, this);
 		}
-	}
-
-	public static void main(String[] args) {
-		new LobbyFrame();
-
 	}
 
 }

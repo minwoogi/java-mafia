@@ -1,24 +1,16 @@
 package handling.netty;
 
-import java.nio.ByteBuffer;
-
 import client.MafiaClient;
-import handling.lobby.Lobby;
-import handling.lobby.WaitingRoom;
 import handling.login.handler.LoginHandler;
 import handling.login.handler.Register;
-import handling.packet.LobbyPacketCreator;
 import handling.packet.LoginPacketCreator;
 import handling.packet.RegisterPacketCreator;
 import handling.packet.header.ReceiveHeader;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.CharsetUtil;
 import tools.packet.MafiaPacketReader;
+import tools.packet.MafiaPacketWriter;
 
 public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 	private ByteBuf tmp;
@@ -62,9 +54,9 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String id = pr.readString();
 			String password = pr.readString();
 			int login = LoginHandler.canLogin(id, password, c);
-			if (id.equals("admin")) {//test
-				login = -1;//test
-			} //test
+//			if (id.equals("admin")) {  //db없이 test
+//				login = -1;
+//			}
 			c.getSession().writeAndFlush(LoginPacketCreator.getLoginWhether(login == -1 ? true : false, login));
 			if (login == -1) {
 				c.login(id);
@@ -100,6 +92,9 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 				System.out.println(email + "으로 인증코드를 전송했습니다.");
 				System.out.println(text);
 				sendok = true;
+				MafiaPacketWriter wr = new MafiaPacketWriter(-1);
+				wr.writeString(code);
+				c.getSession().writeAndFlush(wr.getPacket());
 			} else {
 				System.out.println(email + "은 이미 존재하는 이메일 입니다.");
 			}

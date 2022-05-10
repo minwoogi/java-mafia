@@ -10,9 +10,10 @@ public class MafiaNettyDecoder extends ByteToMessageDecoder {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		byte[] decode = new byte[in.readableBytes()];
+		int packetLength = in.readInt();
+		System.out.println("받은 패킷 길이 : " + packetLength);
+		byte[] decode = new byte[packetLength];
 		in.readBytes(decode);
-		System.out.println("decode Length : "+decode.length);
 		out.add(decode);
 	}
 

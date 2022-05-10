@@ -105,12 +105,12 @@ public class SignUpFrame {
 	}
 
 	public void makeComponents() {
-		idTf = new JTextField();
-		pwdTf = new JTextField();
-		pwdCheckTf = new JTextField();
-		nickNameTf = new JTextField();
-		emailTf = new JTextField();
-		certificationTf = new JTextField();
+		idTf = new JTextField("Id");
+		pwdTf = new JTextField("Password");
+		pwdCheckTf = new JTextField("Check Password");
+		nickNameTf = new JTextField("NickName");
+		emailTf = new JTextField("Email");
+		certificationTf = new JTextField("Code");
 		signUpBtn = new JButton(new ImageIcon("btnImg/signUpButton.png"));
 		certificationBtn = new JButton(new ImageIcon("btnImg/cerBtn.png"));
 		nickNameCheckBtn = new JButton(new ImageIcon("btnImg/doubleCheckBtn.png"));

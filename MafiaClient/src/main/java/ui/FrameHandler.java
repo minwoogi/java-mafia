@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
+import information.ExpInf;
 import information.RoomInf;
 
 public class FrameHandler {
@@ -91,16 +92,17 @@ public class FrameHandler {
 	}
 
 	public static void updateTierImage(int tier, JLabel lbl) { // * 로비나 방안에서 tier 표시 * //
-		lbl.setIcon(new ImageIcon("tierImage/" + tier + ".png"));
+		lbl.setIcon(new ImageIcon("tierImage/" + tier + ".jpg"));
 	}
 
 	public static void updateLevel(int level, JLabel lbl) { // * 로비나 방안에서 level 표시 * //
-		lbl.setFont(new Font("", Font.PLAIN, 18));
-		lbl.setText("LV " + level);
+		lbl.setText(" LV. " + level);
 	}
 
-	public static void updateExpBar(int exp, JProgressBar bar) {  // * 경험치 퍼센트 표시 * //
-		bar.setValue(exp);
+	public static void updateExpBar(int exp, JProgressBar bar, int level) { // * 경험치 퍼센트 표시 * //
+		float tmp = exp;
+		System.out.println((tmp / ExpInf.needExp(level)) * 100.0);
+		bar.setValue((int) ((tmp / ExpInf.needExp(level)) * 100.0));
 	}
 
 	public static void UpdateNickName(String nickName, JButton btn) { // * 로비나 방안에서 닉네임 표시 * //

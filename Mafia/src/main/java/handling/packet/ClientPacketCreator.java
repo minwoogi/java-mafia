@@ -28,6 +28,9 @@ public class ClientPacketCreator {
 		packet.writeInt(c.getLevel());
 		packet.writeInt(c.getExp());
 		packet.writeInt(c.getGrade());
+		System.out.println("레벨 : " + c.getLevel());
+		System.out.println("경험치 : " + c.getExp());
+		System.out.println("티어 : " + c.getGrade());
 		return packet.getPacket();
 	}
 }

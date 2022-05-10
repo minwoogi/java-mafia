@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import database.DatabaseConnection;
 import handling.lobby.Lobby;
 import handling.lobby.WaitingRoom;
@@ -69,8 +68,8 @@ public class MafiaClient {
 				this.setAccId(rs.getInt("id"));
 				this.setAccName(accName);
 				this.setCharName(rs.getString("charName"));
-				this.setLevel(level);
-				this.setExp(exp);
+				this.setLevel(rs.getInt("level"));
+				this.setExp(rs.getInt("exp"));
 				this.setGrade(rs.getInt("grade"));
 				this.setGradePoint(rs.getInt("grade_point"));
 				this.setEmail(rs.getString("email"));

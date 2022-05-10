@@ -44,10 +44,10 @@ public class RoomPanel extends JPanel {
 		roomStatePanel = new JPanel();
 		joinRoomPanel = new JPanel();
 
-		personNumTf = new JButton("0/0",new ImageIcon("btnImg/personCount.png"));
-		roomNameTf = new JButton("방이름",new ImageIcon("btnImg/roomName.png"));
-		roomStateTf = new JButton("대기중",new ImageIcon("btnImg/roomState.png"));
-		joinRoomBtn = new JButton("입장", new ImageIcon("btnImg/joinRoom.png"));
+		personNumTf = new JButton(new ImageIcon("btnImg/personCount.png"));
+		roomNameTf = new JButton(new ImageIcon("btnImg/roomName.png"));
+		roomStateTf = new JButton(new ImageIcon("btnImg/roomState.png"));
+		joinRoomBtn = new JButton(new ImageIcon("btnImg/joinRoom.png"));
 
 		tfFont = new Font("", Font.BOLD, 15);
 	}
@@ -68,22 +68,18 @@ public class RoomPanel extends JPanel {
 		roomStateTf.setPreferredSize(new Dimension(90, 50));
 		joinRoomBtn.setPreferredSize(new Dimension(80, 50));
 		joinRoomBtn.setPressedIcon(new ImageIcon("btnImg/joinRoomPush.png"));
-		
+
 		personNumTf.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
-		roomNameTf.setHorizontalTextPosition(JButton.CENTER); 
-		roomStateTf.setHorizontalTextPosition(JButton.CENTER); 
+		roomNameTf.setHorizontalTextPosition(JButton.CENTER);
+		roomStateTf.setHorizontalTextPosition(JButton.CENTER);
 		joinRoomBtn.setHorizontalAlignment(JButton.CENTER);
 
 		btnInvisible(personNumTf);
 		btnInvisible(roomNameTf);
 		btnInvisible(roomStateTf);
 		btnInvisible(joinRoomBtn);
-
-		personNumPanel.setOpaque(true);
-		personNumPanel.setBackground(new Color(0,0,0,0));
-		personNumTf.setOpaque(true);
-		personNumTf.setBackground(new Color(0,0,0,0));
 		
+
 		joinRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 

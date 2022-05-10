@@ -1,6 +1,6 @@
 package server;
 
-
+import java.util.Scanner;
 
 import handling.lobby.Lobby;
 import handling.lobby.WaitingRoom;
@@ -44,8 +44,11 @@ public class MafiaServer {
 				.childOption(ChannelOption.SO_KEEPALIVE, true);
 			ChannelFuture f = b.bind(port).sync();
 			System.out.println(port + " 器飘肺 辑滚甫 俺规沁嚼聪促.");
-			Lobby.addRoom(new WaitingRoom("力格1", null, 10));
+			Lobby.addRoom(new WaitingRoom("规力格 规力格 规力格", null, 10));
 			Lobby.addRoom(new WaitingRoom("力格2", null, 8));
+			Lobby.addRoom(new WaitingRoom("力格3", null, 9));
+			Lobby.addRoom(new WaitingRoom("力格4", null, 12));
+			Lobby.addRoom(new WaitingRoom("力格5", null, 4));
 			f.channel().closeFuture().sync();
 		} finally {
 			workerGroup.shutdownGracefully();
