@@ -13,7 +13,7 @@ import javax.swing.*;
 
 import information.RoomInf;
 
-public class RoomPanel extends JPanel {
+public class LobbyRoomPanel extends JPanel {
 	RoomInf roomInf;
 	private JPanel personNumPanel;
 	private JPanel roomNamePanel;
@@ -25,7 +25,7 @@ public class RoomPanel extends JPanel {
 	private JButton joinRoomBtn;
 	private Font tfFont;
 
-	public RoomPanel(RoomInf roomInf) {
+	public LobbyRoomPanel(RoomInf roomInf) {
 		this.roomInf = roomInf;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		this.setPreferredSize(new Dimension(480, 50));
@@ -78,11 +78,11 @@ public class RoomPanel extends JPanel {
 		btnInvisible(roomNameTf);
 		btnInvisible(roomStateTf);
 		btnInvisible(joinRoomBtn);
-		
 
 		joinRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				FrameHandler.quitLobbyFrame();
+				new WaitingRoomFrame();
 			}
 		});
 
@@ -109,8 +109,9 @@ public class RoomPanel extends JPanel {
 		} else {
 			roomStateTf.setText("게임중");
 		}
-
 	}
+	
+	
 
 	public void btnInvisible(JButton btn) { // * 버튼 투명화(이미지 보이게) * //
 		btn.setFocusPainted(false);

@@ -39,7 +39,7 @@ public class LobbyFrame extends JFrame {
 	private Image rightBackImg;
 	private Image bottomBackImg;
 	private JButton levelBack;
-	RowsPanel rowsPanel;
+	LobbyRowsPanel rowsPanel;
 
 	public JLabel getTierLabel() {
 		return tierLabel;
@@ -81,12 +81,12 @@ public class LobbyFrame extends JFrame {
 		bottomPanel = new BottomPanelBackground();
 		tierPanel = new JPanel();
 		levelPanel = new JPanel();
-		rowsPanel = new RowsPanel();
+		rowsPanel = new LobbyRowsPanel();
 		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		rankMatchBtn = new JButton(new ImageIcon("btnImg/rankMatchBtn.png"));
-		searchRoomTf = new JTextField("일반 방 검색(키워드)");
+		searchRoomTf = new JTextField("방 검색");
 		viewRankingBtn = new JButton(new ImageIcon("btnImg/viewRank.png"));
 		searchRoomBtn = new JButton(new ImageIcon("btnImg/searchRoom.png"));
 		makeRoomBtn = new JButton(new ImageIcon("btnImg/makeRoom.png"));
@@ -213,6 +213,7 @@ public class LobbyFrame extends JFrame {
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
 	}
+	
 
 	public void addActionBtn() {
 		makeRoomBtn.addActionListener(new ActionListener() {
@@ -222,15 +223,13 @@ public class LobbyFrame extends JFrame {
 			}
 		});
 
-		expBar.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-
-			}
-		});
-
 		searchRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String keyword = searchRoomTf.getText();
+				if(!searchRoomTf.getText().equals("")) {
+					String keyword = searchRoomTf.getText();
+					FrameHandler.removeAllPanel();
+					
+				}
 			}
 		});
 	}
@@ -263,6 +262,10 @@ public class LobbyFrame extends JFrame {
 			super.paintComponent(g);
 			g.drawImage(bottomBackImg, 0, 0, this);
 		}
+	}
+	
+	public static void main(String[] args) {
+		new LobbyFrame();
 	}
 
 }

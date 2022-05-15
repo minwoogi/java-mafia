@@ -17,6 +17,7 @@ public class FrameHandler {
 	static LoginFrame loginFrame;
 	static SignUpFrame signUpFrame;
 	static LobbyFrame lobbyFrame;
+	static WaitingRoomFrame waitingRoomFrame;
 
 	public static void failedLogin(boolean loginCheck) {
 		if (loginCheck) {
@@ -101,7 +102,6 @@ public class FrameHandler {
 
 	public static void updateExpBar(int exp, JProgressBar bar, int level) { // * 경험치 퍼센트 표시 * //
 		float tmp = exp;
-		System.out.println((tmp / ExpInf.needExp(level)) * 100.0);
 		bar.setValue((int) ((tmp / ExpInf.needExp(level)) * 100.0));
 	}
 
@@ -114,11 +114,18 @@ public class FrameHandler {
 		tf.setForeground(Color.RED);
 	}
 
-	public static void addRoomPanel(int roomId, int currentStaff, int headCount, String roomName, boolean roomState) {
-		RoomInf roomInf = new RoomInf(roomId, currentStaff, headCount, roomName, roomState);
-		RoomPanel roomPanel = new RoomPanel(roomInf);
+	public static void addRoomPanel(RoomInf roomInf) {
+		LobbyRoomPanel roomPanel = new LobbyRoomPanel(roomInf);
 		roomPanel.setRoomInfTf(roomInf);
 		FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomPanel);
+	}
+	
+	public static void quitLobbyFrame() {
+		lobbyFrame.dispose();
+	}
+
+	public static void removeAllPanel() { // * 방목록 전체 삭제 * //
+		FrameHandler.getLobbyFrame().rowsPanel.removeAllPanel();
 	}
 
 	public static void setLoginFrame(LoginFrame loginFrame) {
@@ -143,6 +150,14 @@ public class FrameHandler {
 
 	public static void setLobbyFrame(LobbyFrame robyFrame) {
 		FrameHandler.lobbyFrame = robyFrame;
+	}
+	
+	public static WaitingRoomFrame getWaitingRoomFrame() {
+		return FrameHandler.waitingRoomFrame;
+	}
+	
+	public static void setWaitingRoomFrame(WaitingRoomFrame waitingRoomFrame) {
+		FrameHandler.waitingRoomFrame = waitingRoomFrame;
 	}
 
 }

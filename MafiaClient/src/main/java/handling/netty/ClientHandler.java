@@ -1,5 +1,6 @@
 package handling.netty;
 
+import information.RoomInf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -68,6 +69,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			int currentStaff = reader.readInt(); // * 현재원 * //
 			boolean roomState = reader.readBoolean(); // * 방 상태 * //
 			String roomName = reader.readString(); // * 방 이름 * //
+			
 
 			break;
 		}
@@ -76,7 +78,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			int level = reader.readInt();
 			int exp = reader.readInt();
 			int tier = reader.readInt();
-			
+
 			FrameHandler.updateTierImage(tier, FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
 			FrameHandler.updateLevel(level, FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
 			FrameHandler.UpdateNickName(nickName, FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
@@ -89,8 +91,20 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			int currentStaff = reader.readInt(); // * 현재원 * //
 			int headCount = reader.readInt(); // * 총원 * //
 			boolean roomState = reader.readBoolean(); // * 방 상태 * //
-			FrameHandler.addRoomPanel(roomId, currentStaff, headCount, roomName, roomState);
+			RoomInf roomInf = new RoomInf(roomId, currentStaff, headCount, roomName, roomState); // * 방 객체 생성 * //
+			FrameHandler.addRoomPanel(roomInf);
+			break;
+		}
+		case ReceieveHeader.ENTER_ROOM:{ // * 방 입장 * //
+			String nickName = reader.readString();
+			int level = reader.readInt();
+			int exp = reader.readInt();
+			int tier = reader.readInt();
 
+			FrameHandler.updateTierImage(tier, FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
+			FrameHandler.updateLevel(level, FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
+			FrameHandler.UpdateNickName(nickName, FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
+			FrameHandler.updateExpBar(exp, FrameHandler.getLobbyFrame().getExpBar(), level);
 			break;
 		}
 		default: {
