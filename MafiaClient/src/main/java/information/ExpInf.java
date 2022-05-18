@@ -1,6 +1,11 @@
 package information;
 
 public class ExpInf {
+	
+	/**
+	 * EXP Information
+	 * 경험치 정보를 담고 있는 클래스
+	 */
 
 	public static final int[] need_exp = {
             15, 
@@ -41,7 +46,7 @@ public class ExpInf {
     };
     public static final int MAX_LEVEL = 30;
 
-    public static int needExp(int level) {
+    public static int needExp(int level) {  // * 레벨당 필요한 경험치 계산 * //
         return need_exp[level - 1];
     }
 }

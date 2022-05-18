@@ -2,9 +2,7 @@ package information;
 
 
 /**
- * 
  *   대기중,게임중 방 객체 정보
- *
  */
 
 public class RoomInf { 

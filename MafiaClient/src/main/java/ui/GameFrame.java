@@ -11,6 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import handling.game.GameHandler;
+
 public class GameFrame extends JFrame {
 
 	Image leftBackImg;
@@ -20,10 +22,11 @@ public class GameFrame extends JFrame {
 	JTextField chatTf;
 
 	public GameFrame() {
+		GameHandler.setGameFrame(this);
 		setTitle("Mafia");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
 		setSize(800, 500);
+		setLocationRelativeTo(null);
 		setLayout(new GridLayout(0, 2));
 
 		newComponents();
@@ -31,8 +34,6 @@ public class GameFrame extends JFrame {
 		addComponents();
 
 		setVisible(true);
-
-		chatArea.setText("chat\nchat");
 	}
 
 	public void newComponents() {
@@ -46,7 +47,6 @@ public class GameFrame extends JFrame {
 	public void setComponents() {
 
 		leftPanel.setLayout(null);
-
 		chatArea.setOpaque(false);
 		chatArea.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		chatArea.setFont(new Font("", Font.BOLD, 20));

@@ -17,6 +17,8 @@ import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+
+
 public class WaitingRoomFrame extends JFrame {
 
 	private JPanel leftPanel;
@@ -217,7 +219,7 @@ public class WaitingRoomFrame extends JFrame {
 		});
 	}
 
-	class CenterPanelBackground extends JPanel { // * 로비 오른쪽 배경 이미지 * //
+	class CenterPanelBackground extends JPanel { // * 대기실 오른쪽 배경 이미지 * //
 		public CenterPanelBackground() {
 		}
 
@@ -227,7 +229,7 @@ public class WaitingRoomFrame extends JFrame {
 		}
 	}
 
-	class RobyLeftPanelBackground extends JPanel { // * 로비에서 left패널 이미지 * //
+	class RobyLeftPanelBackground extends JPanel { // * 대기실에서 left패널 이미지 * //
 		public RobyLeftPanelBackground() {
 		}
 

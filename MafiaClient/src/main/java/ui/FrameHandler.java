@@ -12,6 +12,8 @@ import javax.swing.JTextField;
 import information.ExpInf;
 import information.RoomInf;
 
+
+
 public class FrameHandler {
 
 	static LoginFrame loginFrame;
@@ -29,7 +31,7 @@ public class FrameHandler {
 		}
 	}
 
-	public static void useId(boolean overlap) {
+	public static void useId(boolean overlap) {  // * 회원가입시 사용 가능한 ID인지 확인 * // 
 		if (overlap) {
 			JOptionPane.showMessageDialog(loginFrame.panel, "이미 존재하는 아이디입니다.", "Overlap", JOptionPane.ERROR_MESSAGE);
 		} else {
@@ -42,7 +44,7 @@ public class FrameHandler {
 		}
 	}
 
-	public static void useNickName(boolean overlap) {
+	public static void useNickName(boolean overlap) { // * 회원가입시 사용 가능한 Nickname인지 확인 * //
 		if (overlap) {
 			JOptionPane.showMessageDialog(loginFrame.panel, "이미 존재하는 닉네임입니다.", "Overlap", JOptionPane.ERROR_MESSAGE);
 		} else {
@@ -55,7 +57,7 @@ public class FrameHandler {
 		}
 	}
 
-	public static void checkEmailCode(boolean use) {
+	public static void checkEmailCode(boolean use) { // * 이메일 인증코드 확인 * //
 		if (use) {
 			JOptionPane.showMessageDialog(signUpFrame.panel, "인증 번호가 확인됐습니다.", "email OK",
 					JOptionPane.INFORMATION_MESSAGE);
@@ -67,7 +69,7 @@ public class FrameHandler {
 		}
 	}
 
-	public static void checkEmail(boolean overlap, boolean sendComplete) {
+	public static void checkEmail(boolean overlap, boolean sendComplete) { // * 회원가입시 사용 가능한 email인지 확인 * //
 		if (overlap) {
 			JOptionPane.showMessageDialog(loginFrame.panel, "이미 존재하는 email입니다.", "Overlap", JOptionPane.ERROR_MESSAGE);
 		} else {
@@ -81,7 +83,7 @@ public class FrameHandler {
 		}
 	}
 
-	public static void completeRegister(boolean isRegister) {
+	public static void completeRegister(boolean isRegister) { // * 회원가입 완료 시 메세지 * //
 		if (isRegister) {
 			JOptionPane.showMessageDialog(signUpFrame.panel, "회원 가입이 정상적으로 완료 됐습니다.", "회원가입 완료",
 					JOptionPane.INFORMATION_MESSAGE);

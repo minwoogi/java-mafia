@@ -1,4 +1,4 @@
-package Game;
+package handling.game;
 
 public class MafiaGame {
 
