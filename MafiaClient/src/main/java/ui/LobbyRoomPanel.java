@@ -82,7 +82,6 @@ public class LobbyRoomPanel extends JPanel {
 		joinRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				FrameHandler.quitLobbyFrame();
-				new WaitingRoomFrame();
 			}
 		});
 

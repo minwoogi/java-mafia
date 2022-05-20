@@ -10,12 +10,16 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import information.RoomInf;
 
 public class LobbyFrame extends JFrame {
 
@@ -40,6 +44,7 @@ public class LobbyFrame extends JFrame {
 	private Image bottomBackImg;
 	private JButton levelBack;
 	LobbyRowsPanel rowsPanel;
+	HashMap<Integer,RoomInf> roomList = new HashMap<>();
 
 	public JLabel getTierLabel() {
 		return tierLabel;
@@ -262,10 +267,6 @@ public class LobbyFrame extends JFrame {
 			super.paintComponent(g);
 			g.drawImage(bottomBackImg, 0, 0, this);
 		}
-	}
-	
-	public static void main(String[] args) {
-		new LobbyFrame();
 	}
 
 }

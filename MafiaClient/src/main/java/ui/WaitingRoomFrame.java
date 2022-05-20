@@ -17,6 +17,10 @@ import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import handling.netty.ClientHandler;
+import handlinig.packet.LoginPacket;
+import handlinig.packet.WaitingPacket;
+
 
 
 public class WaitingRoomFrame extends JFrame {
@@ -86,10 +90,10 @@ public class WaitingRoomFrame extends JFrame {
 		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		readyBtn = new JButton("준비완료");
-		inviteBtn = new JButton("초대하기");
+		readyBtn = new JButton(new ImageIcon("btnImg/readyBtn.png"));
+		inviteBtn = new JButton(new ImageIcon("btnImg/inviteBtn.png"));
 		viewRankingBtn = new JButton(new ImageIcon("btnImg/viewRank.png"));
-		quitBtn = new JButton(new ImageIcon("btnImg/backBtn.png"));
+		quitBtn = new JButton(new ImageIcon("btnImg/quitBtn.png"));
 
 		tierLabel = new JLabel("");
 		levelLabel = new JLabel(" LV.100");
@@ -99,9 +103,9 @@ public class WaitingRoomFrame extends JFrame {
 		expBar.setForeground(Color.BLACK);
 		expBar.setFont(new Font("", Font.BOLD, 20));
 
-		leftBackImg = new ImageIcon("backgroundImage/leftPanelBack.png").getImage();
-		rightBackImg = new ImageIcon("backgroundImage/rightPanelBack.png").getImage();
-		bottomBackImg = new ImageIcon("backgroundImage/bottomBack.png").getImage();
+		leftBackImg = new ImageIcon("backgroundImage/waitingLeftBack.png").getImage();
+		rightBackImg = new ImageIcon("backgroundImage/waitingRightBack.png").getImage();
+		bottomBackImg = new ImageIcon("backgroundImage/waitingBottomBack.png").getImage();
 		levelBack = new JButton(new ImageIcon("btnImg/nickNameLabel.png"));
 	}
 
@@ -118,14 +122,15 @@ public class WaitingRoomFrame extends JFrame {
 		readyBtn.setBounds(50, 40, 450, 60);
 		inviteBtn.setBounds(50, 130, 450, 60);
 		viewRankingBtn.setBounds(50, 220, 450, 60);
-		tierPanel.setBounds(50, 315, 180, 200);
+		tierPanel.setBounds(60, 315, 180, 200);
 		levelLabel.setBounds(253, 360, 80, 30);
 		nickNameLabel.setBounds(250, 410, 250, 70);
 
-//		btnInvisible(rankMatchBtn);
 		btnInvisible(quitBtn);
+		btnInvisible(inviteBtn);
 		btnInvisible(viewRankingBtn);
 		btnInvisible(nickNameLabel);
+		btnInvisible(readyBtn);
 
 		inviteBtn.setOpaque(false);
 		inviteBtn.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -138,8 +143,10 @@ public class WaitingRoomFrame extends JFrame {
 		nickNameLabel.setFont(new Font("", Font.BOLD, 30));
 
 		tierLabel.setIcon(new ImageIcon("tierImage/0.jpg"));
-		readyBtn.setPressedIcon(new ImageIcon("btnImg/rankMatchPush.png"));
-		quitBtn.setPressedIcon(new ImageIcon("btnImg/backBtnPush.png"));
+		
+		readyBtn.setPressedIcon(new ImageIcon("btnImg/readyBtnPush.png"));
+		inviteBtn.setPressedIcon(new ImageIcon("btnImg/inviteBtnPush.png"));
+		quitBtn.setPressedIcon(new ImageIcon("btnImg/quitBtnPush.png"));
 		viewRankingBtn.setPressedIcon(new ImageIcon("btnImg/viewRankPush.png"));
 		nickNameLabel.setIcon(new ImageIcon("btnImg/nickNameLabel.png"));
 
@@ -213,8 +220,14 @@ public class WaitingRoomFrame extends JFrame {
 	public void addActionBtn() {
 		quitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ClientHandler.send(WaitingPacket.quitWaitingRoom());
+				dispose();
+			}
+		});
+		
+		readyBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				
-
 			}
 		});
 	}

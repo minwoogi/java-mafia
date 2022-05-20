@@ -17,4 +17,9 @@ public class ReceiveHeader {
     public static final int VOTE = 13; // 투표
     public static final int NICK_OVERAP = 17; // 닉네임 중복 확인
     public static final int USER_INFORMATION = 20; // 유저 정보 요청
+    public static final int CITIZEN_VOTE = 21; // 투표시간 투표 대상 (닉네임)
+    public static final int MAFIA_ABILITY = 22; // 마피아가 지목한 대상 (닉네임)
+    public static final int DOCTOR_ABILITY = 23; // 의사가 지목한 대상 (닉네임)
+    public static final int POLICE_ABILITY = 24; // 경찰이 지목한 대상 (닉네임)
+    
 }

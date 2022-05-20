@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import database.DatabaseConnection;
 import handling.lobby.Lobby;
 import handling.lobby.WaitingRoom;
@@ -30,6 +31,8 @@ public class MafiaClient {
 	private WaitingRoom waitRoom;
 	private int citizenVote, doctorVote, policeVote, mafiaVote; // 어떤 직업군에게 받은 투표 수
 	private boolean blockChat = false; // 말하기 금지
+	private boolean dead = false; // 사망 여부
+	private boolean isConnected = true;
 	private String certification_code;
 
 	public MafiaClient(Channel session) {
@@ -45,15 +48,16 @@ public class MafiaClient {
 	}
 
 	public void disconnect() {
-		if(this.location != -1)
+		if(this.location != -1) // 로그인 창이 아니면
 			this.saveDB();
 		else if(this.location == LocationInformation.LOBBY) 
 			Lobby.removeClient(this);
 		else if(this.location == LocationInformation.WAITING_ROOM) 
 			this.getWaitingRoom().removeClient(this);
 		else if(this.location == LocationInformation.GAME_ROOM) {
-			// 마피아 게임중일 때
+			this.getWaitingRoom().broadCast(null);
 		}
+		this.setConnected(false);
 	}
 	public void login(String accName) {
 		Connection con = null;
@@ -95,10 +99,9 @@ public class MafiaClient {
 		}
 		for(WaitingRoom room : Lobby.getRooms()) {
 			this.getSession().writeAndFlush(LobbyPacketCreator.updateRoom(room, true));
-			System.out.println(room.getName() + " 보냄");
 		}
 		this.getSession().writeAndFlush(ClientPacketCreator.userInformation(this));
-		//warp(LocationInformation.LOBBY);
+		this.warp(LocationInformation.LOBBY);
 	}
 	
 	public void saveDB() {
@@ -160,29 +163,34 @@ public class MafiaClient {
 	}
 
 	public void warp(int location) {
-		if(this.location == location)
-			return;
-		
-		if(this.location == -1) {
-			Lobby.addClient(this);
-		}
-		if(this.location == LocationInformation.LOBBY &&
-				location == LocationInformation.WAITING_ROOM) { // 로비 -> 대기실
-		}
-		if(location == LocationInformation.LOBBY && // 대기실 -> 로비
-				this.location == LocationInformation.WAITING_ROOM) {
-			Lobby.addClient(this);
-			this.getWaitingRoom().removeClient(this);
-			if(this.getWaitingRoom().getOnlines() > 1) { // 나가고 남은 사람이 1명 이상일 때
-				if(this.getWaitingRoom().getLeader().getAccId() == this.getAccId()) { // 나간 사람이 방장일 때
-					this.getWaitingRoom().setLeader(this.getWaitingRoom().getClients().get(0)); // 아무한테나 넘겨줌
+		if(location == LocationInformation.LOBBY) { // 로비로 이동할 때
+			if(this.location == LocationInformation.WAITING_ROOM) { // 대기실 -> 로비
+				int can = 0; // 이동 가능 여부
+				can += this.getWaitingRoom().removeClient(this) ? 0 : 1; 
+				can += Lobby.addClient(this) ? 0 : 1;
+				if(can == 0) {
+					this.setWaitingRoom(null);
+				} else {
+					System.out.println("[MafiaClient] warp 에 실패했습니다.");
+					return;
 				}
-			} else {
-				this.getWaitingRoom().destroyRoom(); // 방 삭제		
-				Lobby.broadCast(LobbyPacketCreator.removeRoom(this.getWaitingRoom().getId()));
-				// 방 없어졌다고 Send
+				System.out.println("[MafiaClient] 대기실에서 로비로 이동 완료");
+			} else if(this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 로비
+				this.getWaitingRoom().removeClient(this);
+				Lobby.addClient(this);
+			} else if(this.location == -1) { // 로그인 창 -> 로비
+				Lobby.addClient(this);
+				System.out.println("[MafiaClient] 로그인 창에서 로비로 이동 완료");
 			}
-			this.setWaitingRoom(null);
+		} else if(location == LocationInformation.WAITING_ROOM) { // 대기실로 이동할 때
+			if(this.location == LocationInformation.LOBBY) { // 로비 -> 대기실
+				Lobby.removeClient(this); // 로비에서 유저 제거
+				this.getWaitingRoom().addClient(this); // 대기실에 유저 추가
+				System.out.println("[MafiaClient] 로비에서 대기실로 이동 완료");
+			} else if(this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 대기실
+				
+			}
+			
 		}
 		this.location = location;
 		int roomId = this.getWaitingRoom() == null ? -1 : this.getWaitingRoom().getId();
@@ -277,9 +285,20 @@ public class MafiaClient {
 	public void setBlockChat(boolean blockChat) {
 		this.blockChat = blockChat;
 	}
-
-	public void dropMessage(int type, String message) {
-		// 메시지 전송
+	
+	public void dropMessage(int type, String msg) {
+		dropMessage(type, null, msg);
+	}
+	
+	public void dropMessage(int type, String title, String msg) {
+		/*
+		 * type 별 메시지 형태
+		 * 1 : 에러(X) 메시지 (OK)
+		 * 2 : 정보(i) 메시지 (OK)
+		 * 3 : 질문(?) 메시지 (OK)
+		 * 4 : 경고(!) 메시지 (OK)
+		 */
+		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title == null ? "알림" : title, msg));
 	}
 	
 
@@ -321,6 +340,22 @@ public class MafiaClient {
 
 	public void setExp(int exp) {
 		this.exp = exp;
+	}
+
+	public boolean isDead() {
+		return dead;
+	}
+
+	public void setDead(boolean dead) {
+		this.dead = dead;
+	}
+
+	public boolean isConnected() {
+		return isConnected;
+	}
+
+	public void setConnected(boolean isConnected) {
+		this.isConnected = isConnected;
 	}
 	
 

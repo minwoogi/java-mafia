@@ -25,5 +25,15 @@ public class GameHandler {
 	public void sendVotePerson() { // * 투표한 사람 서버로 전송 * //
 
 	}
+	
+	public void setMafiaMode() { // * 마피아 모드 설정 * //
+		
+	}
+	
+	public void setCitizenMode() { // * 시민 모드 설정 * //
+		
+	}
+	
+	
 
 }

@@ -1,6 +1,7 @@
 package handling.netty;
 
 import information.RoomInf;
+import information.UserInf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -9,6 +10,7 @@ import packet.ReceieveHeader;
 import ui.FrameHandler;
 
 /**
+ * Interaction for server
  * 서버와의 상호작용 클래스
  */
 
@@ -31,7 +33,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		byte[] packet = (byte[]) msg;
 		MafiaPacketReader reader = new MafiaPacketReader(packet);
 		int header = reader.getHeader(); // * header * //
-		System.out.println(header + "받음");
+		System.out.println( header + "받음");
 		switch (header) {
 		case ReceieveHeader.LOGIN: // * 로그인시 * //
 			boolean loginCheck = reader.readBoolean();
@@ -65,27 +67,26 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		}
 		case ReceieveHeader.LOBBY_UPDATE: {
 			int roomId = reader.readInt(); // * 방 ID * //
-			int headCount = reader.readInt(); // * 총원 * //
-			int currentStaff = reader.readInt(); // * 현재원 * //
-			boolean roomState = reader.readBoolean(); // * 방 상태 * //
 			String roomName = reader.readString(); // * 방 이름 * //
-			
-
+			int currentStaff = reader.readInt(); // * 현재원 * //
+			int headCount = reader.readInt(); // * 총원 * //
+			boolean roomState = reader.readBoolean(); // * 방 상태 * //
 			break;
 		}
-		case ReceieveHeader.USER_INFORMATION: { // * 로비에서 회원 정보 * //
+		case ReceieveHeader.USER_INFORMATION: { // * 회원 정보 업데이트 * //
+			System.out.println("Header : USER_INFORMATION");
 			String nickName = reader.readString();
 			int level = reader.readInt();
 			int exp = reader.readInt();
 			int tier = reader.readInt();
-
-			FrameHandler.updateTierImage(tier, FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
-			FrameHandler.updateLevel(level, FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
-			FrameHandler.UpdateNickName(nickName, FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
-			FrameHandler.updateExpBar(exp, FrameHandler.getLobbyFrame().getExpBar(), level);
+			UserInf.setNickName(nickName);
+			UserInf.setLevel(level);
+			UserInf.setExp(exp);
+			UserInf.setTier(tier);
 			break;
 		}
 		case ReceieveHeader.LOBBY_UPDATE_MAKE: {
+			System.out.println("Header : LOBBY_UPDATE_MAKE");
 			int roomId = reader.readInt(); // * 방 ID * //
 			String roomName = reader.readString(); // * 방 이름 * //
 			int currentStaff = reader.readInt(); // * 현재원 * //
@@ -95,22 +96,30 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			FrameHandler.addRoomPanel(roomInf);
 			break;
 		}
-		case ReceieveHeader.ENTER_ROOM:{ // * 방 입장 * //
-			String nickName = reader.readString();
-			int level = reader.readInt();
-			int exp = reader.readInt();
-			int tier = reader.readInt();
-
-			FrameHandler.updateTierImage(tier, FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
-			FrameHandler.updateLevel(level, FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
-			FrameHandler.UpdateNickName(nickName, FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
-			FrameHandler.updateExpBar(exp, FrameHandler.getLobbyFrame().getExpBar(), level);
+		case ReceieveHeader.MAKE_ROOM:{ // * 방 생성후 대기실 입장 * //
+			System.out.println("Header : MAKE_ROOM");
+			boolean isMakeRoom = reader.readBoolean();
+			FrameHandler.failedMakeRoom(isMakeRoom); // * 방 만들어졌는지 확인 * //
 			break;
 		}
+		case ReceieveHeader.ROOM_UPDATE:{// * 대기실 업데이트 * //
+			
+			
+		}
+		case ReceieveHeader.CHANGE_LOCATION:{
+			System.out.println("Header : CHANGE_LOCATION");
+			int location = reader.readInt();
+			System.out.println(location);
+			FrameHandler.warp(location);
+			break;	
+		}
+		
+		case ReceieveHeader.SHOW_MESSAGE:{
+			int msgType = reader.readInt();
+			FrameHandler.showMessage(msgType);
+		}
 		default: {
-			String cerCode = reader.readString(); // 임시 코드 //
-			System.out.println(cerCode);
-			break;
+			
 		}
 		}
 	}

@@ -1,14 +1,25 @@
 package handling.netty;
 
+import java.nio.ByteBuffer;
+
 import client.MafiaClient;
+import handling.lobby.Lobby;
+import handling.lobby.WaitingRoom;
 import handling.login.handler.LoginHandler;
 import handling.login.handler.Register;
+import handling.packet.ClientPacketCreator;
+import handling.packet.LobbyPacketCreator;
 import handling.packet.LoginPacketCreator;
 import handling.packet.RegisterPacketCreator;
 import handling.packet.header.ReceiveHeader;
+import information.LocationInformation;
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.util.CharsetUtil;
 import tools.packet.MafiaPacketReader;
 import tools.packet.MafiaPacketWriter;
 
@@ -25,12 +36,11 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		MafiaClient c = ctx.channel().attr(MafiaClient.CLIENTKEY).get();
-		if (c.getLocation() != -1) {
-
+		if(c.getLocation() != -1) { // 로그인창이 아니면
+			c.disconnect();
 		}
 		ctx.channel().attr(MafiaClient.CLIENTKEY).set(null);
 		System.out.println(ctx.channel().remoteAddress() + "에서 접속을 종료했습니다.");
-
 	}
 
 	@Override
@@ -54,9 +64,6 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String id = pr.readString();
 			String password = pr.readString();
 			int login = LoginHandler.canLogin(id, password, c);
-//			if (id.equals("admin")) {  //db없이 test
-//				login = -1;
-//			}
 			c.getSession().writeAndFlush(LoginPacketCreator.getLoginWhether(login == -1 ? true : false, login));
 			if (login == -1) {
 				c.login(id);
@@ -85,7 +92,7 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String email = pr.readString();
 			boolean overlap = Register.isOverlapEmail(email);
 			boolean sendok = false;
-			if (!overlap) {
+			if(!overlap) {
 				String code = Register.getCertificationCode(); // 인증코드 생성
 				String text = "인증코드는 [ " + code + " ] 입니다. 해당 코드를 인증창에 입력해 주세요.";
 				c.setCertificationCode(code);
@@ -93,7 +100,7 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 				System.out.println(text);
 				sendok = true;
 				MafiaPacketWriter wr = new MafiaPacketWriter(-1);
-				wr.writeString(code);
+				wr.writeString(code); 
 				c.getSession().writeAndFlush(wr.getPacket());
 			} else {
 				System.out.println(email + "은 이미 존재하는 이메일 입니다.");
@@ -105,7 +112,7 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String inputCode = pr.readString();
 			String certCode = c.getCertificationCode();
 			boolean equal = inputCode.equals(certCode);
-			if (equal) {
+			if(equal) {
 				System.out.println("인증코드 일치");
 			} else {
 				System.out.println("인증코드 틀림");
@@ -119,26 +126,31 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			String charName = pr.readString();
 			String email = pr.readString();
 			boolean register = Register.register(accName, password, charName, email);
-			if (register) {
-				System.out.println(
-						"[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 성공했습니다.");
+			if(register) {
+				System.out.println("[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 성공했습니다.");
 			} else {
-				System.out.println(
-						"[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 실패했습니다.");
+				System.out.println("[ " + c.getInetAddress() + " ] 에서 ID: " + accName + " NICK : " + charName + " 으로 가입에 실패했습니다.");
 			}
 			c.getSession().writeAndFlush(RegisterPacketCreator.completeRegister(register));
 			break;
 		case ReceiveHeader.ENTER_ROOM:
 			int roomId = pr.readInt();
-
+			
 			break;
 		case ReceiveHeader.MAKE_ROOM:
+			int maxPerson = pr.readInt();
+			String roomName = pr.readString();
+			
+			c.getSession().writeAndFlush(ClientPacketCreator.makeRoom());
+			Lobby.addRoom(new WaitingRoom(roomName, c, maxPerson));
 			break;
 		case ReceiveHeader.ROOM_UPDATE:
 			break;
 		case ReceiveHeader.LOBBY_USERS:
 			break;
 		case ReceiveHeader.EXIT_ROOM:
+			int tmp = pr.readInt();
+			c.warp(LocationInformation.LOBBY);
 			break;
 		case ReceiveHeader.INVITE_USER:
 			break;

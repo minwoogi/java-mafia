@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 
 import handling.netty.ClientHandler;
-import handlinig.packet.lobbyPacket;
+import handlinig.packet.LobbyPacket;
 
 public class MakeRoom extends JFrame {
 
@@ -83,7 +83,7 @@ public class MakeRoom extends JFrame {
 		makeRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClientHandler
-						.send(lobbyPacket.makeRoomPacket(roomNameTf.getText(), numberOfPeople.getSelectedIndex() + 5));
+						.send(LobbyPacket.makeRoomPacket(roomNameTf.getText(), numberOfPeople.getSelectedIndex() + 5));
 				dispose();
 			}
 		});

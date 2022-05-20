@@ -14,7 +14,7 @@ public class SendHeader {
     public static final int EXIT_ROOM = 10; // 대기실 나가기
     public static final int INVITE_USER = 11; // 유저 초대
     public static final int CHAT = 12; // 채팅
-    public static final int VOTE = 13; // 투표
+    public static final int VOTE = 13; // 투표 결과
     public static final int TIMER = 14; // 타이머
     public static final int DAY_AND_NIGHT = 15; // 밤 낮 정보
     public static final int VOTE_RESULT = 16; // 투표 집계 결과
@@ -24,4 +24,6 @@ public class SendHeader {
     public static final int USER_INFORMATION = 20; // 유저 정보 전송
     public static final int LOBBY_REMOVE_ROOM = 21; // 로비에서 방 없어졌다고 전송
     public static final int SHOW_MESSAGE = 22; // 메시지 띄우기
+    public static final int DEAD_PLAYER = 23; // 플레이어 사망, 사유 전송
+    
 }

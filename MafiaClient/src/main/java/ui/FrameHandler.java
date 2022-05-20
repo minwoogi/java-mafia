@@ -8,9 +8,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
+import javax.tools.DocumentationTool.Location;
 
 import information.ExpInf;
+import information.LocationInformation;
 import information.RoomInf;
+import information.UserInf;
 
 
 
@@ -24,7 +27,6 @@ public class FrameHandler {
 	public static void failedLogin(boolean loginCheck) {
 		if (loginCheck) {
 			FrameHandler.getLoginFrame().frame.dispose();
-			new LobbyFrame();
 		} else {
 			JOptionPane.showMessageDialog(loginFrame.panel, "id 또는 password가 잘못 입력되었습니다.", "error",
 					JOptionPane.ERROR_MESSAGE);
@@ -115,6 +117,16 @@ public class FrameHandler {
 		tf.setEditable(false);
 		tf.setForeground(Color.RED);
 	}
+	
+	public static void failedMakeRoom(boolean isMakeRoom) {
+		if (isMakeRoom) {
+			FrameHandler.getLobbyFrame().dispose(); // * 로비 프레임 종료 * //
+			warp(LocationInformation.WAITING_ROOM);
+		} else {
+			JOptionPane.showMessageDialog(lobbyFrame, "방이 정상적으로 만들어지지 않았습니다.", "error",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
 	public static void addRoomPanel(RoomInf roomInf) {
 		LobbyRoomPanel roomPanel = new LobbyRoomPanel(roomInf);
@@ -125,6 +137,39 @@ public class FrameHandler {
 	public static void quitLobbyFrame() {
 		lobbyFrame.dispose();
 	}
+	
+	public static void warp(int location) {  // * CHANGE_LOCATION * //
+		switch(location) {
+		case LocationInformation.LOBBY:{
+			new LobbyFrame();
+			FrameHandler.updateTierImage(UserInf.getTier(), FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
+			FrameHandler.updateLevel(UserInf.getLevel(), FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
+			FrameHandler.UpdateNickName(UserInf.getNickName(), FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
+			FrameHandler.updateExpBar(UserInf.getExp(), FrameHandler.getLobbyFrame().getExpBar(), UserInf.getLevel()); // * 경험치 표시 * //
+			break;
+		}
+		case LocationInformation.WAITING_ROOM:{
+			new WaitingRoomFrame();
+			FrameHandler.updateTierImage(UserInf.getTier(), FrameHandler.getWaitingRoomFrame().getTierLabel()); // * 티어사진 표시 * //
+			FrameHandler.updateLevel(UserInf.getLevel(), FrameHandler.getWaitingRoomFrame().getLevelLabel()); // * 레벨 표시 * //
+			FrameHandler.UpdateNickName(UserInf.getNickName(), FrameHandler.getWaitingRoomFrame().getNickNameLabel()); // * 닉네임 표시 * //
+			FrameHandler.updateExpBar(UserInf.getExp(), FrameHandler.getWaitingRoomFrame().getExpBar(), UserInf.getLevel()); // * 경험치 표시 * //
+			break;
+		}
+		case LocationInformation.GAME_ROOM:{
+			break;
+		}
+		}
+	}
+	
+	public static void showMessage(int msgType) { // * SHOW_MESSAGE * //
+		
+		
+		
+	}
+	
+	
+	
 
 	public static void removeAllPanel() { // * 방목록 전체 삭제 * //
 		FrameHandler.getLobbyFrame().rowsPanel.removeAllPanel();

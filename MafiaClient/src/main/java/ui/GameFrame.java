@@ -15,7 +15,6 @@ import handling.game.GameHandler;
 
 public class GameFrame extends JFrame {
 
-	Image leftBackImg;
 	JPanel leftPanel;
 	JPanel rightPanel;
 	JTextArea chatArea;
@@ -25,7 +24,7 @@ public class GameFrame extends JFrame {
 		GameHandler.setGameFrame(this);
 		setTitle("Mafia");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(800, 500);
+		setSize(1100, 600);
 		setLocationRelativeTo(null);
 		setLayout(new GridLayout(0, 2));
 
@@ -37,9 +36,8 @@ public class GameFrame extends JFrame {
 	}
 
 	public void newComponents() {
-		leftBackImg = new ImageIcon("backgroundImage/leftPanelBack.png").getImage();
 		leftPanel = new LeftPanel();
-		rightPanel = new JPanel();
+		rightPanel = new RightPanel();
 		chatArea = new JTextArea();
 		chatTf = new JTextField();
 	}
@@ -63,12 +61,24 @@ public class GameFrame extends JFrame {
 	}
 
 	class LeftPanel extends JPanel {
+		Image leftBackImg = new ImageIcon("backgroundImage/gameLeftBack.png").getImage();
 		public LeftPanel() {
 		}
 
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(leftBackImg, 0, 0, this);
+		}
+	}
+	
+	class RightPanel extends JPanel {
+		Image rightBackImg = new ImageIcon("backgroundImage/gameRightBack.png").getImage();
+		public RightPanel() {
+		}
+
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(rightBackImg, 0, 0, this);
 		}
 	}
 
