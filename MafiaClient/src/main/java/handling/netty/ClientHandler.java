@@ -8,6 +8,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import packet.MafiaPacketReader;
 import packet.ReceieveHeader;
 import ui.FrameHandler;
+import ui.ShowMessage;
 
 /**
  * Interaction for server
@@ -114,9 +115,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			break;	
 		}
 		
-		case ReceieveHeader.SHOW_MESSAGE:{
-			int msgType = reader.readInt();
-			FrameHandler.showMessage(msgType);
+		case ReceieveHeader.SHOW_MESSAGE:{  // * 알림창 생성 * //
+			int msgType = reader.readInt();  
+			String title = reader.readString();
+			String message = reader.readString();
+			ShowMessage showMsg = new ShowMessage(msgType,title,message);
 		}
 		default: {
 			

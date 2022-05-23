@@ -19,7 +19,7 @@ import javax.swing.event.ChangeListener;
 
 import handling.netty.ClientHandler;
 import handlinig.packet.LoginPacket;
-import handlinig.packet.WaitingPacket;
+import handlinig.packet.WaitingRoomPacket;
 
 
 
@@ -220,7 +220,7 @@ public class WaitingRoomFrame extends JFrame {
 	public void addActionBtn() {
 		quitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ClientHandler.send(WaitingPacket.quitWaitingRoom());
+				ClientHandler.send(WaitingRoomPacket.quitWaitingRoom());
 				dispose();
 			}
 		});

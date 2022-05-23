@@ -3,7 +3,7 @@ package handlinig.packet;
 import packet.MafiaPacketWriter;
 import packet.SendHeader;
 
-public class WaitingPacket {
+public class WaitingRoomPacket {
 
 	public static byte[] quitWaitingRoom() {
 		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.EXIT_ROOM);

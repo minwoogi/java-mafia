@@ -268,5 +268,9 @@ public class LobbyFrame extends JFrame {
 			g.drawImage(bottomBackImg, 0, 0, this);
 		}
 	}
+	
+	public static void main(String[] args) {
+		new LobbyFrame();
+	}
 
 }

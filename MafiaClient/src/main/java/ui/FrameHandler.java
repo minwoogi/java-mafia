@@ -128,7 +128,7 @@ public class FrameHandler {
 		}
 	}
 
-	public static void addRoomPanel(RoomInf roomInf) {
+	public static void addRoomPanel(RoomInf roomInf) { // * 로비 프레임에서 방 추가 * //
 		LobbyRoomPanel roomPanel = new LobbyRoomPanel(roomInf);
 		roomPanel.setRoomInfTf(roomInf);
 		FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomPanel);
@@ -157,18 +157,11 @@ public class FrameHandler {
 			break;
 		}
 		case LocationInformation.GAME_ROOM:{
+			new GameFrame();
 			break;
 		}
 		}
 	}
-	
-	public static void showMessage(int msgType) { // * SHOW_MESSAGE * //
-		
-		
-		
-	}
-	
-	
 	
 
 	public static void removeAllPanel() { // * 방목록 전체 삭제 * //
