@@ -107,9 +107,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			
 			
 		}
-		case ReceieveHeader.CHANGE_LOCATION:{
+		case ReceieveHeader.CHANGE_LOCATION:{ // * 위치 변경시 * //
 			System.out.println("Header : CHANGE_LOCATION");
-			int location = reader.readInt();
+			int location = reader.readInt(); // * 로비0 대기실1 게임장2 * //
 			System.out.println(location);
 			FrameHandler.warp(location);
 			break;	

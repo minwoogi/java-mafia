@@ -4,8 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.*;
 
 import handling.netty.ClientHandler;
@@ -19,10 +23,10 @@ public class MakeRoom extends JFrame {
 	private JComboBox<Integer> numberOfPeople;
 	private Image background;
 	private JPanel panel;
+	private Point initialClick;
 
 	public MakeRoom() {
-		setTitle("방만들기");
-		setSize(400, 280);
+		setSize(400, 250);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -31,6 +35,9 @@ public class MakeRoom extends JFrame {
 		setComponents();
 		addComponents();
 		addActionBtn();
+		setUndecorated(true);
+		this.addMouseListener(new MoveWindows());
+		this.addMouseMotionListener(new MoveWindows());
 
 		setVisible(true);
 	}
@@ -87,7 +94,7 @@ public class MakeRoom extends JFrame {
 				dispose();
 			}
 		});
-		
+
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
@@ -108,6 +115,27 @@ public class MakeRoom extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(background, 0, 0, this);
+		}
+	}
+
+	class MoveWindows extends MouseAdapter { // * 프레임 이동 * //
+		public void mousePressed(MouseEvent e) {
+			initialClick = e.getPoint();
+			getComponentAt(initialClick);
+		}
+
+		public void mouseDragged(MouseEvent e) {
+			JFrame jf = (JFrame) e.getSource();
+
+			int thisX = jf.getLocation().x;
+			int thisY = jf.getLocation().y;
+
+			int xMoved = e.getX() - initialClick.x;
+			int yMoved = e.getY() - initialClick.y;
+
+			int X = thisX + xMoved;
+			int Y = thisY + yMoved;
+			jf.setLocation(X, Y); 
 		}
 	}
 

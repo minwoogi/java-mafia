@@ -8,8 +8,11 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -20,6 +23,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import information.RoomInf;
+import ui.MakeRoom.MoveWindows;
 
 public class LobbyFrame extends JFrame {
 
@@ -43,8 +47,9 @@ public class LobbyFrame extends JFrame {
 	private Image rightBackImg;
 	private Image bottomBackImg;
 	private JButton levelBack;
+	private Point initialClick;
 	LobbyRowsPanel rowsPanel;
-	HashMap<Integer,RoomInf> roomList = new HashMap<>();
+	HashMap<Integer, RoomInf> roomList = new HashMap<>();
 
 	public JLabel getTierLabel() {
 		return tierLabel;
@@ -75,7 +80,11 @@ public class LobbyFrame extends JFrame {
 		setComponents();
 		addComponents();
 		addActionBtn();
-
+		
+		this.addMouseListener(new MoveWindow());
+		this.addMouseMotionListener(new MoveWindow());
+		
+		setUndecorated(true);
 		setVisible(true);
 	}
 
@@ -181,10 +190,10 @@ public class LobbyFrame extends JFrame {
 		scroll.getViewport().setOpaque(false);
 		rowsPanel.setOpaque(false);
 		rowsPanel.setBackground(new Color(0, 0, 0, 0));
-		tierPanel.setBackground(new Color(0,0,0,0));
+		tierPanel.setBackground(new Color(0, 0, 0, 0));
 		tierPanel.setOpaque(false);
 		tierLabel.setOpaque(false);
-		tierLabel.setBackground(new Color(0,0,0,0));
+		tierLabel.setBackground(new Color(0, 0, 0, 0));
 
 	}
 
@@ -218,7 +227,6 @@ public class LobbyFrame extends JFrame {
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
 	}
-	
 
 	public void addActionBtn() {
 		makeRoomBtn.addActionListener(new ActionListener() {
@@ -230,10 +238,10 @@ public class LobbyFrame extends JFrame {
 
 		searchRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!searchRoomTf.getText().equals("")) {
+				if (!searchRoomTf.getText().equals("")) {
 					String keyword = searchRoomTf.getText();
 					FrameHandler.removeAllPanel();
-					
+
 				}
 			}
 		});
@@ -269,6 +277,27 @@ public class LobbyFrame extends JFrame {
 		}
 	}
 	
+	class MoveWindow extends MouseAdapter { // * 프레임 이동 * //
+		public void mousePressed(MouseEvent e) {
+			initialClick = e.getPoint();
+			getComponentAt(initialClick);
+		}
+
+		public void mouseDragged(MouseEvent e) {
+			JFrame jf = (JFrame) e.getSource();
+
+			int thisX = jf.getLocation().x;
+			int thisY = jf.getLocation().y;
+
+			int xMoved = e.getX() - initialClick.x;
+			int yMoved = e.getY() - initialClick.y;
+
+			int X = thisX + xMoved;
+			int Y = thisY + yMoved;
+			jf.setLocation(X, Y); 
+		}
+	}
+
 	public static void main(String[] args) {
 		new LobbyFrame();
 	}
