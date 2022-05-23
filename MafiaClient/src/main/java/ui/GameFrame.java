@@ -1,6 +1,8 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -24,11 +26,15 @@ public class GameFrame extends JFrame {
 
 	private JPanel leftPanel;
 	private JPanel rightPanel;
+	private JPanel listPanel;
 	private JTextArea chatArea;
 	private JTextField chatTf;
+	private JTextField nightInf;
+	private JTextField timer;
 	private JButton sendBtn;
 	private Point initialClick;
 	private JScrollPane scroll;
+	private JButton page;
 
 	public GameFrame() {
 		GameHandler.setGameFrame(this);
@@ -52,27 +58,95 @@ public class GameFrame extends JFrame {
 	public void newComponents() {
 		leftPanel = new LeftPanel();
 		rightPanel = new RightPanel();
+		listPanel = new JPanel();
 		chatArea = new JTextArea();
 		scroll = new JScrollPane(chatArea);
 		chatTf = new JTextField();
-		sendBtn = new JButton();
+		sendBtn = new JButton(new ImageIcon("btnImg/gameSendBtn.png"));
+		nightInf = new JTextField();
+		timer = new JTextField();
+		page = new JButton();
+		
 	}
 
 	public void setComponents() {
 
 		leftPanel.setLayout(null);
+		rightPanel.setLayout(null);
+		
+		listPanel.setBounds(60, 250, 430, 300);
+		listPanel.setBackground(new Color(0,0,0,150));
+		listPanel.setLayout(new FlowLayout(FlowLayout.LEFT,20,15));
+		
+		page.setBounds(255, 555, 35, 35);
+		
+		JButton btn1 = new JButton();
+		btn1.setPreferredSize(new Dimension(80,80));
+		JButton btn2 = new JButton();
+		btn2.setPreferredSize(new Dimension(80,80));
+		JButton btn3 = new JButton();
+		btn3.setPreferredSize(new Dimension(80,80));
+		JButton btn4 = new JButton();
+		btn4.setPreferredSize(new Dimension(80,80));
+		JButton btn5 = new JButton();
+		btn5.setPreferredSize(new Dimension(80,80));
+		JButton btn6 = new JButton();
+		btn6.setPreferredSize(new Dimension(80,80));
+		JButton btn7 = new JButton();
+		btn7.setPreferredSize(new Dimension(80,80));
+		JButton btn8 = new JButton();
+		btn8.setPreferredSize(new Dimension(80,80));
+		JButton btn9 = new JButton();
+		btn9.setPreferredSize(new Dimension(80,80));
+		listPanel.add(btn1);
+		listPanel.add(btn2);
+		listPanel.add(btn3);
+		listPanel.add(btn4);
+		listPanel.add(btn5);
+		listPanel.add(btn6);
+		listPanel.add(btn7);
+		listPanel.add(btn8);
+		listPanel.add(btn9);
+		
+		sendBtn.setFocusPainted(false);
+		sendBtn.setContentAreaFilled(false);
+		sendBtn.setBorderPainted(false);
+		sendBtn.setPressedIcon(new ImageIcon("btnImg/gameSendPush.png"));
 
 		chatArea.setOpaque(true); // * 투명 * //
 		chatArea.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		chatArea.setFont(new Font("", Font.BOLD, 20));
-		chatArea.setForeground(Color.BLACK);
+		chatArea.setForeground(Color.WHITE);
+		chatArea.setBackground(new Color(0,0,0,150));
+		chatArea.setOpaque(false);		
 
-		scroll.setBounds(60, 40, 430, 400);
-
-		chatTf.setBounds(60, 480, 350, 50);
-		chatTf.setFont(new Font("", Font.BOLD, 20));
+		scroll.setBounds(60, 40, 430, 410);
+		scroll.setVerticalScrollBarPolicy(scroll.VERTICAL_SCROLLBAR_AS_NEEDED);
+		scroll.setOpaque(false);
+		scroll.setBackground(new Color(0, 0, 0, 0));
+		scroll.getViewport().setOpaque(false);
 		
-		sendBtn.setBounds(420, 480, 70, 50);
+		chatTf.setBounds(60, 500, 350, 50);
+		chatTf.setFont(new Font("", Font.BOLD, 20));
+		chatTf.setBackground(new Color(0,0,0,0));
+		chatTf.setOpaque(false);
+		chatTf.setForeground(Color.WHITE);
+		
+		nightInf.setBounds(60, 40, 430,70);
+		nightInf.setFont(new Font("",Font.BOLD,20));
+		nightInf.setBackground(new Color(0,0,0,0));
+		nightInf.setOpaque(false);
+		nightInf.setForeground(Color.WHITE);
+		nightInf.setHorizontalAlignment(JTextField.CENTER); // * 글자 가운데 정렬 * //
+		
+		timer.setBounds(60, 150, 430,70);
+		timer.setFont(new Font("",Font.BOLD,20));
+		timer.setBackground(new Color(0,0,0,0));
+		timer.setOpaque(false);
+		timer.setForeground(Color.WHITE);
+		timer.setHorizontalAlignment(JTextField.CENTER);
+		
+		sendBtn.setBounds(420, 500, 70, 50);
 
 	}
 
@@ -83,7 +157,11 @@ public class GameFrame extends JFrame {
 		leftPanel.add(scroll);
 		leftPanel.add(chatTf);
 		leftPanel.add(sendBtn);
-
+		
+		rightPanel.add(nightInf);
+		rightPanel.add(timer);
+		rightPanel.add(listPanel);
+		rightPanel.add(page);
 	}
 
 	class LeftPanel extends JPanel {

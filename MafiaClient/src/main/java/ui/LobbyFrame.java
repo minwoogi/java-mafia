@@ -48,6 +48,7 @@ public class LobbyFrame extends JFrame {
 	private Image bottomBackImg;
 	private JButton levelBack;
 	private Point initialClick;
+	private JButton logOutBtn;
 	LobbyRowsPanel rowsPanel;
 	HashMap<Integer, RoomInf> roomList = new HashMap<>();
 
@@ -80,10 +81,10 @@ public class LobbyFrame extends JFrame {
 		setComponents();
 		addComponents();
 		addActionBtn();
-		
+
 		this.addMouseListener(new MoveWindow());
 		this.addMouseMotionListener(new MoveWindow());
-		
+
 		setUndecorated(true);
 		setVisible(true);
 	}
@@ -96,7 +97,7 @@ public class LobbyFrame extends JFrame {
 		tierPanel = new JPanel();
 		levelPanel = new JPanel();
 		rowsPanel = new LobbyRowsPanel();
-		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		rankMatchBtn = new JButton(new ImageIcon("btnImg/rankMatchBtn.png"));
@@ -104,6 +105,7 @@ public class LobbyFrame extends JFrame {
 		viewRankingBtn = new JButton(new ImageIcon("btnImg/viewRank.png"));
 		searchRoomBtn = new JButton(new ImageIcon("btnImg/searchRoom.png"));
 		makeRoomBtn = new JButton(new ImageIcon("btnImg/makeRoom.png"));
+		logOutBtn = new JButton("LogOut");
 
 		tierLabel = new JLabel("");
 		levelLabel = new JLabel(" LV.100");
@@ -136,6 +138,7 @@ public class LobbyFrame extends JFrame {
 		tierPanel.setBounds(50, 315, 180, 200);
 		levelLabel.setBounds(253, 360, 80, 30);
 		nickNameLabel.setBounds(250, 410, 250, 70);
+		logOutBtn.setBounds(0, 540, 60, 60);
 
 		btnInvisible(rankMatchBtn);
 		btnInvisible(makeRoomBtn);
@@ -209,6 +212,7 @@ public class LobbyFrame extends JFrame {
 		leftPanel.add(nickNameLabel);
 		leftPanel.add(levelLabel);
 		leftPanel.add(expBar);
+		leftPanel.add(logOutBtn);
 
 		rightPanel.add(scroll, BorderLayout.CENTER);
 		rightPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -245,6 +249,13 @@ public class LobbyFrame extends JFrame {
 				}
 			}
 		});
+
+		logOutBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new ShowMessage(2,"LogOut","로그아웃");
+				dispose();
+			}
+		});
 	}
 
 	class CenterPanelBackground extends JPanel { // * 로비 오른쪽 배경 이미지 * //
@@ -276,7 +287,7 @@ public class LobbyFrame extends JFrame {
 			g.drawImage(bottomBackImg, 0, 0, this);
 		}
 	}
-	
+
 	class MoveWindow extends MouseAdapter { // * 프레임 이동 * //
 		public void mousePressed(MouseEvent e) {
 			initialClick = e.getPoint();
@@ -294,7 +305,7 @@ public class LobbyFrame extends JFrame {
 
 			int X = thisX + xMoved;
 			int Y = thisY + yMoved;
-			jf.setLocation(X, Y); 
+			jf.setLocation(X, Y);
 		}
 	}
 
