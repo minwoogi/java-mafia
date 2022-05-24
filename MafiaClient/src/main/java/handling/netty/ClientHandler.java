@@ -1,5 +1,8 @@
 package handling.netty;
 
+import java.lang.reflect.Field;
+
+import handling.game.GameHandler;
 import information.RoomInf;
 import information.UserInf;
 import io.netty.channel.Channel;
@@ -34,7 +37,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		byte[] packet = (byte[]) msg;
 		MafiaPacketReader reader = new MafiaPacketReader(packet);
 		int header = reader.getHeader(); // * header * //
-		System.out.println( header + "받음");
+		Class receieve = ReceieveHeader.class;  // * reflection을 이용한 지역 변수명 찾기 Header 출력 * // 
+		Field field = receieve.getField(header+"");
+		System.out.println(field.getName()+" 받음");
 		switch (header) {
 		case ReceieveHeader.LOGIN: // * 로그인시 * //
 			boolean loginCheck = reader.readBoolean();
@@ -95,6 +100,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			boolean roomState = reader.readBoolean(); // * 방 상태 * //
 			RoomInf roomInf = new RoomInf(roomId, currentStaff, headCount, roomName, roomState); // * 방 객체 생성 * //
 			FrameHandler.addRoomPanel(roomInf);
+			FrameHandler.getLobbyFrame().getRoomList().put(roomId, roomInf);
 			break;
 		}
 		case ReceieveHeader.MAKE_ROOM:{ // * 방 생성후 대기실 입장 * //
@@ -103,14 +109,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			FrameHandler.failedMakeRoom(isMakeRoom); // * 방 만들어졌는지 확인 * //
 			break;
 		}
-		case ReceieveHeader.ROOM_UPDATE:{// * 대기실 업데이트 * //
-			
-			
-		}
 		case ReceieveHeader.CHANGE_LOCATION:{ // * 위치 변경시 * //
 			System.out.println("Header : CHANGE_LOCATION");
 			int location = reader.readInt(); // * 로비0 대기실1 게임장2 * //
-			System.out.println(location);
 			FrameHandler.warp(location);
 			break;	
 		}
@@ -120,6 +121,16 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			String title = reader.readString();
 			String message = reader.readString();
 			ShowMessage showMsg = new ShowMessage(msgType,title,message);
+		}
+		case ReceieveHeader.TIMER:{
+			
+		}
+		case ReceieveHeader.DAY_AND_NIGHT:{ // * 밤 낮 정보 * //
+			int day = reader.readInt();
+			GameHandler.setNightText(header, GameHandler.getGameFrame().getNightInf());
+		}
+		case ReceieveHeader.VOTE:{
+			
 		}
 		default: {
 			

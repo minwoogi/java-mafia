@@ -8,6 +8,8 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -26,15 +28,21 @@ public class GameFrame extends JFrame {
 
 	private JPanel leftPanel;
 	private JPanel rightPanel;
-	private JPanel listPanel;
+	private JPanel votePanel;
 	private JTextArea chatArea;
 	private JTextField chatTf;
-	private JTextField nightInf;
 	private JTextField timer;
 	private JButton sendBtn;
 	private Point initialClick;
 	private JScrollPane scroll;
 	private JButton page;
+	private JTextField nightInf;
+	
+	
+
+	public JTextField getNightInf() {
+		return nightInf;
+	}
 
 	public GameFrame() {
 		GameHandler.setGameFrame(this);
@@ -58,7 +66,7 @@ public class GameFrame extends JFrame {
 	public void newComponents() {
 		leftPanel = new LeftPanel();
 		rightPanel = new RightPanel();
-		listPanel = new JPanel();
+		votePanel = new JPanel();
 		chatArea = new JTextArea();
 		scroll = new JScrollPane(chatArea);
 		chatTf = new JTextField();
@@ -74,11 +82,10 @@ public class GameFrame extends JFrame {
 		leftPanel.setLayout(null);
 		rightPanel.setLayout(null);
 		
-		listPanel.setBounds(60, 250, 430, 300);
-		listPanel.setBackground(new Color(0,0,0,150));
-		listPanel.setLayout(new FlowLayout(FlowLayout.LEFT,20,15));
+		votePanel.setBounds(60, 250, 430, 300);
+		votePanel.setBackground(new Color(0,0,0,150));
+		votePanel.setLayout(new FlowLayout(FlowLayout.LEFT,21,15));
 		
-		page.setBounds(255, 555, 35, 35);
 		
 		JButton btn1 = new JButton();
 		btn1.setPreferredSize(new Dimension(80,80));
@@ -98,15 +105,15 @@ public class GameFrame extends JFrame {
 		btn8.setPreferredSize(new Dimension(80,80));
 		JButton btn9 = new JButton();
 		btn9.setPreferredSize(new Dimension(80,80));
-		listPanel.add(btn1);
-		listPanel.add(btn2);
-		listPanel.add(btn3);
-		listPanel.add(btn4);
-		listPanel.add(btn5);
-		listPanel.add(btn6);
-		listPanel.add(btn7);
-		listPanel.add(btn8);
-		listPanel.add(btn9);
+		votePanel.add(btn1);
+		votePanel.add(btn2);
+		votePanel.add(btn3);
+		votePanel.add(btn4);
+		votePanel.add(btn5);
+		votePanel.add(btn6);
+		votePanel.add(btn7);
+		votePanel.add(btn8);
+		votePanel.add(btn9);
 		
 		sendBtn.setFocusPainted(false);
 		sendBtn.setContentAreaFilled(false);
@@ -147,6 +154,14 @@ public class GameFrame extends JFrame {
 		timer.setHorizontalAlignment(JTextField.CENTER);
 		
 		sendBtn.setBounds(420, 500, 70, 50);
+		
+		page.setBounds(255, 555, 35, 35);
+		page.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
 
 	}
 
@@ -160,7 +175,7 @@ public class GameFrame extends JFrame {
 		
 		rightPanel.add(nightInf);
 		rightPanel.add(timer);
-		rightPanel.add(listPanel);
+		rightPanel.add(votePanel);
 		rightPanel.add(page);
 	}
 

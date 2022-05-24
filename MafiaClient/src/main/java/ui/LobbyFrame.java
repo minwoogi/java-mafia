@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -50,7 +51,11 @@ public class LobbyFrame extends JFrame {
 	private Point initialClick;
 	private JButton logOutBtn;
 	LobbyRowsPanel rowsPanel;
-	HashMap<Integer, RoomInf> roomList = new HashMap<>();
+	Map<Integer, RoomInf> roomList = new HashMap<>();
+
+	public Map<Integer, RoomInf> getRoomList() {
+		return roomList;
+	}
 
 	public JLabel getTierLabel() {
 		return tierLabel;
@@ -236,26 +241,40 @@ public class LobbyFrame extends JFrame {
 		makeRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new MakeRoom();
-
 			}
 		});
 
 		searchRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				FrameHandler.removeAllPanel();
 				if (!searchRoomTf.getText().equals("")) {
 					String keyword = searchRoomTf.getText();
-					FrameHandler.removeAllPanel();
-
+					if (roomList.containsValue(keyword)) {
+						FrameHandler.addRoomPanel(roomList.get(getKey(roomList, keyword)));
+					}
+				} else {
+					roomList.forEach((key, value) -> {
+						FrameHandler.addRoomPanel(roomList.get(key));
+					});
 				}
 			}
 		});
 
 		logOutBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ShowMessage(2,"LogOut","로그아웃");
+				new ShowMessage(2, "LogOut", "로그아웃");
 				dispose();
 			}
 		});
+	}
+
+	public static <Integer, RoomInf> Integer getKey(Map<Integer, RoomInf> map, String value) { // * value값으로 key 얻기 * //
+		for (Integer key : map.keySet()) {
+			if (value.equals(map.get(key))) {
+				return key;
+			}
+		}
+		return null;
 	}
 
 	class CenterPanelBackground extends JPanel { // * 로비 오른쪽 배경 이미지 * //
