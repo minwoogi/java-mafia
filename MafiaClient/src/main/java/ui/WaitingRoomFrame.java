@@ -8,18 +8,24 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicSplitPaneUI.BasicVerticalLayoutManager;
 
 import handling.netty.ClientHandler;
 import handlinig.packet.LoginPacket;
 import handlinig.packet.WaitingRoomPacket;
+import ui.LobbyFrame.MoveWindow;
 
 
 
@@ -44,6 +50,7 @@ public class WaitingRoomFrame extends JFrame {
 	private Image rightBackImg;
 	private Image bottomBackImg;
 	private JButton levelBack;
+	private Point initialClick;
 	LobbyRowsPanel rowsPanel;
 
 	public JLabel getTierLabel() {
@@ -69,12 +76,16 @@ public class WaitingRoomFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
+		setUndecorated(true);
 		setLayout(new GridLayout(0, 2));
 
 		newComponents();
 		setComponents();
 		addComponents();
 		addActionBtn();
+		
+		this.addMouseListener(new MoveWindow());
+		this.addMouseMotionListener(new MoveWindow());
 
 		setVisible(true);
 	}
@@ -87,7 +98,7 @@ public class WaitingRoomFrame extends JFrame {
 		tierPanel = new JPanel();
 		levelPanel = new JPanel();
 		rowsPanel = new LobbyRowsPanel();
-		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		readyBtn = new JButton(new ImageIcon("btnImg/readyBtn.png"));
@@ -178,6 +189,7 @@ public class WaitingRoomFrame extends JFrame {
 		scroll.setOpaque(false);
 		scroll.setBackground(new Color(0, 0, 0, 0));
 		scroll.getViewport().setOpaque(false);
+		
 		rowsPanel.setOpaque(false);
 		rowsPanel.setBackground(new Color(0, 0, 0, 0));
 		tierPanel.setBackground(new Color(0, 0, 0, 0));
@@ -259,6 +271,27 @@ public class WaitingRoomFrame extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(bottomBackImg, 0, 0, this);
+		}
+	}
+	
+	class MoveWindow extends MouseAdapter { // * 프레임 이동 * //
+		public void mousePressed(MouseEvent e) {
+			initialClick = e.getPoint();
+			getComponentAt(initialClick);
+		}
+
+		public void mouseDragged(MouseEvent e) {
+			JFrame jf = (JFrame) e.getSource();
+
+			int thisX = jf.getLocation().x;
+			int thisY = jf.getLocation().y;
+
+			int xMoved = e.getX() - initialClick.x;
+			int yMoved = e.getY() - initialClick.y;
+
+			int X = thisX + xMoved;
+			int Y = thisY + yMoved;
+			jf.setLocation(X, Y);
 		}
 	}
 

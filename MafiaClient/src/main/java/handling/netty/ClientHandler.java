@@ -14,8 +14,7 @@ import ui.FrameHandler;
 import ui.ShowMessage;
 
 /**
- * Interaction for server
- * 서버와의 상호작용 클래스
+ * Interaction for server 서버와의 상호작용 클래스
  */
 
 public class ClientHandler extends ChannelInboundHandlerAdapter {
@@ -37,9 +36,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		byte[] packet = (byte[]) msg;
 		MafiaPacketReader reader = new MafiaPacketReader(packet);
 		int header = reader.getHeader(); // * header * //
-		Class receieve = ReceieveHeader.class;  // * reflection을 이용한 지역 변수명 찾기 Header 출력 * // 
-		Field field = receieve.getField(header+"");
-		System.out.println(field.getName()+" 받음");
+		Class receieve = ReceieveHeader.class; // * reflection을 이용한 지역 변수명 찾기 Header 출력 * //
+		Field field = receieve.getField(header + "");
+		System.out.println(field.getName() + " 받음");
 		switch (header) {
 		case ReceieveHeader.LOGIN: // * 로그인시 * //
 			boolean loginCheck = reader.readBoolean();
@@ -66,8 +65,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			FrameHandler.checkEmailCode(isCertificate);
 			break;
 		}
-		case ReceieveHeader.REGISTER: {
-			boolean isRegister = reader.readBoolean(); // * 회원가입 완료 여부 * //
+		case ReceieveHeader.REGISTER: { // * 회원가입 완료 여부 * //
+			boolean isRegister = reader.readBoolean();
 			FrameHandler.completeRegister(isRegister);
 			break;
 		}
@@ -80,7 +79,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			break;
 		}
 		case ReceieveHeader.USER_INFORMATION: { // * 회원 정보 업데이트 * //
-			System.out.println("Header : USER_INFORMATION");
 			String nickName = reader.readString();
 			int level = reader.readInt();
 			int exp = reader.readInt();
@@ -92,7 +90,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			break;
 		}
 		case ReceieveHeader.LOBBY_UPDATE_MAKE: {
-			System.out.println("Header : LOBBY_UPDATE_MAKE");
 			int roomId = reader.readInt(); // * 방 ID * //
 			String roomName = reader.readString(); // * 방 이름 * //
 			int currentStaff = reader.readInt(); // * 현재원 * //
@@ -103,37 +100,38 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			FrameHandler.getLobbyFrame().getRoomList().put(roomId, roomInf);
 			break;
 		}
-		case ReceieveHeader.MAKE_ROOM:{ // * 방 생성후 대기실 입장 * //
-			System.out.println("Header : MAKE_ROOM");
+		case ReceieveHeader.MAKE_ROOM: { // * 방 생성후 대기실 입장 * //
 			boolean isMakeRoom = reader.readBoolean();
 			FrameHandler.failedMakeRoom(isMakeRoom); // * 방 만들어졌는지 확인 * //
 			break;
 		}
-		case ReceieveHeader.CHANGE_LOCATION:{ // * 위치 변경시 * //
-			System.out.println("Header : CHANGE_LOCATION");
+		case ReceieveHeader.CHANGE_LOCATION: { // * 위치 변경시 * //
 			int location = reader.readInt(); // * 로비0 대기실1 게임장2 * //
 			FrameHandler.warp(location);
-			break;	
+			break;
 		}
-		
-		case ReceieveHeader.SHOW_MESSAGE:{  // * 알림창 생성 * //
-			int msgType = reader.readInt();  
+
+		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //
+			int msgType = reader.readInt();
 			String title = reader.readString();
 			String message = reader.readString();
-			ShowMessage showMsg = new ShowMessage(msgType,title,message);
+			ShowMessage showMsg = new ShowMessage(msgType, title, message);
 		}
-		case ReceieveHeader.TIMER:{
-			
+		case ReceieveHeader.TIMER: {
+			GameHandler.setTimer(GameHandler.getGameFrame().getTimer());
 		}
-		case ReceieveHeader.DAY_AND_NIGHT:{ // * 밤 낮 정보 * //
+		case ReceieveHeader.DAY_AND_NIGHT: { // * 밤 낮 정보 * //
+			boolean isNight = reader.readBoolean();
 			int day = reader.readInt();
 			GameHandler.setNightText(header, GameHandler.getGameFrame().getNightInf());
 		}
-		case ReceieveHeader.VOTE:{
-			
+		case ReceieveHeader.VOTE: {
+
 		}
-		default: {
-			
+		case ReceieveHeader.CHAT: {
+			String nickName = reader.readString();
+			String text = reader.readString();
+			GameHandler.addMsg(nickName,text, GameHandler.getGameFrame().getChatArea());
 		}
 		}
 	}

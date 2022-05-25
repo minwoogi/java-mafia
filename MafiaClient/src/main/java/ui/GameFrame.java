@@ -22,6 +22,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import handling.game.GameHandler;
+import handling.netty.ClientHandler;
+import handlinig.packet.GamePacket;
 import ui.MakeRoom.MoveWindows;
 
 public class GameFrame extends JFrame {
@@ -29,6 +31,7 @@ public class GameFrame extends JFrame {
 	private JPanel leftPanel;
 	private JPanel rightPanel;
 	private JPanel votePanel;
+	private JPanel doubtPanel;
 	private JTextArea chatArea;
 	private JTextField chatTf;
 	private JTextField timer;
@@ -37,11 +40,29 @@ public class GameFrame extends JFrame {
 	private JScrollPane scroll;
 	private JButton page;
 	private JTextField nightInf;
+
+	public JPanel getVotePanel() {
+		return votePanel;
+	}
+
+	public JTextField getChatTf() {
+		return chatTf;
+	}
 	
-	
+	public JTextArea getChatArea() {
+		return chatArea;
+	}
+
+	public JPanel getDoubtPanel() {
+		return doubtPanel;
+	}
 
 	public JTextField getNightInf() {
 		return nightInf;
+	}
+	
+	public JTextField getTimer(){
+		return timer;
 	}
 
 	public GameFrame() {
@@ -67,44 +88,56 @@ public class GameFrame extends JFrame {
 		leftPanel = new LeftPanel();
 		rightPanel = new RightPanel();
 		votePanel = new JPanel();
+		doubtPanel = new JPanel();
 		chatArea = new JTextArea();
 		scroll = new JScrollPane(chatArea);
 		chatTf = new JTextField();
 		sendBtn = new JButton(new ImageIcon("btnImg/gameSendBtn.png"));
 		nightInf = new JTextField();
 		timer = new JTextField();
-		page = new JButton();
-		
+		page = new JButton(">");
+
 	}
 
 	public void setComponents() {
-
+		
+		
 		leftPanel.setLayout(null);
 		rightPanel.setLayout(null);
-		
+
 		votePanel.setBounds(60, 250, 430, 300);
-		votePanel.setBackground(new Color(0,0,0,150));
-		votePanel.setLayout(new FlowLayout(FlowLayout.LEFT,21,15));
+		votePanel.setBackground(new Color(0, 0, 0, 150));
+		votePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 21, 15));
+
+		doubtPanel.setBounds(60, 250, 430, 300);
+		doubtPanel.setBackground(new Color(0, 0, 0, 150));
+		doubtPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 21, 15));
+		doubtPanel.setVisible(false);
+
+		Font btnFont = new Font("",Font.BOLD,15);
 		
+		JButton btn1 = new JButton("choo",new ImageIcon("btnImg/mafiaBtn.png"));
+		btn1.setPreferredSize(new Dimension(80, 80));
+		btn1.setHorizontalTextPosition(JButton.CENTER);
+		btn1.setFont(btnFont);
+		btn1.setForeground(Color.red);
 		
-		JButton btn1 = new JButton();
-		btn1.setPreferredSize(new Dimension(80,80));
-		JButton btn2 = new JButton();
-		btn2.setPreferredSize(new Dimension(80,80));
-		JButton btn3 = new JButton();
-		btn3.setPreferredSize(new Dimension(80,80));
+		JButton btn2 = new JButton(new ImageIcon("btnImg/policeBtn.png"));
+		btn2.setPreferredSize(new Dimension(80, 80));
+		JButton btn3 = new JButton(new ImageIcon("btnImg/doubt.png"));
+		btn3.setPreferredSize(new Dimension(80, 80));
 		JButton btn4 = new JButton();
-		btn4.setPreferredSize(new Dimension(80,80));
+		btn4.setPreferredSize(new Dimension(80, 80));
 		JButton btn5 = new JButton();
-		btn5.setPreferredSize(new Dimension(80,80));
+		btn5.setPreferredSize(new Dimension(80, 80));
 		JButton btn6 = new JButton();
-		btn6.setPreferredSize(new Dimension(80,80));
+		btn6.setPreferredSize(new Dimension(80, 80));
 		JButton btn7 = new JButton();
-		btn7.setPreferredSize(new Dimension(80,80));
+		btn7.setPreferredSize(new Dimension(80, 80));
 		JButton btn8 = new JButton();
-		btn8.setPreferredSize(new Dimension(80,80));
+		btn8.setPreferredSize(new Dimension(80, 80));
 		JButton btn9 = new JButton();
-		btn9.setPreferredSize(new Dimension(80,80));
+		btn9.setPreferredSize(new Dimension(80, 80));
 		votePanel.add(btn1);
 		votePanel.add(btn2);
 		votePanel.add(btn3);
@@ -115,6 +148,8 @@ public class GameFrame extends JFrame {
 		votePanel.add(btn8);
 		votePanel.add(btn9);
 		
+		
+
 		sendBtn.setFocusPainted(false);
 		sendBtn.setContentAreaFilled(false);
 		sendBtn.setBorderPainted(false);
@@ -124,44 +159,58 @@ public class GameFrame extends JFrame {
 		chatArea.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		chatArea.setFont(new Font("", Font.BOLD, 20));
 		chatArea.setForeground(Color.WHITE);
-		chatArea.setBackground(new Color(0,0,0,150));
-		chatArea.setOpaque(false);		
+		chatArea.setBackground(new Color(0, 0, 0, 150));
+		chatArea.setOpaque(false);
 
 		scroll.setBounds(60, 40, 430, 410);
 		scroll.setVerticalScrollBarPolicy(scroll.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scroll.setOpaque(false);
 		scroll.setBackground(new Color(0, 0, 0, 0));
 		scroll.getViewport().setOpaque(false);
-		
+
 		chatTf.setBounds(60, 500, 350, 50);
 		chatTf.setFont(new Font("", Font.BOLD, 20));
-		chatTf.setBackground(new Color(0,0,0,0));
+		chatTf.setBackground(new Color(0, 0, 0, 0));
 		chatTf.setOpaque(false);
 		chatTf.setForeground(Color.WHITE);
-		
-		nightInf.setBounds(60, 40, 430,70);
-		nightInf.setFont(new Font("",Font.BOLD,20));
-		nightInf.setBackground(new Color(0,0,0,0));
+
+		nightInf.setBounds(60, 40, 430, 70);
+		nightInf.setFont(new Font("", Font.BOLD, 20));
+		nightInf.setBackground(new Color(0, 0, 0, 0));
 		nightInf.setOpaque(false);
 		nightInf.setForeground(Color.WHITE);
 		nightInf.setHorizontalAlignment(JTextField.CENTER); // * 글자 가운데 정렬 * //
-		
-		timer.setBounds(60, 150, 430,70);
-		timer.setFont(new Font("",Font.BOLD,20));
-		timer.setBackground(new Color(0,0,0,0));
+
+		timer.setBounds(60, 150, 430, 70);
+		timer.setFont(new Font("", Font.BOLD, 20));
+		timer.setBackground(new Color(0, 0, 0, 0));
 		timer.setOpaque(false);
 		timer.setForeground(Color.WHITE);
 		timer.setHorizontalAlignment(JTextField.CENTER);
-		
+
 		sendBtn.setBounds(420, 500, 70, 50);
-		
+
 		page.setBounds(255, 555, 35, 35);
 		page.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				if (votePanel.isVisible()) {
+					votePanel.setVisible(false);
+					doubtPanel.setVisible(true);
+					page.setIcon(new ImageIcon());
+				} else {
+					votePanel.setVisible(true);
+					doubtPanel.setVisible(false);
+					page.setIcon(new ImageIcon());
+				}
+
 			}
 		});
-		
+
+		sendBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ClientHandler.send(GamePacket.makeMessagePacket(chatTf.getText()));
+			}
+		});
 
 	}
 
@@ -172,11 +221,12 @@ public class GameFrame extends JFrame {
 		leftPanel.add(scroll);
 		leftPanel.add(chatTf);
 		leftPanel.add(sendBtn);
-		
+
 		rightPanel.add(nightInf);
 		rightPanel.add(timer);
 		rightPanel.add(votePanel);
 		rightPanel.add(page);
+		rightPanel.add(doubtPanel);
 	}
 
 	class LeftPanel extends JPanel {
