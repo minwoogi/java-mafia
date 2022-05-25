@@ -45,7 +45,7 @@ public class GameFrame extends JFrame {
 	public JTextField getChatTf() {
 		return chatTf;
 	}
-	
+
 	public JTextArea getChatArea() {
 		return chatArea;
 	}
@@ -57,8 +57,8 @@ public class GameFrame extends JFrame {
 	public JTextField getNightInf() {
 		return nightInf;
 	}
-	
-	public JTextField getTimer(){
+
+	public JTextField getTimer() {
 		return timer;
 	}
 
@@ -92,13 +92,12 @@ public class GameFrame extends JFrame {
 		sendBtn = new JButton(new ImageIcon("btnImg/gameSendBtn.png"));
 		nightInf = new JTextField();
 		timer = new JTextField();
-		page = new JButton(">");
+		page = new JButton(new ImageIcon("btnImg/rightArrow.png"));
 
 	}
 
 	public void setComponents() {
-		
-		
+
 		leftPanel.setLayout(null);
 		rightPanel.setLayout(null);
 
@@ -111,15 +110,17 @@ public class GameFrame extends JFrame {
 		doubtPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 21, 15));
 		doubtPanel.setVisible(false);
 
-		Font btnFont = new Font("",Font.BOLD,15);
-		
-		JButton btn1 = new JButton("choo",new ImageIcon("btnImg/mafiaBtn.png"));
+		Font btnFont = new Font("", Font.BOLD, 15);
+
+		JButton btn1 = new JButton("nickName", new ImageIcon("btnImg/mafia.png"));
 		btn1.setPreferredSize(new Dimension(80, 80));
 		btn1.setHorizontalTextPosition(JButton.CENTER);
 		btn1.setFont(btnFont);
 		btn1.setForeground(Color.red);
-		
-		JButton btn2 = new JButton(new ImageIcon("btnImg/policeBtn.png"));
+		btnInvisible(btn1);
+		lineOverRap(btn1);
+
+		JButton btn2 = new JButton(new ImageIcon("btnImg/police.png"));
 		btn2.setPreferredSize(new Dimension(80, 80));
 		JButton btn3 = new JButton(new ImageIcon("btnImg/doubt.png"));
 		btn3.setPreferredSize(new Dimension(80, 80));
@@ -144,12 +145,9 @@ public class GameFrame extends JFrame {
 		votePanel.add(btn7);
 		votePanel.add(btn8);
 		votePanel.add(btn9);
-		
-		
 
-		sendBtn.setFocusPainted(false);
-		sendBtn.setContentAreaFilled(false);
-		sendBtn.setBorderPainted(false);
+		btnInvisible(sendBtn);
+		sendBtn.setBounds(420, 500, 70, 50);
 		sendBtn.setPressedIcon(new ImageIcon("btnImg/gameSendPush.png"));
 
 		chatArea.setOpaque(true); // * 투명 * //
@@ -158,6 +156,7 @@ public class GameFrame extends JFrame {
 		chatArea.setForeground(Color.WHITE);
 		chatArea.setBackground(new Color(0, 0, 0, 150));
 		chatArea.setOpaque(false);
+		chatArea.setEnabled(false);
 
 		scroll.setBounds(60, 40, 430, 410);
 		scroll.setVerticalScrollBarPolicy(scroll.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -177,6 +176,7 @@ public class GameFrame extends JFrame {
 		nightInf.setOpaque(false);
 		nightInf.setForeground(Color.WHITE);
 		nightInf.setHorizontalAlignment(JTextField.CENTER); // * 글자 가운데 정렬 * //
+		nightInf.setEnabled(false);
 
 		timer.setBounds(60, 150, 430, 70);
 		timer.setFont(new Font("", Font.BOLD, 20));
@@ -184,20 +184,24 @@ public class GameFrame extends JFrame {
 		timer.setOpaque(false);
 		timer.setForeground(Color.WHITE);
 		timer.setHorizontalAlignment(JTextField.CENTER);
-
-		sendBtn.setBounds(420, 500, 70, 50);
+		timer.setEnabled(false);
 
 		page.setBounds(255, 555, 35, 35);
+		page.setPressedIcon(new ImageIcon("btnImg/rightArrowPush.png"));
+		btnInvisible(page);
+
 		page.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (votePanel.isVisible()) {
 					votePanel.setVisible(false);
 					doubtPanel.setVisible(true);
-					page.setIcon(new ImageIcon());
+					page.setIcon(new ImageIcon("btnImg/leftArrow.png"));
+					page.setPressedIcon(new ImageIcon("btnImg/leftArrowPush.png"));
 				} else {
 					votePanel.setVisible(true);
 					doubtPanel.setVisible(false);
-					page.setIcon(new ImageIcon());
+					page.setIcon(new ImageIcon("btnImg/rightArrow.png"));
+					page.setPressedIcon(new ImageIcon("btnImg/rightArrowPush.png"));
 				}
 
 			}
@@ -209,6 +213,37 @@ public class GameFrame extends JFrame {
 			}
 		});
 
+	}
+
+	public static void lineOverRap(JButton btn) {
+		String text = "<html><body><center>";
+		char[] arr = btn.getText().toCharArray();
+		if (btn.getText().length() >= 8) {
+			for (int i = 0; i < 4 ; i++) {
+				text += arr[i];
+			}
+			text += "<br>";
+			for (int i = 4; i < 8; i++) {
+				text += arr[i];
+			}
+			text += "<br>";
+			for(int i=8; i<arr.length; i++) {
+				text += arr[i];
+			}
+			text += "</center></body></html>";
+			btn.setText(text);
+
+		} else if (btn.getText().length() >= 4) {
+			for (int i = 0; i < 4; i++) {
+				text += arr[i];
+			}
+			text += "<br>";
+			for (int i = 4; i < arr.length; i++) {
+				text += arr[i];
+			}
+			text += "</center></body></html>";
+			btn.setText(text);
+		}
 	}
 
 	public void addComponents() {
@@ -224,6 +259,12 @@ public class GameFrame extends JFrame {
 		rightPanel.add(votePanel);
 		rightPanel.add(page);
 		rightPanel.add(doubtPanel);
+	}
+
+	public void btnInvisible(JButton btn) { // * 버튼 투명화(이미지 보이게) * //
+		btn.setFocusPainted(false);
+		btn.setContentAreaFilled(false);
+		btn.setBorderPainted(false);
 	}
 
 	class LeftPanel extends JPanel {
@@ -272,7 +313,6 @@ public class GameFrame extends JFrame {
 	}
 
 	public void addLog(String log) {
-
 		chatArea.append(log + "\n"); // 로그 내용을 JTextArea 위에 붙여주고
 		chatArea.setCaretPosition(chatArea.getDocument().getLength()); // 맨아래로 스크롤한다.
 	}

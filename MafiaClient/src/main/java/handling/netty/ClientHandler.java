@@ -117,9 +117,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			ShowMessage showMsg = new ShowMessage(msgType, title, message);
 		}
 		case ReceieveHeader.TIMER: {
-			long remainingTime = reader.readLong();
-			GameHandler.setTimer(GameHandler.getGameFrame().getTimer(), GameHandler.convertTime(remainingTime));
-
+			long remainTime = reader.readLong();
+			GameHandler.setTimer(remainTime);
 		}
 		case ReceieveHeader.DAY_AND_NIGHT: { // * ¹ã ³· Á¤º¸ * //
 			boolean isNight = reader.readBoolean();

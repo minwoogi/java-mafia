@@ -2,11 +2,15 @@ package handling.game;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import handling.netty.ClientHandler;
 import handlinig.packet.GamePacket;
 import ui.GameFrame;
@@ -27,15 +31,11 @@ public class GameHandler {
 
 	}
 
-	public static void setTimer(JTextField timer, String time) { // * 투표 시간 타이머 * //
-		timer.setText(time);
+	public static void setTimer(long remainTime) { // * 투표 시간 타이머 * //
+		VoteTimer voteTimer = new VoteTimer(remainTime);
 	}
 
-	public void setVoteChance() {
-		int voteChance = 1;
-	}
-
-	public void viewDeadPerson() { // * 살해당한 사람 알림 * //
+	public static void setVoteMode() { // * 투표 모드로 설정 * //
 
 	}
 
@@ -60,19 +60,89 @@ public class GameHandler {
 	}
 
 	public static void addPersonList(JPanel panel, String nickName) {
-		JButton btn = new JButton();
+		JButton btn = new JButton(new ImageIcon("btnImg/doubt.png"));
+		personBtnSetting(btn, nickName);
 		panel.add(btn);
+	}
+	
+	public static void personBtnSetting(JButton btn,String nickName) { // * 인원 버튼 세팅 * //
 		btn.setPreferredSize(new Dimension(80, 80));
 		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
+		btn.setFont(new Font("",Font.BOLD,15));
+		btn.setFocusPainted(false);
+		btn.setContentAreaFilled(false);
+		btn.setBorderPainted(false);
 		btn.setText(nickName);
+		GameFrame.lineOverRap(btn);
+	}
+	
+	public static void jobImgSetting(JButton btn,int job) { // * 인원 버튼 직업 별 이미지 설정 * //
+		String jobText = "";
+		switch (job) {
+		case 0: {
+			jobText = "citizen";
+			break;
+		}
+		case 1: {
+			jobText = "mafia";
+			break;
+		}
+		case 2: {
+			jobText = "police";
+			break;
+		}
+		case 3: {
+			jobText = "doctor";
+			break;
+		}
+		}
+		btn.setIcon(new ImageIcon("btnImg/"+jobText+".png"));
 	}
 
-	public static String convertTime(long time) {
-		time = time / 1000;
-		long minute = time / 60;
-		time -= 60 * minute;
-		String second = time < 10 ? "0" + time : time + "";
-		return "남은 시간 " + (minute < 10 ? "0" + minute + " : " : minute + " : ") + second;
-	}
+	static class VoteTimer extends Thread { // * timer * //
+		long time, startTime, offTime;
+		String timer;
+		long timeReceieve; // * 서버에서 받은 시간 * //
+		long remainTime; // * 타이머 남은시간 * //
 
+		public VoteTimer(long timeReceieve) {
+			this.timeReceieve = timeReceieve / 1000;
+			remainTime = timeReceieve / 1000;
+			startTime = System.currentTimeMillis();
+		}
+
+		public void update() {
+			offTime = System.currentTimeMillis();
+			time = (offTime - startTime) / 1000;
+			remainTime = timeReceieve - time;
+			timer = convertTime(timeReceieve);
+			GameHandler.getGameFrame().getTimer().setText(timer);
+		}
+
+		public String convertTime(long time) {
+			long minute = remainTime / 60;
+			remainTime -= 60 * minute;
+			String second = remainTime < 10 ? "0" + remainTime : remainTime + "";
+			return "남은 시간 " + (minute < 10 ? "0" + minute + " : " : minute + " : ") + second;
+		}
+
+		public void stopThread() {
+			super.interrupt();
+		}
+
+		public void run() {
+			while (true) {
+				if (timeReceieve == 0) {
+					stopThread();
+				}
+				update();
+				try {
+					sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					return;
+				}
+			}
+		}
+	}
 }

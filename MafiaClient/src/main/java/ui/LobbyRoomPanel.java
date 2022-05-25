@@ -29,7 +29,6 @@ public class LobbyRoomPanel extends JPanel {
 		this.roomInf = roomInf;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		this.setPreferredSize(new Dimension(480, 50));
-
 		newComponents();
 		setComponents();
 		addComponents();
