@@ -1,7 +1,7 @@
 package handlinig.packet;
 
-import packet.MafiaPacketWriter;
-import packet.SendHeader;
+import handling.packet.header.SendHeader;
+import tools.MafiaPacketWriter;
 
 public class WaitingRoomPacket {
 

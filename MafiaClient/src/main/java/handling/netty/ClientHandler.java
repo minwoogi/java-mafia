@@ -1,15 +1,14 @@
 package handling.netty;
 
 import java.lang.reflect.Field;
-
 import handling.game.GameHandler;
+import handling.packet.header.ReceieveHeader;
 import information.RoomInf;
 import information.UserInf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import packet.MafiaPacketReader;
-import packet.ReceieveHeader;
+import tools.MafiaPacketReader;
 import ui.FrameHandler;
 import ui.ShowMessage;
 
@@ -118,7 +117,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			ShowMessage showMsg = new ShowMessage(msgType, title, message);
 		}
 		case ReceieveHeader.TIMER: {
-			GameHandler.setTimer(GameHandler.getGameFrame().getTimer());
+			long remainingTime = reader.readLong();
+			GameHandler.setTimer(GameHandler.getGameFrame().getTimer(), GameHandler.convertTime(remainingTime));
+
 		}
 		case ReceieveHeader.DAY_AND_NIGHT: { // * ¹ã ³· Á¤º¸ * //
 			boolean isNight = reader.readBoolean();
@@ -131,7 +132,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		case ReceieveHeader.CHAT: {
 			String nickName = reader.readString();
 			String text = reader.readString();
-			GameHandler.addMsg(nickName,text, GameHandler.getGameFrame().getChatArea());
+			GameHandler.addMsg(nickName, text, GameHandler.getGameFrame().getChatArea());
 		}
 		}
 	}

@@ -16,16 +16,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.plaf.basic.BasicSplitPaneUI.BasicVerticalLayoutManager;
-
 import handling.netty.ClientHandler;
-import handlinig.packet.LoginPacket;
 import handlinig.packet.WaitingRoomPacket;
-import ui.LobbyFrame.MoveWindow;
+
 
 
 

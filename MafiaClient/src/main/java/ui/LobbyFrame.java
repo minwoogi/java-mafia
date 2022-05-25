@@ -15,16 +15,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import javax.swing.border.MatteBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import information.RoomInf;
-import ui.MakeRoom.MoveWindows;
 
 public class LobbyFrame extends JFrame {
 

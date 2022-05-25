@@ -1,15 +1,12 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.Font;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-import javax.tools.DocumentationTool.Location;
-
 import information.ExpInf;
 import information.LocationInformation;
 import information.RoomInf;

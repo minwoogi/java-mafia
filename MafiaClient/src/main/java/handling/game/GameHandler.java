@@ -2,9 +2,7 @@ package handling.game;
 
 import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -29,10 +27,8 @@ public class GameHandler {
 
 	}
 
-	public static void setTimer(JTextField timer) { // * 투표 시간 타이머 * //
-		timer.setText("남은시간 05 : 00");
-		VoteTimer voteTimer = new VoteTimer();
-		timer.setText(voteTimer.timer);
+	public static void setTimer(JTextField timer, String time) { // * 투표 시간 타이머 * //
+		timer.setText(time);
 	}
 
 	public void setVoteChance() {
@@ -71,47 +67,12 @@ public class GameHandler {
 		btn.setText(nickName);
 	}
 
-	static class VoteTimer extends Thread { // * timer * //
-		long time, startTime, offTime;
-		String timer;
-		long remainingTime = 300;
-
-		public VoteTimer() {
-			startTime = System.currentTimeMillis();
-		}
-
-		public void update() {
-			offTime = System.currentTimeMillis();
-			time = (offTime - startTime) / 1000;
-			remainingTime = 300 - time;
-			timer = convertTime(remainingTime);
-		}
-
-		public String convertTime(long time) {
-			long minute = remainingTime / 60;
-			remainingTime -= 60 * minute;
-			String second = remainingTime < 10 ? "0" + remainingTime : remainingTime + "";
-			return "남은 시간 " + (minute < 10 ? "0" + minute + " : " : minute + " : ") + second;
-		}
-		
-		public void stopThread() {
-			super.interrupt();
-		}
-
-		public void run() {
-			while (true) {
-				if(remainingTime == 0) {
-					stopThread();
-				}
-				update();
-				try {
-					sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					return ;
-				}
-			}
-		}
+	public static String convertTime(long time) {
+		time = time / 1000;
+		long minute = time / 60;
+		time -= 60 * minute;
+		String second = time < 10 ? "0" + time : time + "";
+		return "남은 시간 " + (minute < 10 ? "0" + minute + " : " : minute + " : ") + second;
 	}
 
 }

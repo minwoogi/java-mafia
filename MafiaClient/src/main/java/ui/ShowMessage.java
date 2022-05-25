@@ -36,7 +36,7 @@ public class ShowMessage extends JFrame {
 //      viewInformationMsg("Information", "Information");
 //		viewQuestionMsg("Question", "Question");
 //      viewWarningMsg("Warning","Warning");
-	    letYouKnowYourJob(error);
+//	    letYouKnowYourJob(1);
 	}
 
 	public ShowMessage(int type, String title, String message) {
@@ -58,15 +58,15 @@ public class ShowMessage extends JFrame {
 			break;
 		}
 		case 5: { // * 게임장 내 일반 메시지 (흰색) title == null * //
-			
+
 			break;
 		}
-		case 6 :{ // * 게임장 내 공지 메시지 (굵은 파란색) title == null * //
-			
+		case 6: { // * 게임장 내 공지 메시지 (굵은 파란색) title == null * //
+
 			break;
 		}
-		case 7 :{ // * 게임장 내 일반 메시지 (굵은 빨간색) title == null * //
-			
+		case 7: { // * 게임장 내 일반 메시지 (굵은 빨간색) title == null * //
+
 			break;
 		}
 		}
@@ -99,25 +99,45 @@ public class ShowMessage extends JFrame {
 		setIconImage(icon);
 		initFrame(title, message, warning);
 	}
-	
-	public void letYouKnowYourJob(ImageIcon job) {
-		setSize(300,300);
+
+	public void letYouKnowYourJob(int job) {
+		setSize(300, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setUndecorated(true);
-		
+
 		setLayout(new BorderLayout());
-		JButton jobBtn = new JButton();
-		
+		String jobText = "";
+		switch (job) {
+		case 0: {
+			jobText = "citizen";
+			break;
+		}
+		case 1: {
+			jobText = "mafia";
+			break;
+		}
+		case 2: {
+			jobText = "police";
+			break;
+		}
+		case 3: {
+			jobText = "doctor";
+			break;
+		}
+		}
+		JButton jobBtn = new JButton(new ImageIcon("btnImg/" + jobText + "Btn.png"));
+		jobBtn.setPressedIcon(new ImageIcon("btnImg/" + jobText + "PushBtn.png"));
+
 		jobBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		});
-		add(jobBtn,BorderLayout.CENTER);
+		add(jobBtn, BorderLayout.CENTER);
 		setVisible(true);
-		
+
 	}
 
 	public void initFrame(String title, String message, ImageIcon type) {
@@ -176,7 +196,7 @@ public class ShowMessage extends JFrame {
 			setSize(400, 240);
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		new ShowMessage();
 	}

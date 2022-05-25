@@ -1,4 +1,4 @@
-	package packet;
+	package handling.packet.header;
 	
 	public class ReceieveHeader {
 	

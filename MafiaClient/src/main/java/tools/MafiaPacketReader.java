@@ -1,6 +1,8 @@
-package packet;
+package tools;
+
 
 import java.nio.charset.Charset;
+
 
 public class MafiaPacketReader {
 	private final Charset charset = Charset.forName("UTF-8");
@@ -65,4 +67,6 @@ public class MafiaPacketReader {
         }
         return new String(ret, Charset.forName("MS949"));
 	}
+	
+	
 }

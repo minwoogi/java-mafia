@@ -1,7 +1,7 @@
 package handlinig.packet;
 
-import packet.MafiaPacketWriter;
-import packet.SendHeader;
+import handling.packet.header.SendHeader;
+import tools.MafiaPacketWriter;
 
 /**
  * 				로그인 화면에서 만드는 패킷
