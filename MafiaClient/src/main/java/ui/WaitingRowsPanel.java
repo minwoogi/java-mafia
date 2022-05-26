@@ -3,6 +3,8 @@ package ui;
 import java.awt.GridLayout;
 import javax.swing.*;
 
+import information.UserInf;
+
 
 public class WaitingRowsPanel extends JPanel {
 
@@ -12,8 +14,8 @@ public class WaitingRowsPanel extends JPanel {
 
 	}
 
-	public void addRoomPanel(WaitingRoomPanel roomPanel) {
-		this.add(roomPanel);
+	public void addUserPanel(WaitingRoomPanel userPanel) {
+		this.add(userPanel);
 		this.revalidate();
 		this.repaint();
 	}
@@ -22,6 +24,11 @@ public class WaitingRowsPanel extends JPanel {
 		this.removeAll();
 		this.revalidate();
 		this.repaint();
+	}
+	
+	public void updateUserPanel(UserInf userInf, WaitingRoomPanel userPanel) {
+		
+		
 	}
 
 }

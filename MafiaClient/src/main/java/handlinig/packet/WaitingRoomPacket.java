@@ -11,4 +11,10 @@ public class WaitingRoomPacket {
 		return writer.getPacket();
 	}
 	
+	public static byte[] makeReadyPacket(boolean isReady) {
+		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.READY);
+		writer.writeBoolean(isReady);
+		return writer.getPacket();
+	}
+	
 }

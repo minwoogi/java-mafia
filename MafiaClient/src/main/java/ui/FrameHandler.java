@@ -11,6 +11,7 @@ import information.ExpInf;
 import information.LocationInformation;
 import information.RoomInf;
 import information.UserInf;
+import information.ClientInf;
 
 
 
@@ -118,7 +119,6 @@ public class FrameHandler {
 	public static void failedMakeRoom(boolean isMakeRoom) {
 		if (isMakeRoom) {
 			FrameHandler.getLobbyFrame().dispose(); // * 로비 프레임 종료 * //
-			warp(LocationInformation.WAITING_ROOM);
 		} else {
 			JOptionPane.showMessageDialog(lobbyFrame, "방이 정상적으로 만들어지지 않았습니다.", "error",
 					JOptionPane.ERROR_MESSAGE);
@@ -131,39 +131,52 @@ public class FrameHandler {
 		FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomPanel);
 	}
 	
+	public static void addUserPanel(UserInf userInf) { // * 대기실 프레임에서 인원 추가 * //
+		WaitingRoomPanel waitingRoomPanel = new WaitingRoomPanel(userInf);
+		waitingRoomPanel.setRoomInfTf(userInf);
+		FrameHandler.getWaitingRoomFrame().rowsPanel.addUserPanel(waitingRoomPanel);
+		FrameHandler.getWaitingRoomFrame().userPanel.put(userInf.getUserId(),waitingRoomPanel);
+	}
+	
+	public static void updateUserPanel(UserInf userInf) { // * 대기실 프레임에서 정보 업데이트 * //
+		FrameHandler.getWaitingRoomFrame().userPanel.get(userInf.getUserId()).setRoomInfTf(userInf);
+	}
+	
 	public static void quitLobbyFrame() {
 		lobbyFrame.dispose();
 	}
 	
 	public static void warp(int location) {  // * CHANGE_LOCATION * //
 		switch(location) {
-		case LocationInformation.LOBBY:{
+		case LocationInformation.LOBBY:{ // * 로비 입장 * //
 			new LobbyFrame();
-			FrameHandler.updateTierImage(UserInf.getTier(), FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
-			FrameHandler.updateLevel(UserInf.getLevel(), FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
-			FrameHandler.UpdateNickName(UserInf.getNickName(), FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
-			FrameHandler.updateExpBar(UserInf.getExp(), FrameHandler.getLobbyFrame().getExpBar(), UserInf.getLevel()); // * 경험치 표시 * //
+			FrameHandler.updateTierImage(ClientInf.getTier(), FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
+			FrameHandler.updateLevel(ClientInf.getLevel(), FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
+			FrameHandler.UpdateNickName(ClientInf.getNickName(), FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
+			FrameHandler.updateExpBar(ClientInf.getExp(), FrameHandler.getLobbyFrame().getExpBar(), ClientInf.getLevel()); // * 경험치 표시 * //
 			break;
 		}
-		case LocationInformation.WAITING_ROOM:{
+		case LocationInformation.WAITING_ROOM:{ // * 대기실 입장 * //
+			FrameHandler.quitLobbyFrame(); // * 로비 꺼지게 * //
 			new WaitingRoomFrame();
-			FrameHandler.updateTierImage(UserInf.getTier(), FrameHandler.getWaitingRoomFrame().getTierLabel()); // * 티어사진 표시 * //
-			FrameHandler.updateLevel(UserInf.getLevel(), FrameHandler.getWaitingRoomFrame().getLevelLabel()); // * 레벨 표시 * //
-			FrameHandler.UpdateNickName(UserInf.getNickName(), FrameHandler.getWaitingRoomFrame().getNickNameLabel()); // * 닉네임 표시 * //
-			FrameHandler.updateExpBar(UserInf.getExp(), FrameHandler.getWaitingRoomFrame().getExpBar(), UserInf.getLevel()); // * 경험치 표시 * //
+			ClientInf.setReadyState(false);
+			FrameHandler.updateTierImage(ClientInf.getTier(), FrameHandler.getWaitingRoomFrame().getTierLabel()); // * 티어사진 표시 * //
+			FrameHandler.updateLevel(ClientInf.getLevel(), FrameHandler.getWaitingRoomFrame().getLevelLabel()); // * 레벨 표시 * //
+			FrameHandler.UpdateNickName(ClientInf.getNickName(), FrameHandler.getWaitingRoomFrame().getNickNameLabel()); // * 닉네임 표시 * //
+			FrameHandler.updateExpBar(ClientInf.getExp(), FrameHandler.getWaitingRoomFrame().getExpBar(), ClientInf.getLevel()); // * 경험치 표시 * //
+			
 			break;
 		}
-		case LocationInformation.GAME_ROOM:{
+		case LocationInformation.GAME_ROOM:{ // * 게임방 입장 * //
 			new GameFrame();
 			break;
 		}
 		}
 	}
-	
-
 	public static void removeAllPanel() { // * 방목록 전체 삭제 * //
 		FrameHandler.getLobbyFrame().rowsPanel.removeAllPanel();
 	}
+
 
 	public static void setLoginFrame(LoginFrame loginFrame) {
 		FrameHandler.loginFrame = loginFrame;

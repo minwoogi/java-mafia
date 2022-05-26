@@ -8,9 +8,9 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
-
+import handling.netty.ClientHandler;
+import handlinig.packet.LobbyPacket;
 import information.RoomInf;
 
 public class LobbyRoomPanel extends JPanel {
@@ -80,7 +80,7 @@ public class LobbyRoomPanel extends JPanel {
 
 		joinRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrameHandler.quitLobbyFrame();
+				ClientHandler.send(LobbyPacket.makeEnterRoomPacket(roomInf.getRoomId()));
 			}
 		});
 

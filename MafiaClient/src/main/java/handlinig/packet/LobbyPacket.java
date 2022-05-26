@@ -19,5 +19,13 @@ public class LobbyPacket {
 		writer.writeString(roomName);
 		return writer.getPacket();
 	}
+	
+	public static byte[] makeEnterRoomPacket(int roomId) {
+		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.ENTER_ROOM);
+		writer.writeInt(roomId);
+		return writer.getPacket();
+	}
+	
+	
 
 }

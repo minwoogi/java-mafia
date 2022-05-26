@@ -13,11 +13,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import handling.netty.ClientHandler;
 import handlinig.packet.WaitingRoomPacket;
+import information.ClientInf;
 
 
 
@@ -44,7 +47,9 @@ public class WaitingRoomFrame extends JFrame {
 	private Image bottomBackImg;
 	private JButton levelBack;
 	private Point initialClick;
-	LobbyRowsPanel rowsPanel;
+	WaitingRowsPanel rowsPanel;
+	public static ArrayList<Integer> userList = new ArrayList<>();
+	public static HashMap<Integer,WaitingRoomPanel> userPanel = new HashMap<>();
 
 	public JLabel getTierLabel() {
 		return tierLabel;
@@ -64,7 +69,6 @@ public class WaitingRoomFrame extends JFrame {
 
 	public WaitingRoomFrame() {
 		FrameHandler.setWaitingRoomFrame(this);
-		setTitle("대기실");
 		setSize(1100, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -90,7 +94,7 @@ public class WaitingRoomFrame extends JFrame {
 		bottomPanel = new BottomPanelBackground();
 		tierPanel = new JPanel();
 		levelPanel = new JPanel();
-		rowsPanel = new LobbyRowsPanel();
+		rowsPanel = new WaitingRowsPanel();
 		scroll = new JScrollPane(centerPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -232,10 +236,17 @@ public class WaitingRoomFrame extends JFrame {
 		
 		readyBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				if (ClientInf.isReadyState()) {
+					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
+					ClientInf.setReadyState(false);
+				} else {
+					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
+					ClientInf.setReadyState(true);
+				}
 			}
 		});
 	}
+	
 
 	class CenterPanelBackground extends JPanel { // * 대기실 오른쪽 배경 이미지 * //
 		public CenterPanelBackground() {

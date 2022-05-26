@@ -103,7 +103,7 @@ public class LobbyFrame extends JFrame {
 		viewRankingBtn = new JButton(new ImageIcon("btnImg/viewRank.png"));
 		searchRoomBtn = new JButton(new ImageIcon("btnImg/searchRoom.png"));
 		makeRoomBtn = new JButton(new ImageIcon("btnImg/makeRoom.png"));
-		logOutBtn = new JButton("LogOut");
+		logOutBtn = new JButton(new ImageIcon("btnImg/logOut.png"));
 
 		tierLabel = new JLabel("");
 		levelLabel = new JLabel(" LV.100");
@@ -143,6 +143,7 @@ public class LobbyFrame extends JFrame {
 		btnInvisible(searchRoomBtn);
 		btnInvisible(viewRankingBtn);
 		btnInvisible(nickNameLabel);
+		btnInvisible(logOutBtn);
 
 		searchRoomTf.setOpaque(false);
 		searchRoomTf.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -159,6 +160,7 @@ public class LobbyFrame extends JFrame {
 		makeRoomBtn.setPressedIcon(new ImageIcon("btnImg/makeRoomPush.png"));
 		searchRoomBtn.setPressedIcon(new ImageIcon("btnImg/searchRoomPush.png"));
 		viewRankingBtn.setPressedIcon(new ImageIcon("btnImg/viewRankPush.png"));
+		logOutBtn.setPressedIcon(new ImageIcon("btnImg/logOutPush.png"));
 		nickNameLabel.setIcon(new ImageIcon("btnImg/nickNameLabel.png"));
 
 		nickNameLabel.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
@@ -255,8 +257,12 @@ public class LobbyFrame extends JFrame {
 
 		logOutBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new ShowMessage(2, "LogOut", "로그아웃");
-				dispose();
+				int isLogOut = JOptionPane.showConfirmDialog(getLayeredPane(),"로그아웃 하시겠습니까?", "LogOut",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (isLogOut == 0) {
+					new ShowMessage(2, "LogOut", "로그아웃");
+					dispose();
+				}
 			}
 		});
 	}

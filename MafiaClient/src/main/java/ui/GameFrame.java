@@ -112,7 +112,7 @@ public class GameFrame extends JFrame {
 
 		Font btnFont = new Font("", Font.BOLD, 15);
 
-		JButton btn1 = new JButton("nickName", new ImageIcon("btnImg/mafia.png"));
+		JButton btn1 = new JButton("No.1", new ImageIcon("btnImg/mafia.png"));
 		btn1.setPreferredSize(new Dimension(80, 80));
 		btn1.setHorizontalTextPosition(JButton.CENTER);
 		btn1.setFont(btnFont);
@@ -124,7 +124,7 @@ public class GameFrame extends JFrame {
 		btn2.setPreferredSize(new Dimension(80, 80));
 		JButton btn3 = new JButton(new ImageIcon("btnImg/doubt.png"));
 		btn3.setPreferredSize(new Dimension(80, 80));
-		JButton btn4 = new JButton();
+		JButton btn4 = new JButton(new ImageIcon("btnImg/citizen.png"));
 		btn4.setPreferredSize(new Dimension(80, 80));
 		JButton btn5 = new JButton();
 		btn5.setPreferredSize(new Dimension(80, 80));
@@ -174,6 +174,7 @@ public class GameFrame extends JFrame {
 		nightInf.setFont(new Font("", Font.BOLD, 20));
 		nightInf.setBackground(new Color(0, 0, 0, 0));
 		nightInf.setOpaque(false);
+		nightInf.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		nightInf.setForeground(Color.WHITE);
 		nightInf.setHorizontalAlignment(JTextField.CENTER); // * 글자 가운데 정렬 * //
 		nightInf.setEnabled(false);
@@ -182,6 +183,7 @@ public class GameFrame extends JFrame {
 		timer.setFont(new Font("", Font.BOLD, 20));
 		timer.setBackground(new Color(0, 0, 0, 0));
 		timer.setOpaque(false);
+		timer.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		timer.setForeground(Color.WHITE);
 		timer.setHorizontalAlignment(JTextField.CENTER);
 		timer.setEnabled(false);

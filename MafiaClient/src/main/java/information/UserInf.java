@@ -1,44 +1,58 @@
 package information;
 
 public class UserInf {
+	private int userId;
+	private String userNick;
+	private boolean isReady;
+	private int level;
+	private int tier;
 
-	private static String nickName;
-	private static int level;
-	private static int exp;
-	private static int tier;
-	
+	public UserInf(int userId, String userNick, boolean isReady, int level, int tier) {
+		this.userId = userId;
+		this.userNick = userNick;
+		this.isReady = isReady;
+		this.level = level;
+		this.tier = tier;
+	}
 
-	public static String getNickName() {
-		return nickName;
+	public int getUserId() {
+		return userId;
 	}
-	
-	public static void setNickName(String nickName) {
-		UserInf.nickName = nickName;
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
-	
-	public static int getLevel() {
+
+	public String getUserNick() {
+		return userNick;
+	}
+
+	public void setUserNick(String userNick) {
+		this.userNick = userNick;
+	}
+
+	public boolean isReady() {
+		return isReady;
+	}
+
+	public void setReady(boolean isReady) {
+		this.isReady = isReady;
+	}
+
+	public int getLevel() {
 		return level;
 	}
-	
-	public static void setLevel(int level) {
-		UserInf.level = level;
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
-	
-	public static int getExp() {
-		return exp;
-	}
-	
-	public static void setExp(int exp) {
-		UserInf.exp = exp;
-	}
-	
-	public static int getTier() {
+
+	public int getTier() {
 		return tier;
 	}
-	
-	public static void setTier(int tier) {
-		UserInf.tier = tier;
+
+	public void setTier(int tier) {
+		this.tier = tier;
 	}
-	
 
 }

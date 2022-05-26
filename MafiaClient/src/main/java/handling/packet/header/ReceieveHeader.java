@@ -24,5 +24,5 @@
 	    public static final int LOBBY_UPDATE_MAKE = 19; // 로비 업데이트 ( 방 만들 때 )
 	    public static final int USER_INFORMATION = 20; // 유저 정보 전송
 	    public static final int LOBBY_REMOVE_ROOM = 21; // 로비에서 방 없어졌다고 전송
-	    public static final int SHOW_MESSAGE = 22; // 메시지 띄우기
+	    public static final int SHOW_MESSAGE = 22; // 메시지 띄우기 
 	}

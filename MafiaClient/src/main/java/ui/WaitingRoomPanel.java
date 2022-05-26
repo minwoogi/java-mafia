@@ -4,13 +4,18 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+import handling.netty.ClientHandler;
+import handlinig.packet.WaitingRoomPacket;
 import information.RoomInf;
+import information.UserInf;
 
 public class WaitingRoomPanel extends JPanel {
-	RoomInf roomInf;
+	UserInf userInf;
 	private JPanel personNumPanel;
 	private JPanel roomNamePanel;
 	private JPanel roomStatePanel;
@@ -18,11 +23,11 @@ public class WaitingRoomPanel extends JPanel {
 	private JButton levelTf; // * 레벨 * //
 	private JButton tierTf; // * 티어 * //
 	private JButton nickNameTf; // * 닉네임 *//
-	private JButton stateTf; // * 준비상태 * //
+	private JButton stateBtn; // * 준비상태 * //
 	private Font tfFont;
 
-	public WaitingRoomPanel(RoomInf roomInf) {
-		this.roomInf = roomInf;
+	public WaitingRoomPanel(UserInf userInf) {
+		this.userInf = userInf;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		this.setPreferredSize(new Dimension(480, 50));
 
@@ -40,10 +45,10 @@ public class WaitingRoomPanel extends JPanel {
 		roomStatePanel = new JPanel();
 		joinRoomPanel = new JPanel();
 
-		levelTf = new JButton(new ImageIcon("btnImg/personCount.png"));
-		tierTf = new JButton(new ImageIcon("btnImg/roomName.png"));
-		nickNameTf = new JButton(new ImageIcon("btnImg/roomState.png"));
-		stateTf = new JButton(new ImageIcon("btnImg/joinRoom.png"));
+		levelTf = new JButton("Lv.1");
+		tierTf = new JButton("tier");
+		nickNameTf = new JButton("nickName");
+		stateBtn = new JButton("준비");
 
 		tfFont = new Font("", Font.BOLD, 15);
 	}
@@ -57,31 +62,41 @@ public class WaitingRoomPanel extends JPanel {
 		levelTf.setFont(tfFont);
 		tierTf.setFont(tfFont);
 		nickNameTf.setFont(tfFont);
-		stateTf.setFont(tfFont);
+		stateBtn.setFont(tfFont);
 
-		levelTf.setPreferredSize(new Dimension(70, 50));
-		tierTf.setPreferredSize(new Dimension(240, 50));
-		nickNameTf.setPreferredSize(new Dimension(90, 50));
-		stateTf.setPreferredSize(new Dimension(80, 50));
-		stateTf.setPressedIcon(new ImageIcon("btnImg/personCount.png"));
+		levelTf.setPreferredSize(new Dimension(90, 50));
+		tierTf.setPreferredSize(new Dimension(90, 50));
+		nickNameTf.setPreferredSize(new Dimension(180, 50));
+		stateBtn.setPreferredSize(new Dimension(120, 50));
 
 		levelTf.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 		tierTf.setHorizontalTextPosition(JButton.CENTER);
 		nickNameTf.setHorizontalTextPosition(JButton.CENTER);
-		stateTf.setHorizontalAlignment(JButton.CENTER);
+		stateBtn.setHorizontalAlignment(JButton.CENTER);
 
 		btnInvisible(levelTf);
 		btnInvisible(tierTf);
 		btnInvisible(nickNameTf);
-		btnInvisible(stateTf);
-
+		btnInvisible(stateBtn);
+		
+	}
+	
+	public void setRoomInfTf(UserInf userInf) {
+		levelTf.setText("LV."+userInf.getLevel());
+		tierTf.setText(userInf.getTier()+"");
+		nickNameTf.setText(userInf.getUserNick());
+		if (userInf.isReady() == false) {
+			stateBtn.setText("준비");
+		} else {
+			stateBtn.setText("준비완료");
+		}
 	}
 
 	public void addComponents() {
 		personNumPanel.add(levelTf, BorderLayout.CENTER);
 		roomNamePanel.add(tierTf, BorderLayout.CENTER);
 		roomStatePanel.add(nickNameTf, BorderLayout.CENTER);
-		joinRoomPanel.add(stateTf, BorderLayout.CENTER);
+		joinRoomPanel.add(stateBtn, BorderLayout.CENTER);
 
 		this.add(personNumPanel);
 		this.add(roomNamePanel);

@@ -5,6 +5,7 @@ import handling.game.GameHandler;
 import handling.packet.header.ReceieveHeader;
 import information.RoomInf;
 import information.UserInf;
+import information.ClientInf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -35,9 +36,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		byte[] packet = (byte[]) msg;
 		MafiaPacketReader reader = new MafiaPacketReader(packet);
 		int header = reader.getHeader(); // * header * //
-		Class receieve = ReceieveHeader.class; // * reflection을 이용한 지역 변수명 찾기 Header 출력 * //
-		Field field = receieve.getField(header + "");
-		System.out.println(field.getName() + " 받음");
+		System.out.println("헤더 ["+header +"받음]");
 		switch (header) {
 		case ReceieveHeader.LOGIN: // * 로그인시 * //
 			boolean loginCheck = reader.readBoolean();
@@ -78,14 +77,16 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			break;
 		}
 		case ReceieveHeader.USER_INFORMATION: { // * 회원 정보 업데이트 * //
+			int userId = reader.readInt();
 			String nickName = reader.readString();
 			int level = reader.readInt();
 			int exp = reader.readInt();
 			int tier = reader.readInt();
-			UserInf.setNickName(nickName);
-			UserInf.setLevel(level);
-			UserInf.setExp(exp);
-			UserInf.setTier(tier);
+			ClientInf.setUserId(userId);
+			ClientInf.setNickName(nickName);
+			ClientInf.setLevel(level);
+			ClientInf.setExp(exp);
+			ClientInf.setTier(tier);
 			break;
 		}
 		case ReceieveHeader.LOBBY_UPDATE_MAKE: {
@@ -109,7 +110,38 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			FrameHandler.warp(location);
 			break;
 		}
-
+		case ReceieveHeader.ENTER_ROOM: { // * 대기실 입장시 * //
+			boolean isEnter = reader.readBoolean();
+			if(isEnter) {
+				int personNum = reader.readInt(); // * 인원수 * //
+				for(int i=0; i<personNum; i++) {
+					int userId = reader.readInt();
+					String userNick = reader.readString();
+					boolean isReady = reader.readBoolean();
+					int level = reader.readInt();
+					int tier = reader.readInt();
+					UserInf userInf = new UserInf(userId,userNick,isReady,level,tier);
+					FrameHandler.addUserPanel(userInf);
+				}				
+			}
+			break;
+		}
+		case ReceieveHeader.ROOM_UPDATE:{
+			int userId = reader.readInt();
+			String userNick = reader.readString();
+			boolean isReady = reader.readBoolean();
+			int level = reader.readInt();
+			int tier = reader.readInt();
+			UserInf userInf = new UserInf(userId,userNick,isReady,level,tier);
+			if(FrameHandler.getWaitingRoomFrame().userList.contains(userId)) {
+				FrameHandler.updateUserPanel(userInf);
+				
+			}else {
+				FrameHandler.getWaitingRoomFrame().userList.add(userId);
+				FrameHandler.addUserPanel(userInf);							
+			}
+			break;	
+		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //
 			int msgType = reader.readInt();
 			String title = reader.readString();
