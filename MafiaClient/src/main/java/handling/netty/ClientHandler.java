@@ -122,9 +122,15 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 					int tier = reader.readInt();
 					UserInf userInf = new UserInf(userId,userNick,isReady,level,tier);
 					FrameHandler.addUserPanel(userInf);
+					FrameHandler.getWaitingRoomFrame().userList.add(userId);
 				}				
 			}
 			break;
+		}
+		case ReceieveHeader.EXIT_ROOM:{
+			int userId = reader.readInt();
+			FrameHandler.removeUserPanel(userId,FrameHandler.getWaitingRoomFrame().userPanel.get(userId));
+			FrameHandler.getWaitingRoomFrame().userList.remove(userId);
 		}
 		case ReceieveHeader.ROOM_UPDATE:{
 			int userId = reader.readInt();

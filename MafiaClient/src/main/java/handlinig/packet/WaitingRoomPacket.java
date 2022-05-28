@@ -5,9 +5,9 @@ import tools.MafiaPacketWriter;
 
 public class WaitingRoomPacket {
 
-	public static byte[] quitWaitingRoom() {
+	public static byte[] quitWaitingRoom(int userId) {
 		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.EXIT_ROOM);
-		writer.writeInt(999);
+		writer.writeInt(userId);
 		return writer.getPacket();
 	}
 	

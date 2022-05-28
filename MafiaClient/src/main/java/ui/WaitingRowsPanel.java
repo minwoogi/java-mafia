@@ -20,15 +20,18 @@ public class WaitingRowsPanel extends JPanel {
 		this.repaint();
 	}
 	
+	public void removeUserPanel(WaitingRoomPanel userPanel) {
+		this.remove(userPanel);
+		this.revalidate();
+		this.repaint();
+	}
+	
 	public void removeAllPanel() {
 		this.removeAll();
 		this.revalidate();
 		this.repaint();
 	}
 	
-	public void updateUserPanel(UserInf userInf, WaitingRoomPanel userPanel) {
-		
-		
-	}
+	
 
 }

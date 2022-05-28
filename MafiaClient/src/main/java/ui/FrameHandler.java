@@ -142,6 +142,11 @@ public class FrameHandler {
 		FrameHandler.getWaitingRoomFrame().userPanel.get(userInf.getUserId()).setRoomInfTf(userInf);
 	}
 	
+	public static void removeUserPanel(int userId, WaitingRoomPanel waitingRoomPanel) {
+		FrameHandler.getWaitingRoomFrame().rowsPanel.removeUserPanel(waitingRoomPanel);
+		FrameHandler.getWaitingRoomFrame().userPanel.remove(userId);
+	}
+	
 	public static void quitLobbyFrame() {
 		lobbyFrame.dispose();
 	}

@@ -48,8 +48,8 @@ public class WaitingRoomFrame extends JFrame {
 	private JButton levelBack;
 	private Point initialClick;
 	WaitingRowsPanel rowsPanel;
-	public static ArrayList<Integer> userList = new ArrayList<>();
-	public static HashMap<Integer,WaitingRoomPanel> userPanel = new HashMap<>();
+	public static ArrayList<Integer> userList = new ArrayList<>(); // * 대기실 유저 목록 * //
+	public static HashMap<Integer,WaitingRoomPanel> userPanel = new HashMap<>(); // * 유저패널 * //
 
 	public JLabel getTierLabel() {
 		return tierLabel;
@@ -229,7 +229,7 @@ public class WaitingRoomFrame extends JFrame {
 	public void addActionBtn() {
 		quitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ClientHandler.send(WaitingRoomPacket.quitWaitingRoom());
+				ClientHandler.send(WaitingRoomPacket.quitWaitingRoom(ClientInf.getUserId()));
 				dispose();
 			}
 		});
