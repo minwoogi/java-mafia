@@ -2,6 +2,7 @@ package ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -15,8 +16,15 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.WindowConstants;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+
+import handling.netty.ClientHandler;
+import handlinig.packet.ShowMsgPacket;
 
 public class ShowMessage extends JFrame {
 
@@ -29,19 +37,20 @@ public class ShowMessage extends JFrame {
 	private ImageIcon question;
 	private ImageIcon warning;
 	private JPanel mainPanel;
+	private JPanel subPanel;
 	private JPanel btnPanel;
 	private JButton okBtn;
-	private JLabel textLbl;
-	private JTextPane textPane;
+	private JTextArea textArea;
 
 	public ShowMessage() {
 //	    viewErrorMsg("error", "ERROR");
-//      viewInformationMsg("Information", "Information");
+//		viewInformationMsg("Information", "Information");
 //		viewQuestionMsg("Question", "Question");
 //      viewWarningMsg("Warning","Warning");
 //	    letYouKnowYourJob(1);
 //	    doubtJob();
 //		gameMsg(7,"투표가 모두 끝났습니다.");
+//		showConfirm(1,"Yes or No");
 	}
 
 	public ShowMessage(int type, String title, String message) {
@@ -63,15 +72,15 @@ public class ShowMessage extends JFrame {
 			break;
 		}
 		case 5: { // * 게임장 내 일반 메시지 (흰색) title == null * //
-			
+			gameMsg(type,message);
 			break;
 		}
 		case 6: { // * 게임장 내 공지 메시지 (굵은 파란색) title == null * //
-
+			gameMsg(type, message);
 			break;
 		}
 		case 7: { // * 게임장 내 일반 메시지 (굵은 빨간색) title == null * //
-
+			gameMsg(type, message);
 			break;
 		}
 		}
@@ -141,20 +150,26 @@ public class ShowMessage extends JFrame {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 
+		subPanel = new JPanel();
+		subPanel.setLayout(new FlowLayout());
+		subPanel.setBackground(new Color(222, 222, 222));
+		JLabel imgLbl = new JLabel(type);
+		imgLbl.setPreferredSize(new Dimension(50, 50));
+
 		btnPanel = new JPanel();
 		btnPanel.setLayout(new FlowLayout());
 		btnPanel.setBackground(new Color(222, 222, 222));
 
-		textLbl = new JLabel();
+		textArea = new JTextArea();
+		textArea.setEditable(false);
+		textArea.setLineWrap(true);
+		textArea.setText(message);
+		textArea.setBackground(new Color(222, 222, 222));
+		textArea.setFont(new Font("", Font.BOLD, 15));
+		textArea.setPreferredSize(new Dimension(300, 100));
 
-		textPane = new JTextPane();
-		textPane.setEditable(false);
-		textPane.insertComponent(textLbl);
-		textPane.insertComponent(new JLabel(type));
-		textPane.setBackground(new Color(222, 222, 222));
-
-		textLbl.setText("   " + message);
-		textLbl.setFont(new Font("", Font.BOLD, 15));
+		subPanel.add(imgLbl);
+		subPanel.add(textArea);
 
 		okBtn = new JButton(new ImageIcon("btnImg/showOk.png"));
 		okBtn.setPressedIcon(new ImageIcon("btnImg/showOkPush.png"));
@@ -163,7 +178,7 @@ public class ShowMessage extends JFrame {
 		okBtn.setBorderPainted(false);
 
 		mainPanel.add(btnPanel, BorderLayout.SOUTH);
-		mainPanel.add(textPane);
+		mainPanel.add(subPanel, BorderLayout.CENTER);
 		btnPanel.add(okBtn, Panel.CENTER_ALIGNMENT);
 		add(mainPanel);
 
@@ -173,27 +188,84 @@ public class ShowMessage extends JFrame {
 			}
 		});
 
-		setLineWarp(message);
 		setVisible(true);
 	}
-	
-	public void gameMsg(int num, String message) {
+
+	public void showConfirm(int id ,String message) {
+		setSize(400, 200);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
+		Image icon = getToolkit().getImage("optionPaneIcon/question.png");
+		setIconImage(icon);
+
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout());
+
+		btnPanel = new JPanel();
+		btnPanel.setLayout(new FlowLayout());
+		btnPanel.setBackground(new Color(222, 222, 222));
+
+		JTextPane textPane = new JTextPane();
+		textPane.setEditable(false);
+		textPane.setText(message);
+		textPane.setBackground(new Color(222, 222, 222));
+		textPane.setFont(new Font("", Font.BOLD, 20));
+
+		StyledDocument doc = textPane.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
+		okBtn = new JButton(new ImageIcon("btnImg/showOk.png"));
+		okBtn.setPressedIcon(new ImageIcon("btnImg/showOkPush.png"));
+		okBtn.setFocusPainted(false);
+		okBtn.setContentAreaFilled(false);
+		okBtn.setBorderPainted(false);
+
+		JButton cancelBtn = new JButton(new ImageIcon("btnImg/showOk.png"));
+		cancelBtn.setFocusPainted(false);
+		cancelBtn.setContentAreaFilled(false);
+		cancelBtn.setBorderPainted(false);
+
+		mainPanel.add(btnPanel, BorderLayout.SOUTH);
+		mainPanel.add(textPane, BorderLayout.CENTER);
+		btnPanel.add(okBtn, Panel.CENTER_ALIGNMENT);
+		btnPanel.add(cancelBtn, Panel.CENTER_ALIGNMENT);
+		add(mainPanel);
+
+		okBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ClientHandler.send(ShowMsgPacket.makeMessagePacket(id,true));
+				dispose();
+			}
+		});
+		cancelBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		setVisible(true);
+
+	}
+
+	public void gameMsg(int num, String message) { // * 5,6,7 메세지 * //
 		setSize(400, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
-		panel.setBackground(new Color(222,222,222));
+		panel.setBackground(new Color(222, 222, 222));
 		JLabel lbl = new JLabel(message);
 		lbl.setHorizontalAlignment(JLabel.CENTER);
 		lbl.setFont(lbl.getFont().deriveFont(15.0f));
-		switch(num) {
-		case 6:{
+		switch (num) {
+		case 6: {
 			lbl.setForeground(Color.RED);
 			break;
 		}
-		case 7:{
+		case 7: {
 			lbl.setForeground(Color.BLUE);
 			break;
 		}
@@ -201,18 +273,7 @@ public class ShowMessage extends JFrame {
 		add(panel);
 		panel.add(lbl);
 		setVisible(true);
-		
-	}
 
-	public void setLineWarp(String msg) { // * LineWarp * //
-		int line = msg.length() / 10;
-		if (line >= 19) {
-			setSize(400, 360);
-		} else if (line >= 14) {
-			setSize(400, 300);
-		} else if (line >= 9) {
-			setSize(400, 240);
-		}
 	}
 
 	public void doubtJob(JButton btn) { // * 직업 의심 메세지 * //
@@ -223,11 +284,11 @@ public class ShowMessage extends JFrame {
 		setUndecorated(true);
 		JButton cancelBtn = new JButton(new ImageIcon("btnImg/makeRoomCancel.png"));
 		JButton okBtn = new JButton(new ImageIcon("btnImg/makeRoomBtn.png"));
-		String[] jobList = { "시민", "마피아", "경찰", "의사" ,"물음표"};
+		String[] jobList = { "시민", "마피아", "경찰", "의사", "물음표" };
 		JComboBox<String> jobBox = new JComboBox<String>(jobList);
 		JPanel panel = new BackGroundPanel();
 		panel.setLayout(null);
-		
+
 		jobBox.setBounds(125, 110, 150, 40);
 		okBtn.setBounds(90, 170, 90, 40);
 		cancelBtn.setBounds(210, 170, 90, 40);
@@ -245,11 +306,10 @@ public class ShowMessage extends JFrame {
 		okBtn.setBorderPainted(false);
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btn.setIcon(new ImageIcon("btnImg/"+jobBox.getSelectedIndex()+".png"));
+				btn.setIcon(new ImageIcon("btnImg/" + jobBox.getSelectedIndex() + ".png"));
 			}
 		});
-		
-		
+
 		cancelBtn.setFocusPainted(false);
 		cancelBtn.setContentAreaFilled(false);
 		cancelBtn.setBorderPainted(false);
@@ -258,16 +318,17 @@ public class ShowMessage extends JFrame {
 				dispose();
 			}
 		});
-		
+
 		add(panel);
 		panel.add(cancelBtn);
 		panel.add(okBtn);
 		panel.add(jobBox);
 		setVisible(true);
 	}
-	
-	class BackGroundPanel extends JPanel {
+
+	class BackGroundPanel extends JPanel { // * 직업 의심 배경 * //
 		Image background = new ImageIcon("backgroundImage/selectJob.png").getImage();
+
 		public BackGroundPanel() {
 		}
 
@@ -278,7 +339,7 @@ public class ShowMessage extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new ShowMessage();		
+		new ShowMessage();
 	}
 
 }
