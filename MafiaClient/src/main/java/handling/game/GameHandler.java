@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import handling.netty.ClientHandler;
 import handlinig.packet.GamePacket;
 import ui.GameFrame;
+import ui.ShowMessage;
 
 public class GameHandler {
 
@@ -27,16 +28,8 @@ public class GameHandler {
 		return GameHandler.gameFrame;
 	}
 
-	public void setDebateTime() { // * 토론 시간으로 변경 * //
-
-	}
-
 	public static void setTimer(long remainTime) { // * 투표 시간 타이머 * //
 		VoteTimer voteTimer = new VoteTimer(remainTime);
-	}
-
-	public static void setVoteMode() { // * 투표 모드로 설정 * //
-
 	}
 
 	public static void sendVotePerson(String nickName) { // * 투표한 사람 서버로 전송 * //
@@ -45,10 +38,6 @@ public class GameHandler {
 
 	public void setMafiaMode() { // * 마피아 모드 설정 * //
 		gameFrame.getChatTf().setForeground(Color.RED);
-	}
-
-	public void setCitizenMode() { // * 시민 모드 설정 * //
-
 	}
 
 	public static void setNightText(int day, JTextField nightTf) { // * 몇번째 밤인지 알림 * //
@@ -60,43 +49,52 @@ public class GameHandler {
 	}
 
 	public static void addPersonList(JPanel panel, String nickName) {
-		JButton btn = new JButton(new ImageIcon("btnImg/doubt.png"));
+		JButton btn = new JButton(new ImageIcon("job/4.png")); // * 물음표 아이콘 * //
 		personBtnSetting(btn, nickName);
 		panel.add(btn);
 	}
-	
-	public static void personBtnSetting(JButton btn,String nickName) { // * 인원 버튼 세팅 * //
+
+	public static void addDoubtList(JPanel panel, String nickName) {
+		JButton btn = new JButton(new ImageIcon("job/4.png")); // * 물음표 아이콘 * //
+		doubtBtnSetting(btn, nickName);
+		panel.add(btn);
+	}
+
+	public static void personBtnSetting(JButton btn, String nickName) { // * 인원 버튼 세팅 * //
 		btn.setPreferredSize(new Dimension(80, 80));
 		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
-		btn.setFont(new Font("",Font.BOLD,15));
+		btn.setFont(new Font("", Font.BOLD, 15));
 		btn.setFocusPainted(false);
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
 		btn.setText(nickName);
 		GameFrame.lineOverRap(btn);
 	}
-	
-	public static void jobImgSetting(JButton btn,int job) { // * 인원 버튼 직업 별 이미지 설정 * //
-		String jobText = "";
-		switch (job) {
-		case 0: {
-			jobText = "citizen";
-			break;
-		}
-		case 1: {
-			jobText = "mafia";
-			break;
-		}
-		case 2: {
-			jobText = "police";
-			break;
-		}
-		case 3: {
-			jobText = "doctor";
-			break;
-		}
-		}
-		btn.setIcon(new ImageIcon("btnImg/"+jobText+".png"));
+
+	public static void doubtBtnSetting(JButton btn, String nickName) { // * 직업 의심 버튼 세팅 * //
+		btn.setPreferredSize(new Dimension(80, 80));
+		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
+		btn.setFont(new Font("", Font.BOLD, 15));
+		btn.setFocusPainted(false);
+		btn.setContentAreaFilled(false);
+		btn.setBorderPainted(false);
+		btn.setText(nickName);
+		GameFrame.lineOverRap(btn);
+		btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ShowMessage choiceJob = new ShowMessage();
+				choiceJob.doubtJob(btn);
+			}
+		});
+	}
+
+	public static void jobImgSetting(JButton btn, int job) { // * 인원 버튼 직업 별 이미지 설정 * //
+		// 0 - 시민
+		// 1 - 마피아
+		// 2 - 경찰
+		// 3 - 의사
+		// 4 - 물음표
+		btn.setIcon(new ImageIcon("job/" + job + ".png"));
 	}
 
 	static class VoteTimer extends Thread { // * timer * //

@@ -1,6 +1,5 @@
 package handling.netty;
 
-import java.lang.reflect.Field;
 import handling.game.GameHandler;
 import handling.packet.header.ReceieveHeader;
 import information.RoomInf;

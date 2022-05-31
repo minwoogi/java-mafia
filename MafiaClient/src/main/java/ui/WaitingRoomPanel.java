@@ -66,8 +66,8 @@ public class WaitingRoomPanel extends JPanel {
 
 		levelTf.setPreferredSize(new Dimension(90, 50));
 		tierTf.setPreferredSize(new Dimension(90, 50));
-		nickNameTf.setPreferredSize(new Dimension(180, 50));
-		stateBtn.setPreferredSize(new Dimension(120, 50));
+		nickNameTf.setPreferredSize(new Dimension(200, 50));
+		stateBtn.setPreferredSize(new Dimension(100, 50));
 
 		levelTf.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 		tierTf.setHorizontalTextPosition(JButton.CENTER);

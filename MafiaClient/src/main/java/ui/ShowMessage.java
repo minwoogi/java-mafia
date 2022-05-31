@@ -4,16 +4,22 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.WindowConstants;
+
+import ui.MakeRoom.BackGroundPanel;
 
 public class ShowMessage extends JFrame {
 
@@ -37,6 +43,7 @@ public class ShowMessage extends JFrame {
 //		viewQuestionMsg("Question", "Question");
 //      viewWarningMsg("Warning","Warning");
 //	    letYouKnowYourJob(1);
+//		doubtJob();
 	}
 
 	public ShowMessage(int type, String title, String message) {
@@ -108,27 +115,13 @@ public class ShowMessage extends JFrame {
 		setUndecorated(true);
 
 		setLayout(new BorderLayout());
-		String jobText = "";
-		switch (job) {
-		case 0: {
-			jobText = "citizen";
-			break;
-		}
-		case 1: {
-			jobText = "mafia";
-			break;
-		}
-		case 2: {
-			jobText = "police";
-			break;
-		}
-		case 3: {
-			jobText = "doctor";
-			break;
-		}
-		}
-		JButton jobBtn = new JButton(new ImageIcon("btnImg/" + jobText + "Btn.png"));
-		jobBtn.setPressedIcon(new ImageIcon("btnImg/" + jobText + "PushBtn.png"));
+		// 0 - 시민
+		// 1 - 마피아
+		// 2 - 경찰
+		// 3 - 의사
+		// 4 - 물음표
+		JButton jobBtn = new JButton(new ImageIcon("job/" + job + ".png"));
+		jobBtn.setPressedIcon(new ImageIcon("job/" + job + ".png"));
 
 		jobBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -197,8 +190,70 @@ public class ShowMessage extends JFrame {
 		}
 	}
 
+	public void doubtJob(JButton btn) { // * 직업 의심 메세지 * //
+		setSize(400, 250);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
+		setUndecorated(true);
+		JButton cancelBtn = new JButton(new ImageIcon("btnImg/makeRoomCancel.png"));
+		JButton okBtn = new JButton(new ImageIcon("btnImg/makeRoomBtn.png"));
+		String[] jobList = { "시민", "마피아", "경찰", "의사" ,"물음표"};
+		JComboBox<String> jobBox = new JComboBox<String>(jobList);
+		JPanel panel = new BackGroundPanel();
+		panel.setLayout(null);
+		
+		jobBox.setBounds(125, 110, 150, 40);
+		okBtn.setBounds(90, 170, 90, 40);
+		cancelBtn.setBounds(210, 170, 90, 40);
+
+		jobBox.setBackground(Color.BLACK);
+		jobBox.setForeground(Color.WHITE);
+		jobBox.setOpaque(false);
+		jobBox.setFont(new Font("", Font.BOLD, 20));
+
+		okBtn.setPressedIcon(new ImageIcon("btnImg/makeRoomBtnPush.png"));
+		cancelBtn.setPressedIcon(new ImageIcon("btnImg/makeRoomCancelPush.png"));
+
+		okBtn.setFocusPainted(false);
+		okBtn.setContentAreaFilled(false);
+		okBtn.setBorderPainted(false);
+		okBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btn.setIcon(new ImageIcon("btnImg/"+jobBox.getSelectedIndex()+".png"));
+			}
+		});
+		
+		
+		cancelBtn.setFocusPainted(false);
+		cancelBtn.setContentAreaFilled(false);
+		cancelBtn.setBorderPainted(false);
+		cancelBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		
+		add(panel);
+		panel.add(cancelBtn);
+		panel.add(okBtn);
+		panel.add(jobBox);
+		setVisible(true);
+	}
+	
+	class BackGroundPanel extends JPanel {
+		Image background = new ImageIcon("backgroundImage/selectJob.png").getImage();
+		public BackGroundPanel() {
+		}
+
+		protected void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			g.drawImage(background, 0, 0, this);
+		}
+	}
+
 	public static void main(String[] args) {
-		new ShowMessage();
+		new ShowMessage();		
 	}
 
 }

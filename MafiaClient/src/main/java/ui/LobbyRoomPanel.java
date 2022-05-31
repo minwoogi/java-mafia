@@ -22,7 +22,7 @@ public class LobbyRoomPanel extends JPanel {
 	private JButton personNumTf; // * 총원 현재원 * //
 	private JButton roomNameTf; // * 방이름 * //
 	private JButton roomStateTf; // * 방 상태 *//
-	private JButton joinRoomBtn;
+	private JButton joinRoomBtn; // * 입장 * //
 	private Font tfFont;
 
 	public LobbyRoomPanel(RoomInf roomInf) {

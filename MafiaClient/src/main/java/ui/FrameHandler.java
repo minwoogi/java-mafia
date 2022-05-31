@@ -7,6 +7,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
+
+import handling.game.GameHandler;
 import information.ExpInf;
 import information.LocationInformation;
 import information.RoomInf;
@@ -181,7 +183,6 @@ public class FrameHandler {
 	public static void removeAllPanel() { // * 방목록 전체 삭제 * //
 		FrameHandler.getLobbyFrame().rowsPanel.removeAllPanel();
 	}
-
 
 	public static void setLoginFrame(LoginFrame loginFrame) {
 		FrameHandler.loginFrame = loginFrame;

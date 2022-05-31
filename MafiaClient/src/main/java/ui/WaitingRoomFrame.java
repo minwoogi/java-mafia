@@ -21,6 +21,7 @@ import javax.swing.border.Border;
 import handling.netty.ClientHandler;
 import handlinig.packet.WaitingRoomPacket;
 import information.ClientInf;
+import information.UserInf;
 
 
 
@@ -213,10 +214,16 @@ public class WaitingRoomFrame extends JFrame {
 
 		bottomPanel.add(quitBtn);
 		centerPanel.add(rowsPanel);
-
+		
+		
 		tierPanel.add(tierLabel, BorderLayout.CENTER);
 
 		leftPanel.add(levelBack);
+		
+		
+		//test
+		UserInf testz = new UserInf(666,"nickNamezzzzzz",false,10,0);
+		rowsPanel.add(new WaitingRoomPanel(testz));
 
 	}
 

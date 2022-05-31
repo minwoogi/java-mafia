@@ -112,19 +112,25 @@ public class GameFrame extends JFrame {
 
 		Font btnFont = new Font("", Font.BOLD, 15);
 
-		JButton btn1 = new JButton("No.1", new ImageIcon("btnImg/mafia.png"));
+		JButton btn1 = new JButton("No.1", new ImageIcon("job/1.png"));
 		btn1.setPreferredSize(new Dimension(80, 80));
 		btn1.setHorizontalTextPosition(JButton.CENTER);
 		btn1.setFont(btnFont);
 		btn1.setForeground(Color.red);
 		btnInvisible(btn1);
 		lineOverRap(btn1);
+		btn1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ShowMessage doubt = new ShowMessage();
+				doubt.doubtJob(btn1);
+			}
+		});
 
-		JButton btn2 = new JButton(new ImageIcon("btnImg/police.png"));
+		JButton btn2 = new JButton(new ImageIcon("job/2.png"));
 		btn2.setPreferredSize(new Dimension(80, 80));
-		JButton btn3 = new JButton(new ImageIcon("btnImg/doubt.png"));
+		JButton btn3 = new JButton(new ImageIcon("job/4.png"));
 		btn3.setPreferredSize(new Dimension(80, 80));
-		JButton btn4 = new JButton(new ImageIcon("btnImg/citizen.png"));
+		JButton btn4 = new JButton(new ImageIcon("job/0.png"));
 		btn4.setPreferredSize(new Dimension(80, 80));
 		JButton btn5 = new JButton();
 		btn5.setPreferredSize(new Dimension(80, 80));
