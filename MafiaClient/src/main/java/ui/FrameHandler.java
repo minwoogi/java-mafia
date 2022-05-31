@@ -25,14 +25,14 @@ public class FrameHandler {
 	static LobbyFrame lobbyFrame;
 	static WaitingRoomFrame waitingRoomFrame;
 
-	public static void failedLogin(boolean loginCheck) {
-		if (loginCheck) {
-			FrameHandler.getLoginFrame().frame.dispose();
-		} else {
-			JOptionPane.showMessageDialog(loginFrame.panel, "id 또는 password가 잘못 입력되었습니다.", "error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
+//	public static void failedLogin(boolean loginCheck) {
+//		if (loginCheck) {
+//			FrameHandler.getLoginFrame().frame.dispose();
+//		} else {
+//			JOptionPane.showMessageDialog(loginFrame.panel, "id 또는 password가 잘못 입력되었습니다.", "error",
+//					JOptionPane.ERROR_MESSAGE);
+//		}
+//	}
 
 	public static void useId(boolean overlap) {  // * 회원가입시 사용 가능한 ID인지 확인 * // 
 		if (overlap) {
@@ -151,6 +151,12 @@ public class FrameHandler {
 		FrameHandler.getWaitingRoomFrame().userPanel.remove(userId);
 	}
 	
+	public static void quitLoginFrame() {
+		FrameLocation.X = FrameHandler.getLoginFrame().frame.getX();
+		FrameLocation.Y = FrameHandler.getLoginFrame().frame.getY();
+		loginFrame.frame.dispose();
+	}
+	
 	public static void quitLobbyFrame() {
 		FrameLocation.X = FrameHandler.getLobbyFrame().getX();
 		FrameLocation.Y = FrameHandler.getLobbyFrame().getY();
@@ -168,6 +174,7 @@ public class FrameHandler {
 	public static void warp(int location) {  // * CHANGE_LOCATION * //
 		switch(location) {
 		case LocationInformation.LOBBY:{ // * 로비 입장 * //
+			FrameHandler.quitLoginFrame();
 			new LobbyFrame();
 			FrameHandler.updateTierImage(ClientInf.getTier(), FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
 			FrameHandler.updateLevel(ClientInf.getLevel(), FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //

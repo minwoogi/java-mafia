@@ -37,11 +37,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		MafiaPacketReader reader = new MafiaPacketReader(packet);
 		int header = reader.getHeader(); // * header * //
 		switch (header) {
-		case ReceieveHeader.LOGIN: // * 로그인시 * //
-			System.out.println("헤더 [LOGIN]");
-			boolean loginCheck = reader.readBoolean();
-			FrameHandler.failedLogin(loginCheck);
-			break;
 		case ReceieveHeader.ID_OVERLAP: { // * ID 중복확인 * //
 			boolean idOverlapCheck = reader.readBoolean();
 			FrameHandler.useId(idOverlapCheck);
@@ -141,6 +136,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		case ReceieveHeader.ROOM_UPDATE:{ // * 대기실 입장 시 * //
 			System.out.println("헤더 [ROOM_UPDATE받음]");
 			int userId = reader.readInt();
+			int superId = reader.readInt();
 			String userNick = reader.readString();
 			boolean isReady = reader.readBoolean();
 			int level = reader.readInt();
