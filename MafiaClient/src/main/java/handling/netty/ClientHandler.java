@@ -155,7 +155,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			int msgType = reader.readInt();
 			String title = reader.readString();
 			String message = reader.readString();
-			ShowMessage showMsg = new ShowMessage(msgType, title, message);
+			int messageId = reader.readInt();
+			ShowMessage showMsg = new ShowMessage(msgType, title, message,messageId);
 			break;
 		}
 		case ReceieveHeader.TIMER: {

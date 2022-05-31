@@ -53,7 +53,7 @@ public class ShowMessage extends JFrame {
 //		showConfirm(1,"Yes or No");
 	}
 
-	public ShowMessage(int type, String title, String message) {
+	public ShowMessage(int type, String title, String message,int msgId) {
 		switch (type) {
 		case 1: { // * ERROR_MESSAGE * //
 			viewErrorMsg(title, message);
@@ -81,6 +81,10 @@ public class ShowMessage extends JFrame {
 		}
 		case 7: { // * 게임장 내 일반 메시지 (굵은 빨간색) title == null * //
 			gameMsg(type, message);
+			break;
+		}
+		case 8:{
+			showConfirm(type,title,msgId,message);
 			break;
 		}
 		}
@@ -191,7 +195,7 @@ public class ShowMessage extends JFrame {
 		setVisible(true);
 	}
 
-	public void showConfirm(int id ,String message) {
+	public void showConfirm(int type, String title, int id ,String message) {
 		setSize(400, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -249,7 +253,7 @@ public class ShowMessage extends JFrame {
 
 	}
 
-	public void gameMsg(int num, String message) { // * 5,6,7 메세지 * //
+	public void gameMsg(int type, String message) { // * 5,6,7 메세지 * //
 		setSize(400, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -260,7 +264,7 @@ public class ShowMessage extends JFrame {
 		JLabel lbl = new JLabel(message);
 		lbl.setHorizontalAlignment(JLabel.CENTER);
 		lbl.setFont(lbl.getFont().deriveFont(15.0f));
-		switch (num) {
+		switch (type) {
 		case 6: {
 			lbl.setForeground(Color.RED);
 			break;

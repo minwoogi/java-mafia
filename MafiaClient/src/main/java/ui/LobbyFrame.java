@@ -264,7 +264,7 @@ public class LobbyFrame extends JFrame {
 				int isLogOut = JOptionPane.showConfirmDialog(getLayeredPane(),"로그아웃 하시겠습니까?", "LogOut",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (isLogOut == 0) {
-					new ShowMessage(2, "LogOut", "로그아웃");
+					new ShowMessage(2, "LogOut", "로그아웃",0);
 					dispose();
 				}
 			}
