@@ -10,6 +10,7 @@ import javax.swing.JTextField;
 
 import handling.game.GameHandler;
 import information.ExpInf;
+import information.FrameLocation;
 import information.LocationInformation;
 import information.RoomInf;
 import information.UserInf;
@@ -118,19 +119,20 @@ public class FrameHandler {
 		tf.setForeground(Color.RED);
 	}
 	
-	public static void failedMakeRoom(boolean isMakeRoom) {
-		if (isMakeRoom) {
-			FrameHandler.getLobbyFrame().dispose(); // * 로비 프레임 종료 * //
-		} else {
-			JOptionPane.showMessageDialog(lobbyFrame, "방이 정상적으로 만들어지지 않았습니다.", "error",
-					JOptionPane.ERROR_MESSAGE);
-		}
-	}
-
 	public static void addRoomPanel(RoomInf roomInf) { // * 로비 프레임에서 방 추가 * //
 		LobbyRoomPanel roomPanel = new LobbyRoomPanel(roomInf);
 		roomPanel.setRoomInfTf(roomInf);
+		FrameHandler.getLobbyFrame().getRoomList().put(roomInf.getRoomId(), roomPanel);
 		FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomPanel);
+	}
+	
+	public static void updateRoomPanel(int roomId,RoomInf roomInf) { // * 로비프레임에서 방정보 수정 * //
+		FrameHandler.getLobbyFrame().roomList.get(roomId).setRoomInfTf(roomInf);
+	}
+	
+	public static void removeRoomPanel(int roomId ,LobbyRoomPanel lobbyRoomPanel) { // * 로비 프레임에서 방 삭제 * //
+		FrameHandler.getLobbyFrame().rowsPanel.removeRoomPanel(lobbyRoomPanel);
+		FrameHandler.getLobbyFrame().getRoomList().remove(roomId);
 	}
 	
 	public static void addUserPanel(UserInf userInf) { // * 대기실 프레임에서 인원 추가 * //
@@ -144,14 +146,24 @@ public class FrameHandler {
 		FrameHandler.getWaitingRoomFrame().userPanel.get(userInf.getUserId()).setRoomInfTf(userInf);
 	}
 	
-	public static void removeUserPanel(int userId, WaitingRoomPanel waitingRoomPanel) {
+	public static void removeUserPanel(int userId, WaitingRoomPanel waitingRoomPanel) { // * 대기실 나갔을 경우 삭제 * //
 		FrameHandler.getWaitingRoomFrame().rowsPanel.removeUserPanel(waitingRoomPanel);
 		FrameHandler.getWaitingRoomFrame().userPanel.remove(userId);
 	}
 	
 	public static void quitLobbyFrame() {
+		FrameLocation.X = FrameHandler.getLobbyFrame().getX();
+		FrameLocation.Y = FrameHandler.getLobbyFrame().getY();
 		lobbyFrame.dispose();
 	}
+	
+	public static void quitWaittingFrame() {
+		FrameLocation.X = FrameHandler.getWaitingRoomFrame().getX();
+		FrameLocation.Y = FrameHandler.getWaitingRoomFrame().getY();
+		waitingRoomFrame.dispose();
+	}
+	
+	
 	
 	public static void warp(int location) {  // * CHANGE_LOCATION * //
 		switch(location) {
@@ -171,10 +183,10 @@ public class FrameHandler {
 			FrameHandler.updateLevel(ClientInf.getLevel(), FrameHandler.getWaitingRoomFrame().getLevelLabel()); // * 레벨 표시 * //
 			FrameHandler.UpdateNickName(ClientInf.getNickName(), FrameHandler.getWaitingRoomFrame().getNickNameLabel()); // * 닉네임 표시 * //
 			FrameHandler.updateExpBar(ClientInf.getExp(), FrameHandler.getWaitingRoomFrame().getExpBar(), ClientInf.getLevel()); // * 경험치 표시 * //
-			
 			break;
 		}
 		case LocationInformation.GAME_ROOM:{ // * 게임방 입장 * //
+			FrameHandler.quitWaittingFrame();
 			new GameFrame();
 			break;
 		}

@@ -8,8 +8,8 @@ import handling.packet.LobbyPacketCreator;
 import information.LocationInformation;
 
 public class Lobby {
-	private static final List<MafiaClient> clients = new ArrayList<MafiaClient>();
-	private static final List<WaitingRoom> rooms = new ArrayList<WaitingRoom>();
+	private static final ArrayList<MafiaClient> clients = new ArrayList<MafiaClient>();
+	private static final ArrayList<WaitingRoom> rooms = new ArrayList<WaitingRoom>();
 	
 	public static List<MafiaClient> getClients() {
 		return clients;
@@ -25,9 +25,11 @@ public class Lobby {
 	
 	public static boolean addRoom(WaitingRoom room) {
 		removeClient(room.getLeader());
-		broadCast(LobbyPacketCreator.updateRoom(room, true));
-		System.out.println("[Lobby] '" + room.getName() + "' 방 생성 완료");
 		return rooms.add(room);
+	}
+	
+	public static boolean removeRoom(WaitingRoom room) {
+		return rooms.remove(room);
 	}
 	
 	public static boolean addClient(MafiaClient client) {
@@ -46,6 +48,16 @@ public class Lobby {
 		}
 		return false;
 	}
+	
+	public static WaitingRoom getRoom(int roomId) {
+		for(WaitingRoom room : rooms) {
+			if(room.getId() == roomId) {
+				return room;
+			}
+		}
+		return null;
+	}
+	
 
 	public static void broadCaseMessage(int type, String msg) {
 		for(MafiaClient c : clients) 
@@ -58,9 +70,7 @@ public class Lobby {
 	}
 	
 	public static void broadCast(byte[] packet) {
-		System.out.println("[Lobby] 접속자 수 : " + getConnections());
 		for(MafiaClient c : clients) {
-			System.out.println("[" + c.getCharName() + "] 에게 패킷을 전송했습니다. (Lobby)");
 			c.getSession().writeAndFlush(packet);
 		}
 	}

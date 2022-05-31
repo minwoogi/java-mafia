@@ -9,9 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.*;
-
 import handling.netty.ClientHandler;
 import handlinig.packet.LobbyPacket;
 
@@ -50,7 +48,6 @@ public class MakeRoom extends JFrame {
 		Integer[] numberPeople = { 5, 6, 7, 8, 9 };
 		numberOfPeople = new JComboBox<Integer>(numberPeople);
 		background = new ImageIcon("backgroundImage/makeRoomBack.png").getImage();
-
 	}
 
 	public void setComponents() {

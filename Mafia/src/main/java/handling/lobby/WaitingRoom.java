@@ -7,6 +7,7 @@ import client.MafiaClient;
 import game.MafiaGame;
 import handling.packet.ClientPacketCreator;
 import handling.packet.LobbyPacketCreator;
+import handling.packet.RoomPacketCreator;
 import information.LocationInformation;
 import information.ServerConstants;
 
@@ -17,11 +18,12 @@ public class WaitingRoom {
 	private final int id;
 	private String name;
 	private MafiaClient leader;
-	private final List<MafiaClient> clients = new ArrayList<MafiaClient>();
+	private final ArrayList<MafiaClient> clients = new ArrayList<MafiaClient>();
 	private boolean isStart = false; // 게임이 시작 된 방인지
 	private int minPerson = MIN_PERSON;
 	private int maxPerson = MAX_PERSON;
 	private MafiaGame game;
+
 	public WaitingRoom(String name, MafiaClient leader, int maxPerson) {
 		this.id = getAutoIncreaseId();
 		this.setName(name);
@@ -29,11 +31,11 @@ public class WaitingRoom {
 		this.isStart = false;
 		this.setMaxPerson(maxPerson);
 	}
-	
+
 	public int getAutoIncreaseId() {
 		return (++AUTO_INCREASE_ID == Integer.MAX_VALUE ? (AUTO_INCREASE_ID = 1) : ++AUTO_INCREASE_ID);
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -53,7 +55,7 @@ public class WaitingRoom {
 	public void setLeader(MafiaClient leader) {
 		this.leader = leader;
 	}
-	
+
 	public int getMinPerson() {
 		return minPerson;
 	}
@@ -69,47 +71,54 @@ public class WaitingRoom {
 	public int getOnlines() {
 		return clients.size();
 	}
-	
-	public boolean addClient(MafiaClient c) { // 방에 들어 올 때 호출
-		if(getOnlines() == this.getMaxPerson()) {
-			c.dropMessage(4, "해당 방에 입장 할 수 있는 자리가 없습니다.");
-			return false;
+
+	public boolean remove(int accId) {
+		for(int i = 0; i < clients.size(); i++) {
+			if(clients.get(i).getAccId() == accId) {
+				clients.remove(i);
+				return true;
+			}
 		}
-		boolean warp = clients.add(c);
-		if(warp) {
-			c.setWaitingRoom(this);
-			Lobby.broadCast(LobbyPacketCreator.updateRoom(this, false));
-		}
-		return warp;
+		return false;
+		
 	}
-	
 	public boolean removeClient(int accId) {
-		for(MafiaClient c : clients) {
-			if(c.getAccId() == accId) {
+		for (MafiaClient c : clients) {
+			if (c.getAccId() == accId) {
 				return this.removeClient(c);
 			}
 		}
 		return false;
 	}
-	
+
 	public boolean removeClient(MafiaClient c) { // 방에서 나갈 때 호출
-		if(this.getOnlines() > 1) { // 나가고 남은 사람이 1명 이상일 때
-			if(this.getLeader().getAccId() == c.getAccId()) { // 나간 사람이 방장일 때
-				this.setLeader(this.getClients().get(0)); // 방장을 아무한테나 넘겨줌
+		boolean suc = remove(c.getAccId());
+		if (suc) {
+			c.setWaitingRoom(null);
+			if (this.getOnlines() >= 1) { // 나가고 남은 사람이 1명 이상일 때
+				if (this.getLeader().getAccId() == c.getAccId()) { // 나간 사람이 방장일 때
+					this.setLeader(this.getClients().get(0)); // 방장을 아무한테나 넘겨줌
+				}
+				this.broadCast(RoomPacketCreator.exitClient(c.getAccId()));
+				Lobby.broadCast(LobbyPacketCreator.updateRoom(this));
+				System.out.println("[WaitingRoom] '" + c.getCharName() + "'님이 '" + this.getName() + "'방에서 퇴장했습니다. ( 남은 인원 : " + this.getOnlines() + ")");
+			} else { // 나갔을 때 아무도 없으면
+				this.destroyRoom(c);
+				System.out.println("[WaitingRoom] '" + c.getCharName() + "'님이 '" + this.getName() + "'방을 파괴했습니다. ( 남은 인원 : " + this.getOnlines() + ")");
 			}
-			Lobby.broadCast(LobbyPacketCreator.updateRoom(this, false));
-		} else { // 나갔을 때 아무도 없으면
-			Lobby.broadCast(LobbyPacketCreator.removeRoom(this.getId())); // 방 없어졌다고 Send
-			this.destroyRoom(); // 방 삭제		
+		} else {
+			System.out.println("[WaitingRoom] 알 수 없는 이유로 방에서 나가지 못했습니다.");
 		}
-		return clients.remove(c);
+		return suc;
 	}
-	
-	public void destroyRoom() {
+
+	public void destroyRoom(MafiaClient c) {
 		clients.clear();
 		setLeader(null);
+		Lobby.removeRoom(this);
+		Lobby.broadCast(LobbyPacketCreator.removeRoom(this.getId())); // 방 없어졌다고 Send
 	}
-	
+
 	public List<MafiaClient> getClients() {
 		return clients;
 	}
@@ -117,74 +126,105 @@ public class WaitingRoom {
 	public boolean isStart() {
 		return isStart;
 	}
-	
-	public void enterRoom(MafiaClient c) {
 
+	public boolean exitRoom(MafiaClient c) { /* 방 나갈 시 호출 */
+		return this.removeClient(c);
 	}
+
+	public boolean enterRoom(MafiaClient c) { // 유저 입장 시 호출
+		/*
+		 * 1. 인원 수 변경 사항 로비에 전달 2. 추가되는 인원 대기실에 전달
+		 * 
+		 */
+		if (getOnlines() == this.getMaxPerson()) {
+			c.dropMessage(4, "해당 방에 입장 할 수 있는 자리가 없습니다.");
+			return false;
+		}
+		boolean suc = clients.add(c);
+		if (suc) {
+			c.setReady(false);
+			Lobby.broadCast(LobbyPacketCreator.updateRoom(this));
+			this.broadCast(RoomPacketCreator.updateRoom(c));
+			for (MafiaClient client : this.getClients()) {
+				if (c.getAccId() != client.getAccId())
+					c.getSession().writeAndFlush(RoomPacketCreator.updateRoom(client));
+			}
+			System.out.println("[WaitingRoom] enterRoom 성공 (인원 : " + this.getOnlines() + ")");
+			c.dropMessage(4, "방에 입장하셨습니다.");
+		} else { 
+			c.dropMessage(4, "알 수 없는 이유로 방에 입장이 불가합니다.");
+			System.out.println("[WaitingRoom] 알 수 없는 이유로 방에 입장이 불가능합니다.");
+		}
+		return suc;
+	}
+
 	public void startGame() { // 게임시작 시 호출
 		// 준비 됐는지 확인
 		boolean ready = true;
-		if(getOnlines() < getMinPerson()) // 시작인원 부족 시
+		if (getOnlines() < getMinPerson()) // 시작인원 부족 시
 			return;
-		for(MafiaClient c : clients) {
-			if(!c.isReady()) {
+		for (MafiaClient c : clients) {
+			if (!c.isReady()) {
 				ready = false;
 				break;
 			}
 		}
-		if(!ready) { // 준비 안 된 사람 있을 시 방장에게 메시지 전송
+		if (!ready) { // 준비 안 된 사람 있을 시 방장에게 메시지 전송
 			this.getLeader().getSession().writeAndFlush(ClientPacketCreator.showMessage(1, "알림", "준비하지 않은 인원이 있습니다."));
-		} else { // 게임 시작 시 
-			for(MafiaClient c : clients) {
+		} else { // 게임 시작 시
+			int id = 0;
+			for (MafiaClient c : clients) {
+				c.setId(id);
 				c.setDead(false);
-				c.setBlockChat(false);
 				c.warp(LocationInformation.GAME_ROOM); // 게임장으로 이동
 				c.dropMessage(2, "게임을 시작합니다.");
 			}
 			this.isStart = true;
-			Lobby.broadCast(LobbyPacketCreator.updateRoom(this, false));
-			//마피아 게임 객체 생성
-		}	
+			this.setGame(new MafiaGame(this));
+			Lobby.broadCast(LobbyPacketCreator.updateRoom(this));
+			// 마피아 게임 객체 생성
+		}
 	}
-	
+
 	public void endGame(boolean mafiaWin) { // 게임 종료 시 호출
 		this.isStart = false;
-		for(MafiaClient c : clients) {
-			if(mafiaWin) {
-				if(ServerConstants.isMafia(c.getJob())) {
+		for (MafiaClient c : clients) {
+			if (mafiaWin) {
+				if (ServerConstants.isMafia(c.getJob())) {
 					// 마피아 승리 보상
-					
+
 				} else {
 					// 시민팀 패배 보상
 				}
 			} else {
-				if(ServerConstants.isMafia(c.getJob())) {
+				if (ServerConstants.isMafia(c.getJob())) {
 					// 마피아 패배 보상
-					
+
 				} else {
 					// 시민팀 승리 보상
 				}
-				
+
 			}
 			c.setReady(false); // 모든 유저 레디해제
 			c.setDead(false);
 			c.setBlockChat(false);
 			c.setJob(0);
-		}		
-		Lobby.broadCast(LobbyPacketCreator.updateRoom(this, false)); // 방 정보 전송
+			c.warp(LocationInformation.WAITING_ROOM);
+		}
+		Lobby.broadCast(LobbyPacketCreator.updateRoom(this)); // 방 정보 전송
 	}
 
 	public void broadCastMessage(int type, String msg) {
 		broadCastMessage(type, null, msg);
-	}	
+	}
 
 	public void broadCastMessage(int type, String title, String msg) {
-		for(MafiaClient c : clients) 
+		for (MafiaClient c : clients)
 			c.dropMessage(type, title, msg);
 	}
-	
+
 	public void broadCast(byte[] packet) {
-		for(MafiaClient c : clients) {
+		for (MafiaClient c : clients) {
 			c.getSession().writeAndFlush(packet);
 		}
 	}

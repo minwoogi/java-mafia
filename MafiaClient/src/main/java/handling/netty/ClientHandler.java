@@ -10,6 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import tools.MafiaPacketReader;
 import ui.FrameHandler;
+import ui.LobbyFrame;
 import ui.ShowMessage;
 
 /**
@@ -35,9 +36,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		byte[] packet = (byte[]) msg;
 		MafiaPacketReader reader = new MafiaPacketReader(packet);
 		int header = reader.getHeader(); // * header * //
-		System.out.println("헤더 ["+header +"받음]");
 		switch (header) {
 		case ReceieveHeader.LOGIN: // * 로그인시 * //
+			System.out.println("헤더 [LOGIN]");
 			boolean loginCheck = reader.readBoolean();
 			FrameHandler.failedLogin(loginCheck);
 			break;
@@ -68,14 +69,22 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			break;
 		}
 		case ReceieveHeader.LOBBY_UPDATE: {
+			System.out.println("헤더 [LOBBY_UPDATE받음]");
 			int roomId = reader.readInt(); // * 방 ID * //
 			String roomName = reader.readString(); // * 방 이름 * //
 			int currentStaff = reader.readInt(); // * 현재원 * //
 			int headCount = reader.readInt(); // * 총원 * //
 			boolean roomState = reader.readBoolean(); // * 방 상태 * //
+			RoomInf roomInf = new RoomInf(roomId, currentStaff, headCount, roomName, roomState); // * 방 객체 생성 * //
+			if(FrameHandler.getLobbyFrame().getRoomList().containsKey(roomId)) { // * 이미 방이 존재하면 업데이트 없으면 추가 * //
+				FrameHandler.updateRoomPanel(roomId, roomInf);								
+			}else {
+				FrameHandler.addRoomPanel(roomInf);
+			}
 			break;
 		}
 		case ReceieveHeader.USER_INFORMATION: { // * 회원 정보 업데이트 * //
+			System.out.println("헤더 [USER_INFORMATION받음]");
 			int userId = reader.readInt();
 			String nickName = reader.readString();
 			int level = reader.readInt();
@@ -88,28 +97,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			ClientInf.setTier(tier);
 			break;
 		}
-		case ReceieveHeader.LOBBY_UPDATE_MAKE: {
-			int roomId = reader.readInt(); // * 방 ID * //
-			String roomName = reader.readString(); // * 방 이름 * //
-			int currentStaff = reader.readInt(); // * 현재원 * //
-			int headCount = reader.readInt(); // * 총원 * //
-			boolean roomState = reader.readBoolean(); // * 방 상태 * //
-			RoomInf roomInf = new RoomInf(roomId, currentStaff, headCount, roomName, roomState); // * 방 객체 생성 * //
-			FrameHandler.addRoomPanel(roomInf);
-			FrameHandler.getLobbyFrame().getRoomList().put(roomId, roomInf);
-			break;
-		}
-		case ReceieveHeader.MAKE_ROOM: { // * 방 생성후 대기실 입장 * //
-			boolean isMakeRoom = reader.readBoolean();
-			FrameHandler.failedMakeRoom(isMakeRoom); // * 방 만들어졌는지 확인 * //
-			break;
-		}
 		case ReceieveHeader.CHANGE_LOCATION: { // * 위치 변경시 * //
+			System.out.println("헤더 [CHANGE_LOCATION받음]");
 			int location = reader.readInt(); // * 로비0 대기실1 게임장2 * //
 			FrameHandler.warp(location);
 			break;
 		}
 		case ReceieveHeader.ENTER_ROOM: { // * 대기실 입장시 * //
+			System.out.println("헤더 [ENTER_ROOM받음]");
 			boolean isEnter = reader.readBoolean();
 			if(isEnter) {
 				int personNum = reader.readInt(); // * 인원수 * //
@@ -121,54 +116,76 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 					int tier = reader.readInt();
 					UserInf userInf = new UserInf(userId,userNick,isReady,level,tier);
 					FrameHandler.addUserPanel(userInf);
-					FrameHandler.getWaitingRoomFrame().userList.add(userId);
+					FrameHandler.getWaitingRoomFrame().userList.put(userId,userNick);
 				}				
 			}
 			break;
 		}
-		case ReceieveHeader.EXIT_ROOM:{
+		case ReceieveHeader.EXIT_ROOM:{ // * 대기실 퇴장 * //
+			System.out.println("헤더[EXIT_ROOM받음]");
 			int userId = reader.readInt();
 			FrameHandler.removeUserPanel(userId,FrameHandler.getWaitingRoomFrame().userPanel.get(userId));
 			FrameHandler.getWaitingRoomFrame().userList.remove(userId);
+			break;
 		}
-		case ReceieveHeader.ROOM_UPDATE:{
+		case ReceieveHeader.LOBBY_REMOVE_ROOM:{ // * 방 제거 될때 로비 업데이트 * //
+			System.out.println("헤더[LOBBY_REMOVE_ROOM받음]");
+			int roomId = reader.readInt();
+			try {
+				FrameHandler.removeRoomPanel(roomId,FrameHandler.getLobbyFrame().getRoomList().get(roomId));				
+			}catch(NullPointerException e) {
+			}
+			break;
+		}
+		
+		case ReceieveHeader.ROOM_UPDATE:{ // * 대기실 입장 시 * //
+			System.out.println("헤더 [ROOM_UPDATE받음]");
 			int userId = reader.readInt();
 			String userNick = reader.readString();
 			boolean isReady = reader.readBoolean();
 			int level = reader.readInt();
 			int tier = reader.readInt();
 			UserInf userInf = new UserInf(userId,userNick,isReady,level,tier);
-			if(FrameHandler.getWaitingRoomFrame().userList.contains(userId)) {
+			if(FrameHandler.getWaitingRoomFrame().userList.containsKey(userId)) {
 				FrameHandler.updateUserPanel(userInf);
-				
 			}else {
-				FrameHandler.getWaitingRoomFrame().userList.add(userId);
+				FrameHandler.getWaitingRoomFrame().userList.put(userId,userNick);
 				FrameHandler.addUserPanel(userInf);							
 			}
 			break;	
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //
+			System.out.println("헤더 [SHOW_MESSAGE받음]");
 			int msgType = reader.readInt();
 			String title = reader.readString();
 			String message = reader.readString();
 			ShowMessage showMsg = new ShowMessage(msgType, title, message);
+			break;
 		}
 		case ReceieveHeader.TIMER: {
 			long remainTime = reader.readLong();
 			GameHandler.setTimer(remainTime);
+			break;
 		}
 		case ReceieveHeader.DAY_AND_NIGHT: { // * 밤 낮 정보 * //
 			boolean isNight = reader.readBoolean();
 			int day = reader.readInt();
 			GameHandler.setNightText(header, GameHandler.getGameFrame().getNightInf());
+			break;
 		}
 		case ReceieveHeader.VOTE: {
-
+			break;
 		}
 		case ReceieveHeader.CHAT: {
+			System.out.println("[헤더 CHAT받음]");
 			String nickName = reader.readString();
 			String text = reader.readString();
 			GameHandler.addMsg(nickName, text, GameHandler.getGameFrame().getChatArea());
+			break;
+		}
+		default :{
+			System.out.println("[default 헤더 받음]");
+			break;
 		}
 		}
 	}

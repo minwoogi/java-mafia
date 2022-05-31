@@ -25,5 +25,5 @@ public class SendHeader {
     public static final int LOBBY_REMOVE_ROOM = 21; // 로비에서 방 없어졌다고 전송
     public static final int SHOW_MESSAGE = 22; // 메시지 띄우기
     public static final int DEAD_PLAYER = 23; // 플레이어 사망, 사유 전송
-    
+    public static final int START_GAME = 24; // 게임 시작 시 유저 정보 전송(유저 수, id, number)
 }

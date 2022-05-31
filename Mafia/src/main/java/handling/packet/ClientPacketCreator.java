@@ -8,9 +8,19 @@ public class ClientPacketCreator {
 	
 	public static byte[] showMessage(int type, String title, String msg) {
 		// type에 맞는 메시지 창을 띄운다.
+		/*
+		 * type 별 메시지 형태
+		 * 1 : 에러(X) 메시지 (OK)
+		 * 2 : 정보(i) 메시지 (OK)
+		 * 3 : 질문(?) 메시지 (OK)
+		 * 4 : 경고(!) 메시지 (OK)
+		 * 5 : 게임장 내 일반 메시지 (흰색) title은 null
+		 * 6 : 게임장 내 공지 메시지 (굵은 파란색) title은 null
+		 * 7 : 게임장 내 공지 메시지 (굵은 빨간색) title은 null
+		 */
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.SHOW_MESSAGE);
 		packet.writeInt(type);
-		packet.writeString(title);
+		packet.writeString(title == null ? "알림" : title);
 		packet.writeString(msg);
 		return packet.getPacket();
 	}
@@ -30,14 +40,13 @@ public class ClientPacketCreator {
 	}
 	
 	public static byte[] userInformation(MafiaClient c) {
+		// 유저 정보 전송
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.USER_INFORMATION);
+		packet.writeInt(c.getAccId()); 
 		packet.writeString(c.getCharName());
 		packet.writeInt(c.getLevel());
 		packet.writeInt(c.getExp());
 		packet.writeInt(c.getGrade());
-		System.out.println("레벨 : " + c.getLevel());
-		System.out.println("경험치 : " + c.getExp());
-		System.out.println("티어 : " + c.getGrade());
 		return packet.getPacket();
 	}
 }

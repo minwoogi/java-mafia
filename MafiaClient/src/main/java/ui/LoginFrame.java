@@ -10,6 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+
 import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import handling.netty.ClientHandler;
@@ -27,7 +29,7 @@ public class LoginFrame {
 	public JFrame frame;
 	private Image background;
 	private JTextField idTf;
-	private JTextField pwdTf;
+	private JPasswordField pwdTf;
 	private JButton signUpBtn;
 	private JButton loginBtn;
 	private Font tfFont;
@@ -71,7 +73,7 @@ public class LoginFrame {
 		loginBtn = new JButton(new ImageIcon("btnImg/loginButton.png"));
 		signUpBtn = new JButton(new ImageIcon("btnImg/signUpButton.png"));
 		idTf = new JTextField();
-		pwdTf = new JTextField();
+		pwdTf = new JPasswordField();
 		tfFont = new Font("", Font.BOLD, 20);
 	}
 
@@ -93,6 +95,7 @@ public class LoginFrame {
 		signUpBtn.setFocusPainted(false);
 		signUpBtn.setContentAreaFilled(false);
 		signUpBtn.setBorderPainted(false);
+		
 
 		loginBtn.setPressedIcon(new ImageIcon("btnImg/loginPush.png"));
 		loginBtn.setBounds(50, 440, 389, 58);
@@ -111,6 +114,7 @@ public class LoginFrame {
 	public void addActionBtn() {
 		loginBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("["+idTf.getText()+"]");
 				ClientHandler.send(LoginPacket.makeLoginPacket(idTf.getText(), pwdTf.getText()));
 			}
 		});

@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.Border;
+
+import information.FrameLocation;
+import information.LocationInformation;
 import information.RoomInf;
 
 public class LobbyFrame extends JFrame {
@@ -44,9 +47,9 @@ public class LobbyFrame extends JFrame {
 	private Point initialClick;
 	private JButton logOutBtn;
 	LobbyRowsPanel rowsPanel;
-	Map<Integer, RoomInf> roomList = new HashMap<>();
+	Map<Integer, LobbyRoomPanel> roomList;
 
-	public Map<Integer, RoomInf> getRoomList() {
+	public Map<Integer, LobbyRoomPanel> getRoomList() {
 		return roomList;
 	}
 
@@ -71,10 +74,11 @@ public class LobbyFrame extends JFrame {
 		setTitle("Roby");
 		setSize(1100, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+		setLocation(FrameLocation.X,FrameLocation.Y);
 		setResizable(false);
 		setLayout(new GridLayout(0, 2));
 
+		roomList = new HashMap<>();
 		newComponents();
 		setComponents();
 		addComponents();
@@ -245,11 +249,11 @@ public class LobbyFrame extends JFrame {
 				if (!searchRoomTf.getText().equals("")) {
 					String keyword = searchRoomTf.getText();
 					if (roomList.containsValue(keyword)) {
-						FrameHandler.addRoomPanel(roomList.get(getKey(roomList, keyword)));
+						//FrameHandler.addRoomPanel(roomList.get(getKey(roomList, keyword)));
 					}
 				} else {
 					roomList.forEach((key, value) -> {
-						FrameHandler.addRoomPanel(roomList.get(key));
+						//FrameHandler.addRoomPanel(roomList.get(key));
 					});
 				}
 			}

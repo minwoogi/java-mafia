@@ -17,6 +17,7 @@ import io.netty.util.AttributeKey;
 public class MafiaClient {
 	public final static AttributeKey<MafiaClient> CLIENTKEY = AttributeKey.valueOf("mafiaclient_netty");
 	private int accId;
+	private int id; // 게임 내 고유 id
 	private String accName;
 	private String charName;
 	private String email;
@@ -30,6 +31,7 @@ public class MafiaClient {
 	private boolean isReady = false; // 대기실 준비 상태
 	private WaitingRoom waitRoom;
 	private int citizenVote, doctorVote, policeVote, mafiaVote; // 어떤 직업군에게 받은 투표 수
+	private int agree; // 처형 찬성 수
 	private boolean blockChat = false; // 말하기 금지
 	private boolean dead = false; // 사망 여부
 	private boolean isConnected = true;
@@ -48,17 +50,18 @@ public class MafiaClient {
 	}
 
 	public void disconnect() {
-		if(this.location != -1) // 로그인 창이 아니면
+		if (this.location != -1) // 로그인 창이 아니면
 			this.saveDB();
-		else if(this.location == LocationInformation.LOBBY) 
+		if (this.location == LocationInformation.LOBBY)
 			Lobby.removeClient(this);
-		else if(this.location == LocationInformation.WAITING_ROOM) 
-			this.getWaitingRoom().removeClient(this);
-		else if(this.location == LocationInformation.GAME_ROOM) {
+		if (this.location == LocationInformation.WAITING_ROOM)
+			this.getWaitingRoom().exitRoom(this);
+		if (this.location == LocationInformation.GAME_ROOM) {
 			this.getWaitingRoom().broadCast(null);
 		}
 		this.setConnected(false);
 	}
+
 	public void login(String accName) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -97,19 +100,20 @@ public class MafiaClient {
 			} catch (SQLException e) {
 			}
 		}
-		for(WaitingRoom room : Lobby.getRooms()) {
-			this.getSession().writeAndFlush(LobbyPacketCreator.updateRoom(room, true));
-		}
 		this.getSession().writeAndFlush(ClientPacketCreator.userInformation(this));
 		this.warp(LocationInformation.LOBBY);
+		for (WaitingRoom room : Lobby.getRooms()) {
+			this.getSession().writeAndFlush(LobbyPacketCreator.updateRoom(room));
+		}
 	}
-	
+
 	public void saveDB() {
 		Connection con = null;
 		PreparedStatement ps = null;
 		try {
 			con = DatabaseConnection.getConnection();
-			ps = con.prepareStatement("UPDATE accounts SET level = ?, exp = ?, grade = ?, grade_point = ?, charName = ? WHERE id = ?");
+			ps = con.prepareStatement(
+					"UPDATE accounts SET level = ?, exp = ?, grade = ?, grade_point = ?, charName = ? WHERE id = ?");
 			ps.setInt(1, this.getLevel());
 			ps.setInt(2, this.getExp());
 			ps.setInt(3, this.getGrade());
@@ -132,7 +136,6 @@ public class MafiaClient {
 			}
 		}
 	}
-	
 
 	public String getAccName() {
 		return accName;
@@ -163,55 +166,44 @@ public class MafiaClient {
 	}
 
 	public void warp(int location) {
-		if(location == LocationInformation.LOBBY) { // 로비로 이동할 때
-			if(this.location == LocationInformation.WAITING_ROOM) { // 대기실 -> 로비
-				int can = 0; // 이동 가능 여부
-				can += this.getWaitingRoom().removeClient(this) ? 0 : 1; 
-				can += Lobby.addClient(this) ? 0 : 1;
-				if(can == 0) {
-					this.setWaitingRoom(null);
+		this.warp(location, null);
+	}
+
+	public void warp(int location, WaitingRoom room) { /*  */
+		this.getSession().writeAndFlush(ClientPacketCreator.warp(location, room == null ? -1 : room.getId()));
+		if (location == LocationInformation.LOBBY) { // 로비로 이동할 때
+			if (this.location == LocationInformation.WAITING_ROOM) { // 대기실 -> 로비
+				Lobby.addClient(this);
+				this.getWaitingRoom().exitRoom(this);
+				System.out.println("[MafiaClient] 대기실에서 로비로 이동");
+			} else if (this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 로비
+				Lobby.addClient(this);
+
+			} else if (this.location == -1) { // 로그인 창 -> 로비
+				Lobby.addClient(this);
+				System.out.println("[MafiaClient] 로그인 창에서 로비로 이동");
+			}
+		} else if (location == LocationInformation.WAITING_ROOM) { // 대기실로 이동할 때
+			if (this.location == LocationInformation.LOBBY) { // 로비 -> 대기실
+				if (room.enterRoom(this)) {
+					this.setWaitingRoom(room);
+					Lobby.removeClient(this);
+					System.out.println("[MafiaClient] 로비에서 대기실로 이동");
 				} else {
-					System.out.println("[MafiaClient] warp 에 실패했습니다.");
-					return;
+					System.out.println("[MafiaClient] 로비 -> 대기실 이동 실패");
 				}
-				System.out.println("[MafiaClient] 대기실에서 로비로 이동 완료");
-			} else if(this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 로비
-				this.getWaitingRoom().removeClient(this);
-				Lobby.addClient(this);
-			} else if(this.location == -1) { // 로그인 창 -> 로비
-				Lobby.addClient(this);
-				System.out.println("[MafiaClient] 로그인 창에서 로비로 이동 완료");
+			} else if (this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 대기실
+				System.out.println("[MafiaClient] 게임장에서 대기실로 이동");
+
 			}
-		} else if(location == LocationInformation.WAITING_ROOM) { // 대기실로 이동할 때
-			if(this.location == LocationInformation.LOBBY) { // 로비 -> 대기실
-				Lobby.removeClient(this); // 로비에서 유저 제거
-				this.getWaitingRoom().addClient(this); // 대기실에 유저 추가
-				System.out.println("[MafiaClient] 로비에서 대기실로 이동 완료");
-			} else if(this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 대기실
-				
+
+		} else if (location == LocationInformation.GAME_ROOM) { // 게임장으로 이동할 때
+			if (this.location == LocationInformation.WAITING_ROOM) { // 대기실 -> 게임장
+				System.out.println("[MafiaClient] 대기실에서 게임장으로 이동");
+
 			}
-			
-		}
+		}	
 		this.location = location;
-		int roomId = this.getWaitingRoom() == null ? -1 : this.getWaitingRoom().getId();
-		this.getSession().writeAndFlush(ClientPacketCreator.warp(location, roomId));
-		
-	}
-	
-	public boolean exitRoom() {
-		boolean exit = false;
-		return exit;
-	}
-	
-	public boolean enterRoom(int roomId) {
-		for(WaitingRoom r : Lobby.getRooms()) {
-			if(r.getId() == roomId) {
-				this.setWaitingRoom(r);
-				this.warp(LocationInformation.LOBBY);
-				return true;
-			}
-		}
-		return false;
 	}
 
 	public int getGrade() {
@@ -285,22 +277,14 @@ public class MafiaClient {
 	public void setBlockChat(boolean blockChat) {
 		this.blockChat = blockChat;
 	}
-	
+
 	public void dropMessage(int type, String msg) {
 		dropMessage(type, null, msg);
 	}
-	
+
 	public void dropMessage(int type, String title, String msg) {
-		/*
-		 * type 별 메시지 형태
-		 * 1 : 에러(X) 메시지 (OK)
-		 * 2 : 정보(i) 메시지 (OK)
-		 * 3 : 질문(?) 메시지 (OK)
-		 * 4 : 경고(!) 메시지 (OK)
-		 */
-		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title == null ? "알림" : title, msg));
+		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title, msg));
 	}
-	
 
 	public int getGradePoint() {
 		return gradePoint;
@@ -348,6 +332,7 @@ public class MafiaClient {
 
 	public void setDead(boolean dead) {
 		this.dead = dead;
+		this.setBlockChat(dead);
 	}
 
 	public boolean isConnected() {
@@ -357,6 +342,21 @@ public class MafiaClient {
 	public void setConnected(boolean isConnected) {
 		this.isConnected = isConnected;
 	}
-	
+
+	public int getAgree() {
+		return agree;
+	}
+
+	public void setAgree(int agree) {
+		this.agree = agree;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 }

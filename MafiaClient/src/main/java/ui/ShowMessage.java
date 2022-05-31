@@ -15,11 +15,8 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.WindowConstants;
-
-import ui.MakeRoom.BackGroundPanel;
 
 public class ShowMessage extends JFrame {
 
@@ -43,7 +40,8 @@ public class ShowMessage extends JFrame {
 //		viewQuestionMsg("Question", "Question");
 //      viewWarningMsg("Warning","Warning");
 //	    letYouKnowYourJob(1);
-//		doubtJob();
+//	    doubtJob();
+//		gameMsg(7,"투표가 모두 끝났습니다.");
 	}
 
 	public ShowMessage(int type, String title, String message) {
@@ -65,7 +63,7 @@ public class ShowMessage extends JFrame {
 			break;
 		}
 		case 5: { // * 게임장 내 일반 메시지 (흰색) title == null * //
-
+			
 			break;
 		}
 		case 6: { // * 게임장 내 공지 메시지 (굵은 파란색) title == null * //
@@ -121,7 +119,7 @@ public class ShowMessage extends JFrame {
 		// 3 - 의사
 		// 4 - 물음표
 		JButton jobBtn = new JButton(new ImageIcon("job/" + job + ".png"));
-		jobBtn.setPressedIcon(new ImageIcon("job/" + job + ".png"));
+		jobBtn.setPressedIcon(new ImageIcon("job/" + job + "push.png"));
 
 		jobBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -151,8 +149,8 @@ public class ShowMessage extends JFrame {
 
 		textPane = new JTextPane();
 		textPane.setEditable(false);
-		textPane.insertComponent(new JLabel(type));
 		textPane.insertComponent(textLbl);
+		textPane.insertComponent(new JLabel(type));
 		textPane.setBackground(new Color(222, 222, 222));
 
 		textLbl.setText("   " + message);
@@ -177,6 +175,33 @@ public class ShowMessage extends JFrame {
 
 		setLineWarp(message);
 		setVisible(true);
+	}
+	
+	public void gameMsg(int num, String message) {
+		setSize(400, 200);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setResizable(false);
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout());
+		panel.setBackground(new Color(222,222,222));
+		JLabel lbl = new JLabel(message);
+		lbl.setHorizontalAlignment(JLabel.CENTER);
+		lbl.setFont(lbl.getFont().deriveFont(15.0f));
+		switch(num) {
+		case 6:{
+			lbl.setForeground(Color.RED);
+			break;
+		}
+		case 7:{
+			lbl.setForeground(Color.BLUE);
+			break;
+		}
+		}
+		add(panel);
+		panel.add(lbl);
+		setVisible(true);
+		
 	}
 
 	public void setLineWarp(String msg) { // * LineWarp * //

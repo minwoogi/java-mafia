@@ -23,6 +23,12 @@ public class LobbyRowsPanel extends JPanel {
 		this.repaint();
 	}
 	
+	public void removeRoomPanel(LobbyRoomPanel roomPanel) {
+		this.remove(roomPanel);
+		this.revalidate();
+		this.repaint();
+	}
+	
 	public void removeAllPanel() {
 		this.removeAll();
 		this.revalidate();

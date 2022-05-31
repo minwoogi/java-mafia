@@ -11,6 +11,7 @@ import handling.packet.ClientPacketCreator;
 import handling.packet.LobbyPacketCreator;
 import handling.packet.LoginPacketCreator;
 import handling.packet.RegisterPacketCreator;
+import handling.packet.RoomPacketCreator;
 import handling.packet.header.ReceiveHeader;
 import information.LocationInformation;
 import io.netty.buffer.ByteBuf;
@@ -58,7 +59,6 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 		MafiaClient c = ctx.channel().attr(MafiaClient.CLIENTKEY).get();
 		MafiaPacketReader pr = new MafiaPacketReader(msg);
 		int header = pr.getHeader();
-		System.out.println("header : " + header);
 		switch (header) {
 		case ReceiveHeader.LOGIN: {
 			String id = pr.readString();
@@ -133,30 +133,65 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			}
 			c.getSession().writeAndFlush(RegisterPacketCreator.completeRegister(register));
 			break;
-		case ReceiveHeader.ENTER_ROOM:
+		case ReceiveHeader.ENTER_ROOM: {
+			/*
+			 * 1. warp
+			 * 2. 유저정보 전송
+			 * 
+			 */
 			int roomId = pr.readInt();
-			
+			System.out.println("[MafiaNettyHandler] ENTER_ROOM 받은 방 ID : " + roomId);	
+			WaitingRoom room = Lobby.getRoom(roomId);
+			System.out.println("[MafiaNettyHandler] ENTER_ROOM 찾은 방 ID : " + room.getId());			
+			c.warp(LocationInformation.WAITING_ROOM, room);
 			break;
-		case ReceiveHeader.MAKE_ROOM:
+		}
+		case ReceiveHeader.MAKE_ROOM: {
 			int maxPerson = pr.readInt();
 			String roomName = pr.readString();
+			WaitingRoom room = new WaitingRoom(roomName, c, maxPerson);
+			Lobby.addRoom(room);
+			c.warp(LocationInformation.WAITING_ROOM, room);
+			System.out.println("[MafiaNettyHandler] 방 ID : " + room.getId());
+			break;
+		}
+		case ReceiveHeader.READY: {
+			/*
+			 * 대기실에서 유저가 준비 버튼을 누를 때
+			 * 해당 대기실의 모든 유저에게 아래 패킷 전달
+			 */
 			
-			c.getSession().writeAndFlush(ClientPacketCreator.makeRoom());
-			Lobby.addRoom(new WaitingRoom(roomName, c, maxPerson));
+			boolean isReady = pr.readBoolean();
+			c.setReady(isReady);
+			c.getWaitingRoom().broadCast(RoomPacketCreator.updateRoom(c));
+			System.out.println("[MafiaNettyHandler] '" + c.getCharName() + "'님 준비상태 : " + isReady + "");
 			break;
-		case ReceiveHeader.ROOM_UPDATE:
+		}
+		case ReceiveHeader.LOBBY_USERS: {
+			int tmp = pr.readInt();
+			c.getSession().writeAndFlush(LobbyPacketCreator.loadUsers()); // 로비 유저 정보 전송
 			break;
-		case ReceiveHeader.LOBBY_USERS:
-			break;
-		case ReceiveHeader.EXIT_ROOM:
+		}
+		case ReceiveHeader.EXIT_ROOM: {
 			int tmp = pr.readInt();
 			c.warp(LocationInformation.LOBBY);
 			break;
+		}
 		case ReceiveHeader.INVITE_USER:
 			break;
 		case ReceiveHeader.CHAT:
+			String message = pr.readString();
+			c.getWaitingRoom().getGame().dropMessage(5, message);
 			break;
 		case ReceiveHeader.VOTE:
+			
+			break;
+		case ReceiveHeader.END_TIMER: 
+			// 클라측 타이머 종료 시 전송
+			int tmp = pr.readInt();
+			if(c.getWaitingRoom().getLeader().getAccId() == c.getAccId()) { // 요청자가 방장이면
+				c.getWaitingRoom().getGame().setStatus(c.getWaitingRoom().getGame().getNextPhase()); // 다음 시간대로 변경
+			}
 			break;
 		}
 	}

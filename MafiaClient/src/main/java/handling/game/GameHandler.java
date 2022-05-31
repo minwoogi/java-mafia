@@ -95,6 +95,7 @@ public class GameHandler {
 		// 3 - 의사
 		// 4 - 물음표
 		btn.setIcon(new ImageIcon("job/" + job + ".png"));
+		btn.setPressedIcon(new ImageIcon("job/"+job+".Push.png"));
 	}
 
 	static class VoteTimer extends Thread { // * timer * //

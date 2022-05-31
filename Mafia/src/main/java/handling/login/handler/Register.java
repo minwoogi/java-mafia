@@ -94,13 +94,15 @@ public class Register {
 		PreparedStatement ps = null;
 		try {
 			con = DatabaseConnection.getConnection();
-			ps = con.prepareStatement("INSERT INTO accounts(accName, password, charName, grade, grade_point, email) VALUES(?, ?, ?, ?, ?, ?)");
+			ps = con.prepareStatement("INSERT INTO accounts(accName, password, charName, level, exp, grade, grade_point, email) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
 			ps.setString(1, accName);
 			ps.setString(2, password);
 			ps.setString(3, charName);
-			ps.setInt(4, 0);
+			ps.setInt(4, 1);
 			ps.setInt(5, 0);
-			ps.setString(6, email);
+			ps.setInt(6, 0);
+			ps.setInt(7, 0);
+			ps.setString(8, email);
 			ps.executeUpdate();
 			suc = true;
 		} catch (SQLException e) {

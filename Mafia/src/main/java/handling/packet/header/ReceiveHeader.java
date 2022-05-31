@@ -21,5 +21,7 @@ public class ReceiveHeader {
     public static final int MAFIA_ABILITY = 22; // 마피아가 지목한 대상 (닉네임)
     public static final int DOCTOR_ABILITY = 23; // 의사가 지목한 대상 (닉네임)
     public static final int POLICE_ABILITY = 24; // 경찰이 지목한 대상 (닉네임)
-    
+    public static final int END_TIMER = 25; // 타이머 종료 시
+    public static final int READY = 26; // 대기실 준비 버튼 클릭 시
+    public static final int START_GAME = 27; // 게임 시작 시
 }

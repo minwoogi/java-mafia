@@ -18,9 +18,7 @@ public class MafiaNettyDecoder extends ByteToMessageDecoder {
 		if (in.readableBytes() < 4) {
 			return;
 		}
-		System.out.println("읽을 수 있는 패킷 길이 : " + in.readableBytes());
 		int packetLength = in.readInt();
-		System.out.println("받은 패킷 길이 : " + packetLength);
 		byte[] decode = new byte[packetLength];
 		in.readBytes(decode);
 		out.add(decode);

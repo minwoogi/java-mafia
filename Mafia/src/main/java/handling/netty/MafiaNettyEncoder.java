@@ -10,7 +10,6 @@ public class MafiaNettyEncoder extends MessageToByteEncoder<byte[]> {
 	protected void encode(ChannelHandlerContext ctx, byte[] msg, ByteBuf out) throws Exception {
 		out.writeBytes(msg);
 		ctx.flush();
-		System.out.println(msg.length + " - size");
 	}
 
 }

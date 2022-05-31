@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import handling.netty.ClientHandler;
 import handlinig.packet.LobbyPacket;
+import information.FrameLocation;
 import information.RoomInf;
 
 public class LobbyRoomPanel extends JPanel {

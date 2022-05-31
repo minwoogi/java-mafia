@@ -21,9 +21,12 @@ import javax.swing.border.Border;
 import handling.netty.ClientHandler;
 import handlinig.packet.WaitingRoomPacket;
 import information.ClientInf;
+import information.FrameLocation;
 import information.UserInf;
 
-
+/**
+ * 대기실 프레임
+ */
 
 
 public class WaitingRoomFrame extends JFrame {
@@ -49,8 +52,8 @@ public class WaitingRoomFrame extends JFrame {
 	private JButton levelBack;
 	private Point initialClick;
 	WaitingRowsPanel rowsPanel;
-	public static ArrayList<Integer> userList = new ArrayList<>(); // * 대기실 유저 목록 * //
-	public static HashMap<Integer,WaitingRoomPanel> userPanel = new HashMap<>(); // * 유저패널 * //
+	public static HashMap<Integer,String> userList;
+	public static HashMap<Integer,WaitingRoomPanel> userPanel;
 
 	public JLabel getTierLabel() {
 		return tierLabel;
@@ -72,11 +75,13 @@ public class WaitingRoomFrame extends JFrame {
 		FrameHandler.setWaitingRoomFrame(this);
 		setSize(1100, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+		setLocation(FrameLocation.X,FrameLocation.Y);
 		setResizable(false);
 		setUndecorated(true);
 		setLayout(new GridLayout(0, 2));
 
+		userList = new HashMap<>();// * 대기실 유저 목록 * //
+		userPanel = new HashMap<>();// * 유저패널 * //
 		newComponents();
 		setComponents();
 		addComponents();
@@ -219,12 +224,6 @@ public class WaitingRoomFrame extends JFrame {
 		tierPanel.add(tierLabel, BorderLayout.CENTER);
 
 		leftPanel.add(levelBack);
-		
-		
-		//test
-		UserInf testz = new UserInf(666,"nickNamezzzzzz",false,10,0);
-		rowsPanel.add(new WaitingRoomPanel(testz));
-
 	}
 
 	public void btnInvisible(JButton btn) { // * 버튼 투명화(이미지 보이게) * //
@@ -237,18 +236,25 @@ public class WaitingRoomFrame extends JFrame {
 		quitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClientHandler.send(WaitingRoomPacket.quitWaitingRoom(ClientInf.getUserId()));
-				dispose();
+				FrameHandler.quitWaittingFrame();
 			}
 		});
 		
 		readyBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("click");
 				if (ClientInf.isReadyState()) {
-					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
+					System.out.println("준비완료");
 					ClientInf.setReadyState(false);
-				} else {
 					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
+					readyBtn.setIcon(new ImageIcon("btnImg/readyXBtn.png"));
+					readyBtn.setPressedIcon(new ImageIcon("btnImg/readyXBtnPush.png"));
+				} else {
+					System.out.println("준비해제상태");
 					ClientInf.setReadyState(true);
+					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
+					readyBtn.setIcon(new ImageIcon("btnImg/readyBtn.png"));
+					readyBtn.setPressedIcon(new ImageIcon("btnImg/readyBtnPush.png"));
 				}
 			}
 		});

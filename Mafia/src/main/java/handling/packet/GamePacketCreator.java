@@ -9,27 +9,22 @@ public class GamePacketCreator {
 	 * 
 	 * 1. 토론시간, 투표시간, 능력 사용 시간 등 시간관련 정보
 	 * 2. 낮, 밤 전환 명령
-	 * 3. 투표 결과 정보
-	 * 4. 채팅 내용
 	 *
 	 *
 	*/
 	
 	public static byte[] remainTime(long time) { // ms 단위로 전송
+		// 마피아 게임장 내의 남은 시간을 출력시킨다
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.TIMER);
 		packet.writeLong(time);
 		return packet.getPacket();
 	}
 	
 	public static byte[] changeDayAndNight(boolean night) { // 밤이면 true
+		// 마피아 게임장 내의 밤 낮을 설정한다.
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.DAY_AND_NIGHT);
 		packet.writeBoolean(night);
 		return packet.getPacket();		
 	}
 	
-	public static byte[] resultVote() { // 투표 결과 전송
-		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.VOTE_RESULT);
-		// 
-		return packet.getPacket();		
-	}
 }
