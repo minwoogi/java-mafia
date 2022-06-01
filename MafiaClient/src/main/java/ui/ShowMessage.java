@@ -47,10 +47,10 @@ public class ShowMessage extends JFrame {
 //		viewInformationMsg("Information", "Information");
 //		viewQuestionMsg("Question", "Question");
 //      viewWarningMsg("Warning","Warning");
-//	    letYouKnowYourJob(1);
-//	    doubtJob();
+//      letYouKnowYourJob(3);
+//      doubtJob();
 //		gameMsg(7,"투표가 모두 끝났습니다.");
-//		showConfirm(1,"Yes or No");
+//		showConfirm(9,"Yes or No","Yes or No or Cancel",1);
 	}
 
 	public ShowMessage(int type, String title, String message,int msgId) {
@@ -84,7 +84,11 @@ public class ShowMessage extends JFrame {
 			break;
 		}
 		case 8:{
-			showConfirm(type,title,msgId,message);
+			showConfirm(type,title,message,msgId); // * Yes or No * //
+			break;
+		}
+		case 9:{
+			showConfirm(type,title,message,msgId); // * Yes or No or Cancel * //
 			break;
 		}
 		}
@@ -131,8 +135,12 @@ public class ShowMessage extends JFrame {
 		// 2 - 경찰
 		// 3 - 의사
 		// 4 - 물음표
-		JButton jobBtn = new JButton(new ImageIcon("job/" + job + ".png"));
-		jobBtn.setPressedIcon(new ImageIcon("job/" + job + "push.png"));
+		JButton jobBtn = new JButton(new ImageIcon("job/show" + job + ".png"));
+		jobBtn.setPressedIcon(new ImageIcon("job/show" + job + "Push.png"));
+		jobBtn.setFocusPainted(false);
+		jobBtn.setContentAreaFilled(false);
+		jobBtn.setBorderPainted(false);
+		
 
 		jobBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -195,7 +203,8 @@ public class ShowMessage extends JFrame {
 		setVisible(true);
 	}
 
-	public void showConfirm(int type, String title, int id ,String message) {
+	public void showConfirm(int type, String title, String message , int msgId) {
+		setTitle(title);
 		setSize(400, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -226,26 +235,48 @@ public class ShowMessage extends JFrame {
 		okBtn.setFocusPainted(false);
 		okBtn.setContentAreaFilled(false);
 		okBtn.setBorderPainted(false);
+		okBtn.setPreferredSize(new Dimension(93,38));
 
-		JButton cancelBtn = new JButton(new ImageIcon("btnImg/showOk.png"));
-		cancelBtn.setFocusPainted(false);
-		cancelBtn.setContentAreaFilled(false);
-		cancelBtn.setBorderPainted(false);
+		JButton noBtn = new JButton(new ImageIcon("btnImg/noBtn.png"));
+		noBtn.setPressedIcon(new ImageIcon("btnImg/noBtnPush.png"));
+		noBtn.setPreferredSize(new Dimension(93,38));
+		noBtn.setFocusPainted(false);
+		noBtn.setContentAreaFilled(false);
+		noBtn.setBorderPainted(false);
 
+		
+		
 		mainPanel.add(btnPanel, BorderLayout.SOUTH);
 		mainPanel.add(textPane, BorderLayout.CENTER);
 		btnPanel.add(okBtn, Panel.CENTER_ALIGNMENT);
-		btnPanel.add(cancelBtn, Panel.CENTER_ALIGNMENT);
+		btnPanel.add(noBtn, Panel.CENTER_ALIGNMENT);
 		add(mainPanel);
+		
+		if(type == 9) {
+			JButton  cancelBtn = new JButton(new ImageIcon("btnImg/cancel.png"));
+			cancelBtn.setPressedIcon(new ImageIcon("btnImg/cancelPush.png"));
+			cancelBtn.setPreferredSize(new Dimension(93,38));
+			cancelBtn.setFocusPainted(false);
+			cancelBtn.setContentAreaFilled(false);
+			cancelBtn.setBorderPainted(false);
+			cancelBtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ClientHandler.send(ShowMsgPacket.makeMessagePacket(msgId, 2));
+					dispose();
+				}
+			});
+			btnPanel.add(cancelBtn);
+		}
 
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ClientHandler.send(ShowMsgPacket.makeMessagePacket(id,true));
+				ClientHandler.send(ShowMsgPacket.makeMessagePacket(msgId,1));
 				dispose();
 			}
 		});
-		cancelBtn.addActionListener(new ActionListener() {
+		noBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				ClientHandler.send(ShowMsgPacket.makeMessagePacket(msgId,0));
 				dispose();
 			}
 		});
@@ -286,31 +317,32 @@ public class ShowMessage extends JFrame {
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setUndecorated(true);
-		JButton cancelBtn = new JButton(new ImageIcon("btnImg/makeRoomCancel.png"));
-		JButton okBtn = new JButton(new ImageIcon("btnImg/makeRoomBtn.png"));
+		JButton cancelBtn = new JButton(new ImageIcon("btnImg/xBtn.png"));
+		JButton okBtn = new JButton(new ImageIcon("btnImg/choice.png"));
 		String[] jobList = { "시민", "마피아", "경찰", "의사", "물음표" };
 		JComboBox<String> jobBox = new JComboBox<String>(jobList);
 		JPanel panel = new BackGroundPanel();
 		panel.setLayout(null);
 
 		jobBox.setBounds(125, 110, 150, 40);
-		okBtn.setBounds(90, 170, 90, 40);
-		cancelBtn.setBounds(210, 170, 90, 40);
+		okBtn.setBounds(90, 170, 94, 40);
+		cancelBtn.setBounds(212, 170, 94, 40);
 
 		jobBox.setBackground(Color.BLACK);
 		jobBox.setForeground(Color.WHITE);
 		jobBox.setOpaque(false);
 		jobBox.setFont(new Font("", Font.BOLD, 20));
 
-		okBtn.setPressedIcon(new ImageIcon("btnImg/makeRoomBtnPush.png"));
-		cancelBtn.setPressedIcon(new ImageIcon("btnImg/makeRoomCancelPush.png"));
+		okBtn.setPressedIcon(new ImageIcon("btnImg/choicePush.png"));
+		cancelBtn.setPressedIcon(new ImageIcon("btnImg/xBtnPush.png"));
 
 		okBtn.setFocusPainted(false);
 		okBtn.setContentAreaFilled(false);
 		okBtn.setBorderPainted(false);
 		okBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				btn.setIcon(new ImageIcon("btnImg/" + jobBox.getSelectedIndex() + ".png"));
+				btn.setIcon(new ImageIcon("job/" + jobBox.getSelectedIndex() + ".png"));
+				dispose();
 			}
 		});
 
@@ -331,7 +363,7 @@ public class ShowMessage extends JFrame {
 	}
 
 	class BackGroundPanel extends JPanel { // * 직업 의심 배경 * //
-		Image background = new ImageIcon("backgroundImage/selectJob.png").getImage();
+		Image background = new ImageIcon("backgroundImage/doubtBack.png").getImage();
 
 		public BackGroundPanel() {
 		}

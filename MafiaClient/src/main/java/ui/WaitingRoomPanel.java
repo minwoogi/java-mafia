@@ -45,10 +45,10 @@ public class WaitingRoomPanel extends JPanel {
 		roomStatePanel = new JPanel();
 		joinRoomPanel = new JPanel();
 
-		levelTf = new JButton("Lv.1");
-		tierTf = new JButton("tier");
-		nickNameTf = new JButton("nickName");
-		stateBtn = new JButton("준비");
+		levelTf = new JButton(new ImageIcon("btnImg/levelTf.png"));
+		tierTf = new JButton(new ImageIcon("btnImg/tierTf.png"));
+		nickNameTf = new JButton(new ImageIcon("btnImg/nickNameTf.png"));
+		stateBtn = new JButton(new ImageIcon("btnImg/stateFalse.png"));
 
 		tfFont = new Font("", Font.BOLD, 15);
 	}
@@ -68,11 +68,10 @@ public class WaitingRoomPanel extends JPanel {
 		tierTf.setPreferredSize(new Dimension(90, 50));
 		nickNameTf.setPreferredSize(new Dimension(200, 50));
 		stateBtn.setPreferredSize(new Dimension(100, 50));
-
-		levelTf.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
+		
+		levelTf.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데  
 		tierTf.setHorizontalTextPosition(JButton.CENTER);
 		nickNameTf.setHorizontalTextPosition(JButton.CENTER);
-		stateBtn.setHorizontalAlignment(JButton.CENTER);
 
 		btnInvisible(levelTf);
 		btnInvisible(tierTf);
@@ -86,9 +85,9 @@ public class WaitingRoomPanel extends JPanel {
 		tierTf.setText(userInf.getTier()+"");
 		nickNameTf.setText(userInf.getUserNick());
 		if (userInf.isReady() == false) {
-			stateBtn.setText("준비");
+			stateBtn.setIcon(new ImageIcon("btnImg/stateFalse.png"));
 		} else {
-			stateBtn.setText("준비완료");
+			stateBtn.setIcon(new ImageIcon("btnImg/stateTrue.png"));
 		}
 	}
 

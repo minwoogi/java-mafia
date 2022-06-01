@@ -18,6 +18,9 @@ import java.util.Map;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+import handling.netty.ClientHandler;
+import handlinig.packet.LobbyPacket;
+import information.ClientInf;
 import information.FrameLocation;
 import information.LocationInformation;
 import information.RoomInf;
@@ -264,8 +267,7 @@ public class LobbyFrame extends JFrame {
 				int isLogOut = JOptionPane.showConfirmDialog(getLayeredPane(),"로그아웃 하시겠습니까?", "LogOut",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (isLogOut == 0) {
-					new ShowMessage(2, "LogOut", "로그아웃",0);
-					dispose();
+					ClientHandler.send(LobbyPacket.makeLogOutPacket(ClientInf.getUserId()));
 				}
 			}
 		});
