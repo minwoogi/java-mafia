@@ -1,6 +1,9 @@
 package ui;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -9,6 +12,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 
 import handling.game.GameHandler;
+import handling.netty.ClientHandler;
+import handlinig.packet.LobbyPacket;
 import information.ExpInf;
 import information.FrameLocation;
 import information.LocationInformation;
@@ -117,6 +122,18 @@ public class FrameHandler {
 	public static void setTfEditable(JTextField tf) { // * 회원가입시 사용할 ID나 NICKNAME결정되면 색변경 * //
 		tf.setEditable(false);
 		tf.setForeground(Color.RED);
+	}
+	
+	public static void setLeaderMode(JButton btn) { // * 방장이면 시작 버튼으로 변경하고 닉네임앞에 [L]붙이기 * // 
+		btn.setIcon(new ImageIcon("btnImg/startGame.png"));
+		btn.setPressedIcon(new ImageIcon("btnImg/startGamePush.png"));
+		FrameHandler.getWaitingRoomFrame().userPanel.get(ClientInf.getUserId()).getNickNameTf().setText(""
+				+ "[L]"+FrameHandler.getWaitingRoomFrame().userPanel.get(ClientInf.getUserId()).getNickNameTf().getText());
+		btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ClientHandler.send(LobbyPacket.makeGameStartPacket(1));
+			}
+		});
 	}
 	
 	public static void addRoomPanel(RoomInf roomInf) { // * 로비 프레임에서 방 추가 * //

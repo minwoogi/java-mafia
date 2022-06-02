@@ -70,6 +70,10 @@ public class WaitingRoomFrame extends JFrame {
 	public JProgressBar getExpBar() {
 		return expBar;
 	}
+	
+	public JButton getReadyBtn() {
+		return readyBtn;
+	}
 
 	public WaitingRoomFrame() {
 		FrameHandler.setWaitingRoomFrame(this);
@@ -242,7 +246,6 @@ public class WaitingRoomFrame extends JFrame {
 		
 		readyBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("click");
 				if (ClientInf.isReadyState()) {
 					System.out.println("준비완료");
 					ClientInf.setReadyState(false);

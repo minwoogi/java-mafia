@@ -90,6 +90,9 @@ public class WaitingRoomPanel extends JPanel {
 			stateBtn.setIcon(new ImageIcon("btnImg/stateTrue.png"));
 		}
 	}
+	
+	public void setLeaderNick(WaitingRoomPanel waitingRoomPanel) {
+	}
 
 	public void addComponents() {
 		personNumPanel.add(levelTf, BorderLayout.CENTER);
@@ -111,5 +114,14 @@ public class WaitingRoomPanel extends JPanel {
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
 	}
+	
+	public JButton getNickNameTf() {
+		return nickNameTf;
+	}
+
+	public void setNickNameTf(JButton nickNameTf) {
+		this.nickNameTf = nickNameTf;
+	}
+
 
 }
