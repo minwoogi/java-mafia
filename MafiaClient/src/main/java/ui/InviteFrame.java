@@ -29,10 +29,11 @@ public class InviteFrame extends JFrame {
 	private JButton closeBtn;
 	private JScrollPane scroll;
 	private Image background;
-	private InviteRowsPanel inviteRowsPanel;
+	InviteRowsPanel inviteRowsPanel;
 	Point initialClick;
 
 	public InviteFrame() {
+		FrameHandler.setInviteFrame(this);
 		setSize(350, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocation(FrameLocation.X, FrameLocation.Y);

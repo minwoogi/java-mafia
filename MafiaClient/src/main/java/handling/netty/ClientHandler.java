@@ -150,11 +150,16 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;	
 		}
-		case ReceieveHeader.LEADER:{
+		case ReceieveHeader.LEADER:{ // * 방장 권한 * //
 			boolean isLeader = reader.readBoolean();
 			if(isLeader) {
 				FrameHandler.setLeaderMode(FrameHandler.getWaitingRoomFrame().getReadyBtn());				
 			}
+			break;
+		}
+		case ReceieveHeader.INVITE_USER:{ // * 초대하기 유저 정보 * //
+			String nickName = reader.readString();
+			FrameHandler.addInvteUser(nickName);
 			break;
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //

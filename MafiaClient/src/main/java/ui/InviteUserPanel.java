@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import handling.netty.ClientHandler;
+import handlinig.packet.WaitingRoomPacket;
 
 public class InviteUserPanel extends JPanel {
 
@@ -62,7 +63,7 @@ public class InviteUserPanel extends JPanel {
       
       inviteBtn.addActionListener(new ActionListener() {
          public void actionPerformed(ActionEvent e) {
-            ClientHandler.send(null);
+            ClientHandler.send(WaitingRoomPacket.makeInvitePacket(nickName));
          }
       });
 

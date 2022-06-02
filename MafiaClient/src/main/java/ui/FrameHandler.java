@@ -29,6 +29,7 @@ public class FrameHandler {
 	static SignUpFrame signUpFrame;
 	static LobbyFrame lobbyFrame;
 	static WaitingRoomFrame waitingRoomFrame;
+	static InviteFrame inviteFrame;
 
 //	public static void failedLogin(boolean loginCheck) {
 //		if (loginCheck) {
@@ -134,6 +135,10 @@ public class FrameHandler {
 				ClientHandler.send(LobbyPacket.makeGameStartPacket(1));
 			}
 		});
+	}
+	public static void addInvteUser(String nickName) {
+		InviteUserPanel inviteUserPanel = new InviteUserPanel(nickName);
+		FrameHandler.getInviteFrame().inviteRowsPanel.addUserList(inviteUserPanel);
 	}
 	
 	public static void addRoomPanel(RoomInf roomInf) { // * 로비 프레임에서 방 추가 * //
@@ -250,6 +255,14 @@ public class FrameHandler {
 	
 	public static void setWaitingRoomFrame(WaitingRoomFrame waitingRoomFrame) {
 		FrameHandler.waitingRoomFrame = waitingRoomFrame;
+	}
+	
+	public static InviteFrame getInviteFrame() {
+		return FrameHandler.inviteFrame;
+	}
+	
+	public static void setInviteFrame(InviteFrame inviteFrame) {
+		FrameHandler.inviteFrame = inviteFrame;
 	}
 
 }

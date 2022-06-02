@@ -17,4 +17,10 @@ public class WaitingRoomPacket {
 		return writer.getPacket();
 	}
 	
+	public static byte[] makeInvitePacket(String nickName) {
+		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.INVITE_USER);
+		writer.writeString(nickName);
+		return writer.getPacket();
+	}
+	
 }
