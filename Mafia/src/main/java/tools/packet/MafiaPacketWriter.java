@@ -2,6 +2,10 @@ package tools.packet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+
+import handling.packet.header.ReceiveHeader;
+import handling.packet.header.SendHeader;
 
 public class MafiaPacketWriter {
 	private final ByteArrayOutputStream baos;
@@ -40,6 +44,20 @@ public class MafiaPacketWriter {
 		byte[] org = baos.toByteArray();
 		for(int i = 0; i < org.length; i++) {
 			tmp.write(org[i]);
+		}
+		Field[] fields = SendHeader.class.getDeclaredFields();
+		for (Field field : fields) {
+			try {
+				if ((int) field.get(field) == this.getHeader()) {
+					System.out.println("[SEND] " + field.getName() + "("+tmp.size()+")");
+				}
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return tmp.toByteArray();
 	}

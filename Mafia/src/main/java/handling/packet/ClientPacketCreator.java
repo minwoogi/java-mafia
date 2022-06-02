@@ -6,7 +6,7 @@ import tools.packet.MafiaPacketWriter;
 
 public class ClientPacketCreator {
 	
-	public static byte[] showMessage(int type, String title, String msg) {
+	public static byte[] showMessage(int type, String title, String msg, int msgId) {
 		// type에 맞는 메시지 창을 띄운다.
 		/*
 		 * type 별 메시지 형태
@@ -17,14 +17,22 @@ public class ClientPacketCreator {
 		 * 5 : 게임장 내 일반 메시지 (흰색) title은 null
 		 * 6 : 게임장 내 공지 메시지 (굵은 파란색) title은 null
 		 * 7 : 게임장 내 공지 메시지 (굵은 빨간색) title은 null
+		 * 8 : Yes or No
+		 * 9 : Yes or No or Cancel
 		 */
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.SHOW_MESSAGE);
 		packet.writeInt(type);
 		packet.writeString(title == null ? "알림" : title);
 		packet.writeString(msg);
+		packet.writeInt(msgId);
 		return packet.getPacket();
 	}
 
+	public static byte[] setLeader(boolean isLeader) {
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.LEADER);
+		packet.writeBoolean(isLeader);
+		return packet.getPacket();
+	}
 	public static byte[] makeRoom() {
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.MAKE_ROOM);
 		packet.writeBoolean(true);

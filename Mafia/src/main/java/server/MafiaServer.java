@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import handling.lobby.Lobby;
 import handling.lobby.WaitingRoom;
+import handling.login.handler.LoginHandler;
 import handling.netty.MafiaNettyDecoder;
 import handling.netty.MafiaNettyEncoder;
 import handling.netty.MafiaNettyHandler;
@@ -15,6 +16,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import tools.Manager;
 
 public class MafiaServer {
 	private int port;
@@ -44,6 +46,8 @@ public class MafiaServer {
 				.childOption(ChannelOption.SO_KEEPALIVE, true);
 			ChannelFuture f = b.bind(port).sync();
 			System.out.println(port + " 포트로 서버를 개방했습니다.");
+			LoginHandler.disconnectAll();
+			Manager.start();
 			f.channel().closeFuture().sync();
 		} finally {
 			workerGroup.shutdownGracefully();

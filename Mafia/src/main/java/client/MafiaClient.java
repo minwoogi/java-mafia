@@ -34,7 +34,7 @@ public class MafiaClient {
 	private int agree; // 처형 찬성 수
 	private boolean blockChat = false; // 말하기 금지
 	private boolean dead = false; // 사망 여부
-	private boolean isConnected = true;
+	private boolean isConnected = false;
 	private String certification_code;
 
 	public MafiaClient(Channel session) {
@@ -49,9 +49,11 @@ public class MafiaClient {
 		return this.getSession().remoteAddress().toString();
 	}
 
-	public void disconnect() {
-		if (this.location != -1) // 로그인 창이 아니면
+	public void disconnect() { // 로그아웃 시
+		if (this.location != -1) { // 로그인 창이 아니면
 			this.saveDB();
+			
+		}
 		if (this.location == LocationInformation.LOBBY)
 			Lobby.removeClient(this);
 		if (this.location == LocationInformation.WAITING_ROOM)
@@ -60,6 +62,8 @@ public class MafiaClient {
 			this.getWaitingRoom().broadCast(null);
 		}
 		this.setConnected(false);
+		this.changeLoggedin(this.getAccId(), 0);
+		System.out.println("[MafiaClient] '" + this.getCharName() + "'님이 로그아웃 했습니다.");
 	}
 
 	public void login(String accName) {
@@ -100,6 +104,8 @@ public class MafiaClient {
 			} catch (SQLException e) {
 			}
 		}
+		changeLoggedin(this.getAccId(), 1);
+		this.setConnected(true);
 		this.getSession().writeAndFlush(ClientPacketCreator.userInformation(this));
 		this.warp(LocationInformation.LOBBY);
 		for (WaitingRoom room : Lobby.getRooms()) {
@@ -107,19 +113,54 @@ public class MafiaClient {
 		}
 	}
 
+	public void changeLoggedin(int accId, int loggedin) {
+		/* 
+		 * loggedin : 0 로그아웃 1 접속중
+		 */
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = DatabaseConnection.getConnection();
+			ps = con.prepareStatement("UPDATE accounts SET loggedin = ? WHERE id = ?");
+			ps.setInt(1, loggedin);
+			ps.setInt(2, accId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (rs != null)
+					rs.close();
+			} catch (SQLException e) {
+			}
+			try {
+				if (ps != null)
+					ps.close();
+			} catch (SQLException e) {
+			}
+			try {
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+			}
+		}
+	}
+	
 	public void saveDB() {
 		Connection con = null;
 		PreparedStatement ps = null;
 		try {
 			con = DatabaseConnection.getConnection();
 			ps = con.prepareStatement(
-					"UPDATE accounts SET level = ?, exp = ?, grade = ?, grade_point = ?, charName = ? WHERE id = ?");
+					"UPDATE accounts SET level = ?, exp = ?, grade = ?, grade_point = ?, charName = ?, email = ? WHERE id = ?");
 			ps.setInt(1, this.getLevel());
 			ps.setInt(2, this.getExp());
 			ps.setInt(3, this.getGrade());
 			ps.setInt(4, this.getGradePoint());
 			ps.setString(5, this.getCharName());
 			ps.setInt(6, this.getAccId());
+			ps.setString(7, this.getEmail());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -171,6 +212,7 @@ public class MafiaClient {
 
 	public void warp(int location, WaitingRoom room) { /*  */
 		this.getSession().writeAndFlush(ClientPacketCreator.warp(location, room == null ? -1 : room.getId()));
+		System.out.println(this.location + " -> " + location);
 		if (location == LocationInformation.LOBBY) { // 로비로 이동할 때
 			if (this.location == LocationInformation.WAITING_ROOM) { // 대기실 -> 로비
 				Lobby.addClient(this);
@@ -186,8 +228,6 @@ public class MafiaClient {
 		} else if (location == LocationInformation.WAITING_ROOM) { // 대기실로 이동할 때
 			if (this.location == LocationInformation.LOBBY) { // 로비 -> 대기실
 				if (room.enterRoom(this)) {
-					this.setWaitingRoom(room);
-					Lobby.removeClient(this);
 					System.out.println("[MafiaClient] 로비에서 대기실로 이동");
 				} else {
 					System.out.println("[MafiaClient] 로비 -> 대기실 이동 실패");
@@ -204,6 +244,7 @@ public class MafiaClient {
 			}
 		}	
 		this.location = location;
+		System.out.println("이동 완료");
 	}
 
 	public int getGrade() {
@@ -283,7 +324,7 @@ public class MafiaClient {
 	}
 
 	public void dropMessage(int type, String title, String msg) {
-		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title, msg));
+		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title, msg, 0));
 	}
 
 	public int getGradePoint() {

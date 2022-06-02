@@ -24,4 +24,7 @@ public class ReceiveHeader {
     public static final int END_TIMER = 25; // 타이머 종료 시
     public static final int READY = 26; // 대기실 준비 버튼 클릭 시
     public static final int START_GAME = 27; // 게임 시작 시
+    public static final int SHOW_MESSAGE = 28; // YES OR NO OR CANCEL 값 받기\
+    public static final int LOGOUT = 29;
+    
 }

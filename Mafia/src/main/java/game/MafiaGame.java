@@ -78,7 +78,7 @@ public class MafiaGame {
 	}
 
 	public void dropMessage(int type, String msg) {
-		broadCast(ClientPacketCreator.showMessage(type, null, msg));
+		broadCast(ClientPacketCreator.showMessage(type, null, msg, 0));
 	}
 
 	public void broadCast(byte[] packet) {

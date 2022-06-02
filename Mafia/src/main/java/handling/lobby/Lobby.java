@@ -6,6 +6,7 @@ import java.util.List;
 import client.MafiaClient;
 import handling.packet.LobbyPacketCreator;
 import information.LocationInformation;
+import tools.Manager;
 
 public class Lobby {
 	private static final ArrayList<MafiaClient> clients = new ArrayList<MafiaClient>();
@@ -25,18 +26,24 @@ public class Lobby {
 	
 	public static boolean addRoom(WaitingRoom room) {
 		removeClient(room.getLeader());
+		Manager.manager.addRoom(room);
 		return rooms.add(room);
 	}
 	
 	public static boolean removeRoom(WaitingRoom room) {
+		Manager.manager.removeRoom(room);
 		return rooms.remove(room);
 	}
 	
 	public static boolean addClient(MafiaClient client) {
+		Manager.manager.addLobbyClient(client);
+		System.out.println("[Lobby] " + client.getCharName() + " 님이 로비로 왔습니다.");
 		return clients.add(client);
 	}
 	
 	public static boolean removeClient(MafiaClient client) {
+		Manager.manager.removeLobbyClient(client);
+		System.out.println("[Lobby] " + client.getCharName() + " 님이 로비를 떠났습니다.");
 		return clients.remove(client);
 	}
 	

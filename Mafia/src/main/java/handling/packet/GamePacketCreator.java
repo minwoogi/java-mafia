@@ -9,14 +9,20 @@ public class GamePacketCreator {
 	 * 
 	 * 1. 토론시간, 투표시간, 능력 사용 시간 등 시간관련 정보
 	 * 2. 낮, 밤 전환 명령
-	 *
+	 * 3. 
 	 *
 	*/
 	
-	public static byte[] remainTime(long time) { // ms 단위로 전송
-		// 마피아 게임장 내의 남은 시간을 출력시킨다
+	
+	public static byte[] remainTime(long time) { 
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.TIMER);
 		packet.writeLong(time);
+		return packet.getPacket();
+	}
+	
+	public static byte[] nowDays(int days) { // 몇 번 째 날인지 전송
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.WHAT_DATE);
+		packet.writeInt(days);
 		return packet.getPacket();
 	}
 	
