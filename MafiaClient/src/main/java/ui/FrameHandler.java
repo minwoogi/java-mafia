@@ -127,8 +127,8 @@ public class FrameHandler {
 	public static void setLeaderMode(JButton btn) { // * 방장이면 시작 버튼으로 변경하고 닉네임앞에 [L]붙이기 * // 
 		btn.setIcon(new ImageIcon("btnImg/startGame.png"));
 		btn.setPressedIcon(new ImageIcon("btnImg/startGamePush.png"));
-		FrameHandler.getWaitingRoomFrame().userPanel.get(ClientInf.getUserId()).getNickNameTf().setText(""
-				+ "[L]"+FrameHandler.getWaitingRoomFrame().userPanel.get(ClientInf.getUserId()).getNickNameTf().getText());
+		FrameHandler.getWaitingRoomFrame().userPanel.get(ClientInf.getUserId()).getStateBtn().setIcon(new ImageIcon(""
+				+ "btnImg/leader.png"));
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClientHandler.send(LobbyPacket.makeGameStartPacket(1));

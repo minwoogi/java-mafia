@@ -37,8 +37,8 @@ public class InviteUserPanel extends JPanel {
       nickNamePanel = new JPanel();
       invitePanel = new JPanel();
 
-      nickNameTf = new JButton(new ImageIcon("btnImg/nickNameTf.png"));
-      inviteBtn = new JButton("√ ¥Î");
+      nickNameTf = new JButton(new ImageIcon("btnImg/inviteNick.png"));
+      inviteBtn = new JButton(new ImageIcon("btnImg/invite.png"));
 
       tfFont = new Font("", Font.BOLD, 15);
    }
@@ -52,7 +52,8 @@ public class InviteUserPanel extends JPanel {
 
       nickNameTf.setPreferredSize(new Dimension(210, 50));
       inviteBtn.setPreferredSize(new Dimension(90, 50));
-
+      inviteBtn.setPressedIcon(new ImageIcon("btnImg/invitePush.png"));
+      
       nickNameTf.setHorizontalTextPosition(JButton.CENTER);
       nickNameTf.setText(nickName);
 

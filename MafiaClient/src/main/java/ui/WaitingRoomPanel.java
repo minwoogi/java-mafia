@@ -24,6 +24,8 @@ public class WaitingRoomPanel extends JPanel {
 	private JButton tierTf; // * 티어 * //
 	private JButton nickNameTf; // * 닉네임 *//
 	private JButton stateBtn; // * 준비상태 * //
+
+
 	private Font tfFont;
 
 	public WaitingRoomPanel(UserInf userInf) {
@@ -115,12 +117,8 @@ public class WaitingRoomPanel extends JPanel {
 		btn.setBorderPainted(false);
 	}
 	
-	public JButton getNickNameTf() {
-		return nickNameTf;
-	}
-
-	public void setNickNameTf(JButton nickNameTf) {
-		this.nickNameTf = nickNameTf;
+	public JButton getStateBtn() {
+		return stateBtn;
 	}
 
 

@@ -152,7 +152,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		}
 		case ReceieveHeader.LEADER:{
 			boolean isLeader = reader.readBoolean();
-			FrameHandler.setLeaderMode(FrameHandler.getWaitingRoomFrame().getReadyBtn());
+			if(isLeader) {
+				FrameHandler.setLeaderMode(FrameHandler.getWaitingRoomFrame().getReadyBtn());				
+			}
 			break;
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //
