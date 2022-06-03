@@ -39,10 +39,11 @@ public class ServerConstants {
 			19112
 	};
 	public static final int MAX_LEVEL = 30;
-	public static final int MAFIA = 0;
-	public static final int CITIZEN = 1;
+	public static final int CITIZEN = 0;
+	public static final int MAFIA = 1;
+	public static final int POLICE = 2;
 	public static final int DOCTOR = 3;
-	public static final int POLICE = 4;
+	public static final int QUESS = 4;
 	
 	public static final int CLASSIFY_JOB[][] = { // 마피아, 시민, 의사, 경찰 순
 			{1, 2, 1, 1}, // 5명 일 때

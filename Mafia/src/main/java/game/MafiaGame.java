@@ -31,7 +31,7 @@ public class MafiaGame {
 	public MafiaGame(WaitingRoom room) {
 		this.room = room;
 		this.distributeJob();
-		this.setStatus(0); // 토론 시간대
+		//this.setStatus(0); // 토론 시간대
 	}
 
 	public void distributeJob() { // 직업 분배
@@ -63,17 +63,7 @@ public class MafiaGame {
 		}
 
 		for (MafiaClient c : room.getClients()) {
-			if (ServerConstants.isMafia(c.getJob()))
-				c.dropMessage(2, "당신의 직업은 마피아입니다.");
-
-			if (ServerConstants.isCitizen(c.getJob()))
-				c.dropMessage(2, "당신의 직업은 시민입니다.");
-
-			if (ServerConstants.isDoctor(c.getJob()))
-				c.dropMessage(2, "당신의 직업은 의사입니다.");
-
-			if (ServerConstants.isPolice(c.getJob()))
-				c.dropMessage(2, "당신의 직업은 경찰입니다.");
+			c.showJobCard(c.getJob());
 		}
 	}
 

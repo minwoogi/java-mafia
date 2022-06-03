@@ -38,7 +38,7 @@ import java.awt.event.ActionEvent;
 public class Manager {
 	public static Manager manager;
 	private JFrame frame;
-	private JTextField textField;
+	private JTextField header;
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
@@ -52,7 +52,8 @@ public class Manager {
 	private DefaultListModel lby_cl_model = new DefaultListModel();
 	private DefaultListModel room_lst_model = new DefaultListModel();
 	private DefaultListModel room_cl_model = new DefaultListModel();
-
+	private JTextField charName;
+	private JTextPane textPane;
 	/**
 	 * Launch the application.
 	 */
@@ -77,6 +78,9 @@ public class Manager {
 		initialize();
 	}
 
+	public void clearRoomClient() {
+		room_cl_model.clear();
+	}
 	public void addRoomClient(WaitingRoom room) {
 		int selected = room_list.getSelectedIndex();
 		if (selected != -1) {
@@ -84,7 +88,7 @@ public class Manager {
 			if (!str.equals("[" + room.getId() + "] " + room.getName()))
 				return;
 		}
-		room_cl_model.clear();
+		clearRoomClient();
 		for (MafiaClient c : room.getClients()) {
 			if (c.getWaitingRoom().getLeader().getAccId() == c.getAccId())
 				room_cl_model.addElement("[L] " + c.getCharName());
@@ -94,6 +98,12 @@ public class Manager {
 	}
 
 	public void removeRoom(WaitingRoom room) {
+		int selected = room_list.getSelectedIndex();
+		if (selected != -1) {
+			String str = room_lst_model.getElementAt(selected).toString();
+			if (str.equals("[" + room.getId() + "] " + room.getName())) 
+				clearRoomClient();
+		}
 		for (int i = 0; i < room_lst_model.getSize(); i++) {
 			if (room_lst_model.getElementAt(i).toString().equals("[" + room.getId() + "] " + room.getName()))
 				room_lst_model.remove(i);
@@ -146,6 +156,8 @@ public class Manager {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int selected = room_list.getSelectedIndex();
+				if(selected == -1)
+					return;
 				String str = room_lst_model.getElementAt(selected).toString();
 				for (WaitingRoom room : Lobby.getRooms()) {
 					if (str.equals("[" + room.getId() + "] " + room.getName())) {
@@ -165,21 +177,21 @@ public class Manager {
 		panel_2.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Header :");
-		lblNewLabel.setBounds(12, 28, 57, 15);
+		lblNewLabel.setBounds(12, 56, 57, 15);
 		panel_2.add(lblNewLabel);
 
-		textField = new JTextField();
-		textField.setBounds(67, 25, 186, 21);
-		panel_2.add(textField);
-		textField.setColumns(10);
+		header = new JTextField();
+		header.setBounds(67, 53, 186, 21);
+		panel_2.add(header);
+		header.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("Content : ");
-		lblNewLabel_1.setBounds(12, 53, 57, 15);
+		lblNewLabel_1.setBounds(12, 87, 57, 15);
 		panel_2.add(lblNewLabel_1);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new LineBorder(Color.LIGHT_GRAY));
-		panel_3.setBounds(12, 71, 241, 260);
+		panel_3.setBounds(12, 112, 241, 260);
 		panel_2.add(panel_3);
 		panel_3.setLayout(null);
 
@@ -266,15 +278,15 @@ public class Manager {
 				String items[][] = {{comboBox.getSelectedItem().toString(), textField_1.getText()}, {comboBox_1.getSelectedItem().toString(), textField_2.getText()}, {comboBox_2.getSelectedItem().toString(), textField_3.getText()}
 								, {comboBox_3.getSelectedItem().toString(), textField_4.getText()}, {comboBox_4.getSelectedItem().toString(), textField_5.getText()}, {comboBox_5.getSelectedItem().toString(), textField_6.getText()}
 								, {comboBox_6.getSelectedItem().toString(), textField_7.getText()}};
-				MafiaPacketWriter packet = new MafiaPacketWriter(Integer.parseInt(textField.getText().toString()));
+				MafiaPacketWriter packet = new MafiaPacketWriter(Integer.parseInt(header.getText().toString()));
 				for(String item[] : items) {
 					String type = item[0];
-					Object value = item[1];
+					String value = item[1];
 					switch(type) {
 					case "none":
 						break;
 					case "byte":
-						packet.write((byte) value);
+						packet.write(Byte.parseByte(value));
 						break;
 					case "boolean":
 						if(value.toString().equals("true")) {
@@ -287,13 +299,20 @@ public class Manager {
 						}
 						break;
 					case "int":
-						packet.writeInt((int) value);
+						packet.writeInt(Integer.parseInt(value));
 						break;
 					case "long":
-						packet.writeLong((long) value);
+						packet.writeLong(Long.parseLong(value));
 						break;
 					case "String":
 						packet.writeString(value.toString());
+						break;
+					}
+				}
+				for(MafiaClient c : MafiaClient.clients) {
+					if(c.getCharName().equals(charName.getText())) {
+						c.getSession().writeAndFlush(packet.getPacket());
+						textPane.setText(textPane.getText().toString() + "" + packet.getHeader() + " Àü¼ÛµÊ\n");
 						break;
 					}
 				}
@@ -304,16 +323,25 @@ public class Manager {
 		panel_3.add(btnNewButton);
 
 		JLabel lblNewLabel_2 = new JLabel("Result :");
-		lblNewLabel_2.setBounds(12, 341, 57, 15);
+		lblNewLabel_2.setBounds(12, 382, 57, 15);
 		panel_2.add(lblNewLabel_2);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 366, 241, 182);
+		scrollPane.setBounds(12, 407, 241, 141);
 		panel_2.add(scrollPane);
 
-		JTextPane txtpnDddd = new JTextPane();
-		txtpnDddd.setEditable(false);
-		scrollPane.setViewportView(txtpnDddd);
+		textPane = new JTextPane();
+		textPane.setEditable(false);
+		scrollPane.setViewportView(textPane);
+		
+		JLabel lblName = new JLabel("Name :");
+		lblName.setBounds(12, 24, 57, 15);
+		panel_2.add(lblName);
+		
+		charName = new JTextField();
+		charName.setColumns(10);
+		charName.setBounds(67, 21, 186, 21);
+		panel_2.add(charName);
 
 		JPanel panel_1_1 = new JPanel();
 		panel_1_1.setBorder(new TitledBorder(

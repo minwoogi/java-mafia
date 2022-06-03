@@ -48,7 +48,7 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-
+		
 	}
 
 	@Override
@@ -173,7 +173,12 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 
 			boolean isReady = pr.readBoolean();
 			c.setReady(isReady);
-			c.getWaitingRoom().broadCast(RoomPacketCreator.updateRoom(c));
+			c.getWaitingRoom().broadCast(RoomPacketCreator.updateRoom(c, c.getWaitingRoom().getLeader().getAccId()));
+			break;
+		}
+		case ReceiveHeader.START_GAME: {
+			int tmp = pr.readInt();
+			c.getWaitingRoom().startGame();
 			break;
 		}
 		case ReceiveHeader.LOBBY_USERS: {
@@ -192,8 +197,9 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			System.out.println("SHOW_MESSAGE : msgId : " + msgId + ", flag : " + flag);
 			break;
 		}
-		case ReceiveHeader.INVITE_USER:
+		case ReceiveHeader.INVITE_USER: {
 			break;
+		}
 		case ReceiveHeader.CHAT:
 			String message = pr.readString();
 			c.getWaitingRoom().getGame().dropMessage(5, message);

@@ -15,16 +15,14 @@ public class RoomPacketCreator {
 	 * 
 	 */
 	
-	public static byte[] updateRoom(MafiaClient c) {
+	public static byte[] updateRoom(MafiaClient c, int leaderId) {
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.ROOM_UPDATE);
-		System.out.println("updateRoom");
 		packet.writeInt(c.getAccId()); // id( 키 값 )
-		packet.writeInt(c.getWaitingRoom().getLeader().getAccId()); // 방장 id
+		packet.writeInt(leaderId); // 방장 id
 		packet.writeString(c.getCharName());
 		packet.writeBoolean(c.isReady()); // 준비 상태
 		packet.writeInt(c.getLevel()); // 레벨 
 		packet.writeInt(c.getGrade()); // 티어
-		System.out.println("updateRoom");
 		return packet.getPacket();
 	}
 	

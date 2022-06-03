@@ -4,18 +4,22 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import database.DatabaseConnection;
 import handling.lobby.Lobby;
 import handling.lobby.WaitingRoom;
 import handling.packet.ClientPacketCreator;
+import handling.packet.GamePacketCreator;
 import handling.packet.LobbyPacketCreator;
 import information.LocationInformation;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
+import tools.Manager;
 
 public class MafiaClient {
 	public final static AttributeKey<MafiaClient> CLIENTKEY = AttributeKey.valueOf("mafiaclient_netty");
+	public final static ArrayList<MafiaClient> clients = new ArrayList<MafiaClient>();
 	private int accId;
 	private int id; // 게임 내 고유 id
 	private String accName;
@@ -111,6 +115,7 @@ public class MafiaClient {
 		for (WaitingRoom room : Lobby.getRooms()) {
 			this.getSession().writeAndFlush(LobbyPacketCreator.updateRoom(room));
 		}
+		this.clients.add(this);
 	}
 
 	public void changeLoggedin(int accId, int loggedin) {
@@ -211,39 +216,39 @@ public class MafiaClient {
 	}
 
 	public void warp(int location, WaitingRoom room) { /*  */
+		int before_location = this.location;
+		this.location = location;
 		this.getSession().writeAndFlush(ClientPacketCreator.warp(location, room == null ? -1 : room.getId()));
-		System.out.println(this.location + " -> " + location);
+		System.out.println(before_location + " -> " + location);
 		if (location == LocationInformation.LOBBY) { // 로비로 이동할 때
-			if (this.location == LocationInformation.WAITING_ROOM) { // 대기실 -> 로비
+			if (before_location == LocationInformation.WAITING_ROOM) { // 대기실 -> 로비
 				Lobby.addClient(this);
 				this.getWaitingRoom().exitRoom(this);
 				System.out.println("[MafiaClient] 대기실에서 로비로 이동");
-			} else if (this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 로비
+			} else if (before_location == LocationInformation.GAME_ROOM) { // 게임장 -> 로비
 				Lobby.addClient(this);
-
-			} else if (this.location == -1) { // 로그인 창 -> 로비
+			} else if (before_location == -1) { // 로그인 창 -> 로비
 				Lobby.addClient(this);
 				System.out.println("[MafiaClient] 로그인 창에서 로비로 이동");
 			}
 		} else if (location == LocationInformation.WAITING_ROOM) { // 대기실로 이동할 때
-			if (this.location == LocationInformation.LOBBY) { // 로비 -> 대기실
-				if (room.enterRoom(this)) {
-					System.out.println("[MafiaClient] 로비에서 대기실로 이동");
-				} else {
-					System.out.println("[MafiaClient] 로비 -> 대기실 이동 실패");
+			if (before_location == LocationInformation.LOBBY) { // 로비 -> 대기실
+				if(!room.enterRoom(this)) {
+					this.location = before_location;
+					this.getSession().writeAndFlush(ClientPacketCreator.warp(before_location, -1));
 				}
+				
 			} else if (this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 대기실
 				System.out.println("[MafiaClient] 게임장에서 대기실로 이동");
 
 			}
 
 		} else if (location == LocationInformation.GAME_ROOM) { // 게임장으로 이동할 때
-			if (this.location == LocationInformation.WAITING_ROOM) { // 대기실 -> 게임장
+			if (before_location == LocationInformation.WAITING_ROOM) { // 대기실 -> 게임장
 				System.out.println("[MafiaClient] 대기실에서 게임장으로 이동");
 
 			}
 		}	
-		this.location = location;
 		System.out.println("이동 완료");
 	}
 
@@ -327,6 +332,12 @@ public class MafiaClient {
 		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title, msg, 0));
 	}
 
+	public void showJobCard(int job) {
+		if(this.getLocation() == LocationInformation.GAME_ROOM)
+			this.getSession().writeAndFlush(GamePacketCreator.showJobCard(job));
+		else
+			System.out.println("[MafiaClient] 게임장 외에는 띄울 수 없습니다.");
+	}
 	public int getGradePoint() {
 		return gradePoint;
 	}

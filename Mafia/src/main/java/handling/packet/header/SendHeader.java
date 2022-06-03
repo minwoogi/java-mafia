@@ -28,4 +28,6 @@ public class SendHeader {
     public static final int START_GAME = 24; // 게임 시작 시 유저 정보 전송(유저 수, id, number)
     public static final int WHAT_DATE = 25; // 게임 중 몇 번 째 날인지
     public static final int LEADER = 26; // 방장 변경 여부
+    public static final int SET_IMAGE = 27;
+    public static final int SHOW_JOB_CARD = 28; // 직업 분배 후 띄울 메시지 (int 직업코드)
 }

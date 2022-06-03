@@ -33,4 +33,9 @@ public class GamePacketCreator {
 		return packet.getPacket();		
 	}
 	
+	public static byte[] showJobCard(int job) {
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.SHOW_JOB_CARD);
+		packet.writeInt(job);
+		return packet.getPacket();		
+	}
 }

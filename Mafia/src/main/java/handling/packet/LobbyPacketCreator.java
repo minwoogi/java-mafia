@@ -31,9 +31,7 @@ public class LobbyPacketCreator {
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.LOBBY_USERS);
 		packet.writeInt(Lobby.getClients().size());
 		for(MafiaClient c : Lobby.getClients()) {
-			packet.writeInt(c.getAccId()); // id 값
 			packet.writeString(c.getCharName()); // 닉네임
-			packet.writeInt(c.getLevel()); // 레벨
 		}
 		return packet.getPacket();
 	}
