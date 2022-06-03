@@ -98,7 +98,6 @@ public class WaitingRoomPanel extends JPanel {
 				stateBtn.setIcon(new ImageIcon("btnImg/stateTrue.png"));
 			}
 		}
-		System.out.println("setRoomInfTf");
 	}
 
 	public void setLeader() {

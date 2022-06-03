@@ -29,4 +29,10 @@ public class WaitingRoomPacket {
 		return writer.getPacket();
 	}
 	
+	public static byte[] makeinviteClickPacket(int start) { // * 게임시작 정보 만드는 패킷 * //
+		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.LOBBY_USERS);
+		writer.writeInt(start);
+		return writer.getPacket();
+	}
+	
 }

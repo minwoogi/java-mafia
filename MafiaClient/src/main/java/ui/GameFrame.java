@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,6 +22,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
 import handling.game.GameHandler;
 import handling.netty.ClientHandler;
 import handlinig.packet.GamePacket;
@@ -39,8 +43,10 @@ public class GameFrame extends JFrame {
 	private JScrollPane scroll;
 	private JButton page;
 	private JTextField nightInf;
+	private JButton vote;
 	
-	HashMap<Integer,JButton> btnMap = new HashMap<>();
+	public static HashMap<Integer,JButton> btnMap = new HashMap<>();
+	public static HashMap<JButton,Integer> btnState = new HashMap<>(); //1선택 0선택X
 
 	public JPanel getVotePanel() {
 		return votePanel;
@@ -97,6 +103,7 @@ public class GameFrame extends JFrame {
 		nightInf = new JTextField();
 		timer = new JTextField();
 		page = new JButton(new ImageIcon("btnImg/rightArrow.png"));
+		vote = new JButton(new ImageIcon("btnImg/vote.png"));
 
 	}
 
@@ -114,49 +121,9 @@ public class GameFrame extends JFrame {
 		doubtPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 21, 15));
 		doubtPanel.setVisible(false);
 
-		Font btnFont = new Font("", Font.BOLD, 15);
-
-		JButton btn1 = new JButton("No.1", new ImageIcon("job/1.png"));
-		btn1.setPreferredSize(new Dimension(80, 80));
-		btn1.setHorizontalTextPosition(JButton.CENTER);
-		btn1.setFont(btnFont);
-		btn1.setForeground(Color.red);
-		btnInvisible(btn1);
-		lineOverRap(btn1);
-		btn1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ShowMessage doubt = new ShowMessage();
-				doubt.doubtJob(btn1);
-			}
-		});
-
-		JButton btn2 = new JButton(new ImageIcon("job/2.png"));
-		btn2.setPreferredSize(new Dimension(80, 80));
-		JButton btn3 = new JButton(new ImageIcon("job/4.png"));
-		btn3.setPreferredSize(new Dimension(80, 80));
-		JButton btn4 = new JButton(new ImageIcon("job/0.png"));
-		btn4.setPreferredSize(new Dimension(80, 80));
-		JButton btn5 = new JButton();
-		btn5.setPreferredSize(new Dimension(80, 80));
-		JButton btn6 = new JButton();
-		btn6.setPreferredSize(new Dimension(80, 80));
-		JButton btn7 = new JButton();
-		btn7.setPreferredSize(new Dimension(80, 80));
-		JButton btn8 = new JButton();
-		btn8.setPreferredSize(new Dimension(80, 80));
-		JButton btn9 = new JButton();
-		btn9.setPreferredSize(new Dimension(80, 80));
-		votePanel.add(btn1);
-		votePanel.add(btn2);
-		votePanel.add(btn3);
-		votePanel.add(btn4);
-		votePanel.add(btn5);
-		votePanel.add(btn6);
-		votePanel.add(btn7);
-		votePanel.add(btn8);
-		votePanel.add(btn9);
 
 		btnInvisible(sendBtn);
+		btnInvisible(vote);
 		sendBtn.setBounds(420, 500, 70, 50);
 		sendBtn.setPressedIcon(new ImageIcon("btnImg/gameSendPush.png"));
 
@@ -197,8 +164,22 @@ public class GameFrame extends JFrame {
 		timer.setForeground(Color.WHITE);
 		timer.setHorizontalAlignment(JTextField.CENTER);
 		timer.setEnabled(false);
+		
+		vote.setBounds(233, 555,93, 38);
+		vote.setPressedIcon(new ImageIcon("btnImg/votePush.png"));
+		vote.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Iterator<Integer> mapIter = GameHandler.getGameFrame().btnMap.keySet().iterator();
+				while(mapIter.hasNext()){
+					Integer key = mapIter.next();             
+					if(GameHandler.getGameFrame().btnState.get(GameHandler.getGameFrame().btnMap.get(key)) == 1) {
+						ClientHandler.send(GamePacket.makeVotePacket(key));					
+					}
+		        }
+			}
+		});
 
-		page.setBounds(255, 555, 35, 35);
+		page.setBounds(500, 380, 35, 35);
 		page.setPressedIcon(new ImageIcon("btnImg/rightArrowPush.png"));
 		btnInvisible(page);
 
@@ -207,11 +188,15 @@ public class GameFrame extends JFrame {
 				if (votePanel.isVisible()) {
 					votePanel.setVisible(false);
 					doubtPanel.setVisible(true);
+					vote.setVisible(false);
+					page.setBounds(15, 380, 35, 35);
 					page.setIcon(new ImageIcon("btnImg/leftArrow.png"));
 					page.setPressedIcon(new ImageIcon("btnImg/leftArrowPush.png"));
 				} else {
 					votePanel.setVisible(true);
 					doubtPanel.setVisible(false);
+					vote.setVisible(true);
+					page.setBounds(500, 380, 35, 35);
 					page.setIcon(new ImageIcon("btnImg/rightArrow.png"));
 					page.setPressedIcon(new ImageIcon("btnImg/rightArrowPush.png"));
 				}
@@ -227,37 +212,6 @@ public class GameFrame extends JFrame {
 
 	}
 
-	public static void lineOverRap(JButton btn) {
-		String text = "<html><body><center>";
-		char[] arr = btn.getText().toCharArray();
-		if (btn.getText().length() >= 8) {
-			for (int i = 0; i < 4 ; i++) {
-				text += arr[i];
-			}
-			text += "<br>";
-			for (int i = 4; i < 8; i++) {
-				text += arr[i];
-			}
-			text += "<br>";
-			for(int i=8; i<arr.length; i++) {
-				text += arr[i];
-			}
-			text += "</center></body></html>";
-			btn.setText(text);
-
-		} else if (btn.getText().length() >= 4) {
-			for (int i = 0; i < 4; i++) {
-				text += arr[i];
-			}
-			text += "<br>";
-			for (int i = 4; i < arr.length; i++) {
-				text += arr[i];
-			}
-			text += "</center></body></html>";
-			btn.setText(text);
-		}
-	}
-
 	public void addComponents() {
 		add(leftPanel);
 		add(rightPanel);
@@ -271,6 +225,7 @@ public class GameFrame extends JFrame {
 		rightPanel.add(votePanel);
 		rightPanel.add(page);
 		rightPanel.add(doubtPanel);
+		rightPanel.add(vote);
 	}
 
 	public void btnInvisible(JButton btn) { // * 버튼 투명화(이미지 보이게) * //

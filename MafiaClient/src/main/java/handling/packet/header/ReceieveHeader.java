@@ -27,6 +27,7 @@
 	    public static final int SHOW_MESSAGE = 22; // 메시지 띄우기
 	    public static final int DEAD_PLAYER = 23; // 죽은 사람 표시 
 	    public static final int LEADER = 26; // * 방장
-	    public static final int START_GAME = 27; // * 게임시작
-	    public static final int SHOW_JOBCARD = 28; // * 게임시작시 직업 알려주기
+	    public static final int START_GAME = 27; // 게임시작
+	    public static final int SHOW_JOBCARD = 28; // 게임시작시 직업 알려주기
+	    public static final int SET_IMAGE = 29; // 직업 이미지 설정
 	}

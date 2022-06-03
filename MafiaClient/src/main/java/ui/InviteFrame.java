@@ -36,7 +36,8 @@ public class InviteFrame extends JFrame {
 		FrameHandler.setInviteFrame(this);
 		setSize(350, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocation(FrameLocation.X, FrameLocation.Y);
+		//setLocation(FrameLocation.X, FrameLocation.Y);
+		setLocationRelativeTo(null);
 		setUndecorated(true);
 
 		newComponents();
@@ -103,19 +104,19 @@ public class InviteFrame extends JFrame {
 
 		public InviteRowsPanel() {
 			setLayout(new GridLayout(0, 1, 0, 0));
-			InviteUserPanel userPanel = new InviteUserPanel("minwook");
-			InviteUserPanel userPanel2 = new InviteUserPanel("minwook");
-			InviteUserPanel userPanel3 = new InviteUserPanel("minwook");
-			InviteUserPanel userPanel4 = new InviteUserPanel("minwook");
-			InviteUserPanel userPanel5 = new InviteUserPanel("minwook");
-			InviteUserPanel userPanel6 = new InviteUserPanel("minwook");
-
-			addUserList(userPanel);
-			addUserList(userPanel2);
-			addUserList(userPanel3);
-			addUserList(userPanel4);
-			addUserList(userPanel5);
-			addUserList(userPanel6);
+//			InviteUserPanel userPanel = new InviteUserPanel("minwook");
+//			InviteUserPanel userPanel2 = new InviteUserPanel("minwook");
+//			InviteUserPanel userPanel3 = new InviteUserPanel("minwook");
+//			InviteUserPanel userPanel4 = new InviteUserPanel("minwook");
+//			InviteUserPanel userPanel5 = new InviteUserPanel("minwook");
+//			InviteUserPanel userPanel6 = new InviteUserPanel("minwook");
+//
+//			addUserList(userPanel);
+//			addUserList(userPanel2);
+//			addUserList(userPanel3);
+//			addUserList(userPanel4);
+//			addUserList(userPanel5);
+//			addUserList(userPanel6);
 			setVisible(true);
 
 		}

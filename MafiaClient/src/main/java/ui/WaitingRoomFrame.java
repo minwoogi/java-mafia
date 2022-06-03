@@ -247,6 +247,12 @@ public class WaitingRoomFrame extends JFrame {
 				FrameHandler.quitWaittingFrame();
 			}
 		});
+		inviteBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ClientHandler.send(WaitingRoomPacket.makeinviteClickPacket(1));
+				new InviteFrame();
+			}
+		});
 		
 		readyBtn.addActionListener(new ReadyBtnHandler());
 	}

@@ -157,12 +157,22 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			ClientInf.setLeader(isLeader);
 			break;
 		}
-		case ReceieveHeader.INVITE_USER:{ // * 초대하기 유저 정보 * //
-			String nickName = reader.readString();
-			FrameHandler.addInvteUser(nickName);
+		case ReceieveHeader.LOBBY_USERS:{ // * 초대하기 유저 정보 * //
+			int users = reader.readInt();
+			for(int i=0; i<users; i++) {
+				String nickName = reader.readString();
+				FrameHandler.addInvteUser(nickName);				
+			}
 			break;
 		}
 		case ReceieveHeader.START_GAME:{ // * 게임 시작 * //
+			int people = reader.readInt(); //총 인원수
+			int gameNumber = reader.readInt(); // client 게임 넘버
+			ClientInf.setGameNumber(gameNumber);
+			for(int i=1; i<=people; i++) {
+				GameHandler.addPersonList(GameHandler.getGameFrame().getVotePanel(),i);
+				GameHandler.addDoubtList(GameHandler.getGameFrame().getDoubtPanel(),i);
+			}
 			break;
 		}
 		case ReceieveHeader.SHOW_JOBCARD:{
@@ -170,6 +180,16 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			ShowMessage show = new ShowMessage();
 			show.showJobCard(jobNum);
 			break;
+		}
+		case ReceieveHeader.SET_IMAGE:{
+			int gameNumber = reader.readInt();
+			int job = reader.readInt();
+			GameHandler.jobImgSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);        
+		}
+		case ReceieveHeader.DEAD_PLAYER:{
+			int gameNumber = reader.readInt();
+			int job = reader.readInt();
+			GameHandler.deadBtnSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);
 		}
 		case ReceieveHeader.TIMER: {
 			long remainTime = reader.readLong();
@@ -179,10 +199,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		case ReceieveHeader.DAY_AND_NIGHT: { // * 밤 낮 정보 * //
 			boolean isNight = reader.readBoolean();
 			int day = reader.readInt();
-			GameHandler.setNightText(header, GameHandler.getGameFrame().getNightInf());
+			GameHandler.setNightText(isNight,day, GameHandler.getGameFrame().getNightInf());
 			break;
 		}
 		case ReceieveHeader.VOTE: {
+			
 			break;
 		}
 		case ReceieveHeader.CHAT: {

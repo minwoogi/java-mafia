@@ -9,7 +9,16 @@ public class ClientInf {
 	private static int tier;
 	private static boolean readyState;
 	private static boolean isLeader;
+	private static int gameNumber;
 	
+	public static int getGameNumber() {
+		return gameNumber;
+	}
+
+	public static void setGameNumber(int gameNumber) {
+		ClientInf.gameNumber = gameNumber;
+	}
+
 	public static boolean isLeader() {
 		return isLeader;
 	}

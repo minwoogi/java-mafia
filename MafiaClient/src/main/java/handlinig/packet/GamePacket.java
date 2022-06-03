@@ -12,9 +12,9 @@ public class GamePacket {
 		return writer.getPacket();
 	}
 	
-	public static byte[] makeVotePacket(String nickName) {
+	public static byte[] makeVotePacket(int gameNumber) {
 		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.VOTE);
-		writer.writeString(nickName);
+		writer.writeInt(gameNumber);
 		return writer.getPacket();
 	}
 }

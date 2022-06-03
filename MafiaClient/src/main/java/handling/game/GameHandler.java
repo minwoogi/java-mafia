@@ -5,14 +5,19 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
 import handling.netty.ClientHandler;
 import handlinig.packet.GamePacket;
+import information.ClientInf;
 import ui.GameFrame;
 import ui.ShowMessage;
 
@@ -32,54 +37,67 @@ public class GameHandler {
 		VoteTimer voteTimer = new VoteTimer(remainTime);
 	}
 
-	public static void sendVotePerson(String nickName) { // * 투표한 사람 서버로 전송 * //
-		ClientHandler.send(GamePacket.makeVotePacket(nickName));
-	}
-
 	public void setMafiaMode() { // * 마피아 모드 설정 * //
 		gameFrame.getChatTf().setForeground(Color.RED);
 	}
 
-	public static void setNightText(int day, JTextField nightTf) { // * 몇번째 밤인지 알림 * //
-		nightTf.setText(day + "번째 밤");
+	public static void setNightText(boolean isNight,int day, JTextField nightTf) { // * 몇번째 밤인지 낮인지 알림 * //
+		if(isNight) {
+			nightTf.setText(day + "번째 밤");			
+		}else {
+			nightTf.setText(day+ "번째 낮");
+		}
 	}
 
 	public static void addMsg(String nickName, String text, JTextArea chatTa) { // * 채팅 올리기 * //
 		chatTa.setText(chatTa.getText() + "\n" + nickName + ": " + text + "\n");
 	}
 
-	public static void addPersonList(JPanel panel, String nickName) {
+	public static void addPersonList(JPanel panel, int gameNumber) {
 		JButton btn = new JButton(new ImageIcon("job/4.png")); // * 물음표 아이콘 * //
-		personBtnSetting(btn, nickName);
+		personBtnSetting(btn, gameNumber+"");
+		if(ClientInf.getGameNumber() == gameNumber) {
+			setTextMe(btn);
+		}
+		GameHandler.getGameFrame().btnMap.put(gameNumber, btn);
+		GameHandler.getGameFrame().btnState.put(btn,0);
 		panel.add(btn);
 	}
 
-	public static void addDoubtList(JPanel panel, String nickName) {
+	public static void addDoubtList(JPanel panel, int gameNumber) {
 		JButton btn = new JButton(new ImageIcon("job/4.png")); // * 물음표 아이콘 * //
-		doubtBtnSetting(btn, nickName);
+		doubtBtnSetting(btn, gameNumber+"");
+		if(ClientInf.getGameNumber() == gameNumber) {
+			setTextMe(btn);
+		}
 		panel.add(btn);
 	}
 
-	public static void personBtnSetting(JButton btn, String nickName) { // * 인원 버튼 세팅 * //
+	public static void personBtnSetting(JButton btn, String gameNumber) { // * 인원 버튼 세팅 * //
+		btn.setPreferredSize(new Dimension(80, 80));
+		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
+		btn.setFont(new Font("", Font.BOLD, 15));
+		btn.setForeground(Color.RED);
+		btn.setFocusPainted(false);
+		btn.setContentAreaFilled(false);
+		btn.setText("No."+gameNumber);
+		btn.addActionListener(new voteBtnHandler());
+	}
+	
+	public static void setTextMe(JButton btn) { // * 내 버튼 ME 로 설정 
+		btn.setText("ME");
+	}
+
+	public static void doubtBtnSetting(JButton btn, String gameNumber) { // * 직업 의심 버튼 세팅 * //
 		btn.setPreferredSize(new Dimension(80, 80));
 		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 		btn.setFont(new Font("", Font.BOLD, 15));
 		btn.setFocusPainted(false);
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
-		btn.setText(nickName);
-		GameFrame.lineOverRap(btn);
-	}
-
-	public static void doubtBtnSetting(JButton btn, String number) { // * 직업 의심 버튼 세팅 * //
-		btn.setPreferredSize(new Dimension(80, 80));
-		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
-		btn.setFont(new Font("", Font.BOLD, 15));
-		btn.setFocusPainted(false);
-		btn.setContentAreaFilled(false);
-		btn.setBorderPainted(false);
-		btn.setText(number);
-		GameFrame.lineOverRap(btn);
+		btn.setForeground(Color.RED);
+		btn.setText("No."+gameNumber);
+		
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ShowMessage choiceJob = new ShowMessage();
@@ -97,7 +115,33 @@ public class GameHandler {
 		btn.setIcon(new ImageIcon("job/" + job + ".png"));
 		btn.setPressedIcon(new ImageIcon("job/"+job+".Push.png"));
 	}
-
+	
+	public static void deadBtnSetting(JButton btn,int job) {
+		btn.setIcon(new ImageIcon("job/dead" + job + ".png"));
+		btn.setPressedIcon(new ImageIcon("job/dead"+job+".png"));
+		btn.setEnabled(false);
+	}
+	
+	public static void initChoicedBtn() {  // * 버튼 모두 선택안한걸로 초기화 * //
+		Iterator<Integer> mapIter = GameHandler.getGameFrame().btnMap.keySet().iterator();
+		while(mapIter.hasNext()){
+			Integer key = mapIter.next();
+			GameHandler.getGameFrame().btnState.put(GameHandler.getGameFrame().btnMap.get(key),0);             
+			GameHandler.getGameFrame().btnMap.get(key).setBorder(new EmptyBorder(5,3,5,3));
+        }
+		
+	}
+	
+	static class voteBtnHandler implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			initChoicedBtn();
+			JButton btn = (JButton)e.getSource();
+			LineBorder border = new LineBorder(Color.RED,3);
+		    btn.setBorder(border);
+		    GameHandler.getGameFrame().btnState.put(btn,1);
+		}
+	}
+	
 	static class VoteTimer extends Thread { // * timer * //
 		long time, startTime, offTime;
 		String timer;
