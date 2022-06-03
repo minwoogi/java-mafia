@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -37,6 +39,8 @@ public class GameFrame extends JFrame {
 	private JScrollPane scroll;
 	private JButton page;
 	private JTextField nightInf;
+	
+	HashMap<Integer,JButton> btnMap = new HashMap<>();
 
 	public JPanel getVotePanel() {
 		return votePanel;

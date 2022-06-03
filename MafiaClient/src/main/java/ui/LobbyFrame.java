@@ -77,7 +77,7 @@ public class LobbyFrame extends JFrame {
 		setTitle("Roby");
 		setSize(1100, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocation(FrameLocation.X,FrameLocation.Y);
+		setLocationRelativeTo(null);;
 		setResizable(false);
 		setLayout(new GridLayout(0, 2));
 
@@ -248,7 +248,7 @@ public class LobbyFrame extends JFrame {
 
 		searchRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FrameHandler.removeAllPanel();
+				//FrameHandler.removeAllPanel();
 				if (!searchRoomTf.getText().equals("")) {
 					String keyword = searchRoomTf.getText();
 					if (roomList.containsValue(keyword)) {

@@ -71,14 +71,14 @@ public class GameHandler {
 		GameFrame.lineOverRap(btn);
 	}
 
-	public static void doubtBtnSetting(JButton btn, String nickName) { // * 직업 의심 버튼 세팅 * //
+	public static void doubtBtnSetting(JButton btn, String number) { // * 직업 의심 버튼 세팅 * //
 		btn.setPreferredSize(new Dimension(80, 80));
 		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 		btn.setFont(new Font("", Font.BOLD, 15));
 		btn.setFocusPainted(false);
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
-		btn.setText(nickName);
+		btn.setText(number);
 		GameFrame.lineOverRap(btn);
 		btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -130,10 +130,7 @@ public class GameHandler {
 		}
 
 		public void run() {
-			while (true) {
-				if (timeReceieve == 0) {
-					stopThread();
-				}
+			while (remainTime > 0) {
 				update();
 				try {
 					sleep(1000);

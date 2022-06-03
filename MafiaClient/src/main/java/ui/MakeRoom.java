@@ -45,7 +45,7 @@ public class MakeRoom extends JFrame {
 		cancelBtn = new JButton(new ImageIcon("btnImg/makeRoomCancel.png"));
 		makeRoomBtn = new JButton(new ImageIcon("btnImg/makeRoomBtn.png"));
 		roomNameTf = new JTextField("πÊ¡¶∏Ò");
-		Integer[] numberPeople = { 5, 6, 7, 8, 9 };
+		Integer[] numberPeople = { 5, 6, 7, 8, 9,10 };
 		numberOfPeople = new JComboBox<Integer>(numberPeople);
 		background = new ImageIcon("backgroundImage/makeRoomBack.png").getImage();
 	}

@@ -19,6 +19,7 @@ import information.FrameLocation;
 import information.LocationInformation;
 import information.RoomInf;
 import information.UserInf;
+import ui.WaitingRoomFrame.ReadyBtnHandler;
 import information.ClientInf;
 
 
@@ -125,16 +126,15 @@ public class FrameHandler {
 		tf.setForeground(Color.RED);
 	}
 	
-	public static void setLeaderMode(JButton btn) { // * 방장이면 시작 버튼으로 변경하고 닉네임앞에 [L]붙이기 * // 
-		btn.setIcon(new ImageIcon("btnImg/startGame.png"));
-		btn.setPressedIcon(new ImageIcon("btnImg/startGamePush.png"));
-		FrameHandler.getWaitingRoomFrame().userPanel.get(ClientInf.getUserId()).getStateBtn().setIcon(new ImageIcon(""
-				+ "btnImg/leader.png"));
-		btn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ClientHandler.send(LobbyPacket.makeGameStartPacket(1));
-			}
-		});
+	public static void setLeaderMode(int superId) { // * 방장이면 시작 버튼으로 변경하고 닉네임앞에 [L]붙이기 * //
+		if(ClientInf.isLeader()) {
+			FrameHandler.getWaitingRoomFrame().getReadyBtn().setIcon(new ImageIcon("btnImg/startGame.png"));
+			FrameHandler.getWaitingRoomFrame().getReadyBtn().setPressedIcon(new ImageIcon("btnImg/startGamePush.png"));
+		}
+		try{
+			FrameHandler.getWaitingRoomFrame().userPanel.get(superId).setLeader();
+		}catch(NullPointerException e) {
+		}
 	}
 	public static void addInvteUser(String nickName) {
 		InviteUserPanel inviteUserPanel = new InviteUserPanel(nickName);
@@ -174,8 +174,6 @@ public class FrameHandler {
 	}
 	
 	public static void quitLoginFrame() {
-		FrameLocation.X = FrameHandler.getLoginFrame().frame.getX();
-		FrameLocation.Y = FrameHandler.getLoginFrame().frame.getY();
 		loginFrame.frame.dispose();
 	}
 	

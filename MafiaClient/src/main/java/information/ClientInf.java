@@ -8,7 +8,16 @@ public class ClientInf {
 	private static int exp;
 	private static int tier;
 	private static boolean readyState;
+	private static boolean isLeader;
 	
+	public static boolean isLeader() {
+		return isLeader;
+	}
+
+	public static void setLeader(boolean isLeader) {
+		ClientInf.isLeader = isLeader;
+	}
+
 	public static boolean isReadyState() {
 		return readyState;
 	}

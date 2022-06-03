@@ -18,7 +18,11 @@ import java.util.HashMap;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.plaf.basic.BasicOptionPaneUI;
+import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
+
 import handling.netty.ClientHandler;
+import handlinig.packet.LobbyPacket;
 import handlinig.packet.WaitingRoomPacket;
 import information.ClientInf;
 import information.FrameLocation;
@@ -244,8 +248,14 @@ public class WaitingRoomFrame extends JFrame {
 			}
 		});
 		
-		readyBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		readyBtn.addActionListener(new ReadyBtnHandler());
+	}
+	
+	class ReadyBtnHandler implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			if(ClientInf.isLeader()) {
+				ClientHandler.send(WaitingRoomPacket.makeGameStartPacket(1));
+			}else {
 				if (ClientInf.isReadyState()) {
 					System.out.println("준비완료");
 					ClientInf.setReadyState(false);
@@ -260,7 +270,8 @@ public class WaitingRoomFrame extends JFrame {
 					readyBtn.setPressedIcon(new ImageIcon("btnImg/readyBtnPush.png"));
 				}
 			}
-		});
+		}
+		
 	}
 	
 

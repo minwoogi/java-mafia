@@ -6,13 +6,21 @@ public class UserInf {
 	private boolean isReady;
 	private int level;
 	private int tier;
-
+	private boolean isLeader;
 	public UserInf(int userId, String userNick, boolean isReady, int level, int tier) {
 		this.userId = userId;
 		this.userNick = userNick;
 		this.isReady = isReady;
 		this.level = level;
 		this.tier = tier;
+	}
+	
+	public boolean isLeader() {
+		return isLeader;
+	}
+
+	public void setLeader(boolean isLeader) {
+		this.isLeader = isLeader;
 	}
 
 	public int getUserId() {

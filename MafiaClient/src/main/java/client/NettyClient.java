@@ -21,7 +21,7 @@ import ui.LoginFrame;
 public class NettyClient {
 
 	private final static int PORT = 7777;
-	private final static String HOST = "localhost";  
+	private final static String HOST = "211.52.166.160";  
 
 	public NettyClient() {
 		try {

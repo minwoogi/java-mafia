@@ -11,6 +11,7 @@ import javax.swing.*;
 
 import handling.netty.ClientHandler;
 import handlinig.packet.WaitingRoomPacket;
+import information.ClientInf;
 import information.RoomInf;
 import information.UserInf;
 
@@ -24,7 +25,6 @@ public class WaitingRoomPanel extends JPanel {
 	private JButton tierTf; // * 티어 * //
 	private JButton nickNameTf; // * 닉네임 *//
 	private JButton stateBtn; // * 준비상태 * //
-
 
 	private Font tfFont;
 
@@ -70,8 +70,8 @@ public class WaitingRoomPanel extends JPanel {
 		tierTf.setPreferredSize(new Dimension(90, 50));
 		nickNameTf.setPreferredSize(new Dimension(200, 50));
 		stateBtn.setPreferredSize(new Dimension(100, 50));
-		
-		levelTf.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데  
+
+		levelTf.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 		tierTf.setHorizontalTextPosition(JButton.CENTER);
 		nickNameTf.setHorizontalTextPosition(JButton.CENTER);
 
@@ -79,21 +79,31 @@ public class WaitingRoomPanel extends JPanel {
 		btnInvisible(tierTf);
 		btnInvisible(nickNameTf);
 		btnInvisible(stateBtn);
-		
+
 	}
-	
+
 	public void setRoomInfTf(UserInf userInf) {
-		levelTf.setText("LV."+userInf.getLevel());
-		tierTf.setText(userInf.getTier()+"");
+		levelTf.setText("LV." + userInf.getLevel());
+		tierTf.setText(userInf.getTier() + "");
 		nickNameTf.setText(userInf.getUserNick());
-		if (userInf.isReady() == false) {
-			stateBtn.setIcon(new ImageIcon("btnImg/stateFalse.png"));
-		} else {
-			stateBtn.setIcon(new ImageIcon("btnImg/stateTrue.png"));
+		if(ClientInf.getUserId() == userInf.getUserId() && ClientInf.isLeader()) {
+			FrameHandler.getWaitingRoomFrame().getReadyBtn().setIcon(new ImageIcon("btnImg/startGame.png"));
+			FrameHandler.getWaitingRoomFrame().getReadyBtn().setPressedIcon(new ImageIcon("btnImg/startGamePush.png"));
+		}if(userInf.isLeader()) {
+			setLeader();
+		}else {
+			if (userInf.isReady() == false) {
+				stateBtn.setIcon(new ImageIcon("btnImg/stateFalse.png"));
+			} else {
+				stateBtn.setIcon(new ImageIcon("btnImg/stateTrue.png"));
+			}
 		}
+		System.out.println("setRoomInfTf");
 	}
-	
-	public void setLeaderNick(WaitingRoomPanel waitingRoomPanel) {
+
+	public void setLeader() {
+		stateBtn.setIcon(new ImageIcon("btnImg/leader.png"));
+		System.out.println("complete");
 	}
 
 	public void addComponents() {
@@ -108,18 +118,15 @@ public class WaitingRoomPanel extends JPanel {
 		this.add(joinRoomPanel);
 
 	}
-	
-	
 
 	public void btnInvisible(JButton btn) { // * 버튼 투명화(이미지 보이게) * //
 		btn.setFocusPainted(false);
 		btn.setContentAreaFilled(false);
 		btn.setBorderPainted(false);
 	}
-	
+
 	public JButton getStateBtn() {
 		return stateBtn;
 	}
-
 
 }

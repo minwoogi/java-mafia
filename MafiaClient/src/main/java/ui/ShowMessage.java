@@ -122,7 +122,7 @@ public class ShowMessage extends JFrame {
 		initFrame(title, message, warning);
 	}
 
-	public void letYouKnowYourJob(int job) {
+	public void showJobCard(int job) {
 		setSize(300, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
