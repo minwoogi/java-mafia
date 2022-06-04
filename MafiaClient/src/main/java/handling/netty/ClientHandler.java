@@ -224,8 +224,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			break;
 		}
 		case ReceieveHeader.CLOSE_MESSAGE:{
-			
-			
+			int msgId = reader.readInt();
+			FrameHandler.closeMsg(msgId);
+			break;
 		}
 		default :{
 			System.out.println("[default 헤더 받음]");

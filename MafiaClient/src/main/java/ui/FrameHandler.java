@@ -19,6 +19,7 @@ import information.FrameLocation;
 import information.LocationInformation;
 import information.RoomInf;
 import information.UserInf;
+import ui.ShowMessage.ShowConfirm;
 import ui.WaitingRoomFrame.ReadyBtnHandler;
 import information.ClientInf;
 
@@ -32,6 +33,7 @@ public class FrameHandler {
 	static WaitingRoomFrame waitingRoomFrame;
 	static InviteFrame inviteFrame;
 	static ShowMessage showMessage;
+	static ShowConfirm showConfirm;
 
 //	public static void failedLogin(boolean loginCheck) {
 //		if (loginCheck) {
@@ -190,7 +192,15 @@ public class FrameHandler {
 		waitingRoomFrame.dispose();
 	}
 	
-	
+	public static void closeMsg(int msgId) { // * CLOSE_MESSAGE * //
+		try{
+			if(getShowConfirm().msgId == msgId) {
+				getShowConfirm().dispose();
+			}			
+		}catch(NullPointerException e) {
+			
+		}
+	}
 	
 	public static void warp(int location) {  // * CHANGE_LOCATION * //
 		switch(location) {
@@ -270,6 +280,14 @@ public class FrameHandler {
 	
 	public static ShowMessage getShowMessage() {
 		return FrameHandler.showMessage;
+	}
+	
+	public static ShowConfirm getShowConfirm() {
+		return FrameHandler.showConfirm;
+	}
+	
+	public static void setShowConfirm(ShowConfirm showConfirm) {
+		FrameHandler.showConfirm = showConfirm;
 	}
 
 }

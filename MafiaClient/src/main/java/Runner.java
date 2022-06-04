@@ -3,7 +3,7 @@ import client.NettyClient;
 /**
  *      Mafia_Game_Project
  * 		Running for MafiaClient
- * 		update 2022 - 06 - 03
+ * 		update 2022 - 06 - 05
  * 		made by minwoogi
  *      https://github.com/minwoogi
  * 

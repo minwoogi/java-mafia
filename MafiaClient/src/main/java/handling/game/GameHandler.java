@@ -35,7 +35,7 @@ public class GameHandler {
 
 	public static void setTimer(long remainTime) { // * ÅõÇ¥ ½Ã°£ Å¸ÀÌ¸Ó * //
 		VoteTimer voteTimer = new VoteTimer(remainTime);
-		voteTimer.run();
+		voteTimer.start();
 	}
 
 	public void setMafiaMode() { // * ¸¶ÇÇ¾Æ ¸ğµå ¼³Á¤ * //
@@ -57,17 +57,19 @@ public class GameHandler {
 			break;
 		}
 		case 6:{ //»¡°£ ±Û¾¾
-			break;
 			
+			break;
 		}
 		case 7:{ //¹àÀº ÇÏ´Ã»ö ±Û¾¾
+			
 			break;
 		}
 		case 8:{ //È¸»ö ±Û¾¾
+			
 			break;
 		}
 		}
-		chatTa.setText(chatTa.getText() + "\n" +text + "\n");
+		chatTa.append(text + "\n");
 	}
 
 	public static void addPersonList(JPanel panel, int gameNumber) {
@@ -199,6 +201,7 @@ public class GameHandler {
 		}
 
 		public void run() {
+			System.out.println("run");
 			while (remainTime > 0) {
 				update();
 				try {

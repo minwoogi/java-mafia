@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import javax.swing.JTextField;
 import handling.netty.ClientHandler;
 import handlinig.packet.LoginPacket;
+import ui.LoginFrame.SendLoginHandler;
 
 /**
  * frame for login
@@ -116,12 +117,9 @@ public class LoginFrame {
 	}
 
 	public void addActionBtn() {
-		loginBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("["+idTf.getText()+"]");
-				ClientHandler.send(LoginPacket.makeLoginPacket(idTf.getText(), pwdTf.getText()));
-			}
-		});
+		loginBtn.addActionListener(new SendLoginHandler());
+		pwdTf.addActionListener(new SendLoginHandler());
+		idTf.addActionListener(new SendLoginHandler());
 
 		signUpBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -129,6 +127,13 @@ public class LoginFrame {
 				new SignUpFrame();
 			}
 		});
+	}
+	
+	class SendLoginHandler implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+			System.out.println("USER ID : ["+idTf.getText()+"]");
+			ClientHandler.send(LoginPacket.makeLoginPacket(idTf.getText(), pwdTf.getText()));
+		}
 	}
 
 	class MyPanel extends JPanel {

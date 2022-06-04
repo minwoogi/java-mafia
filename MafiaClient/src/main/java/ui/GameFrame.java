@@ -84,13 +84,13 @@ public class GameFrame extends JFrame {
 		newComponents();
 		setComponents();
 		addComponents();
-
+		
+		
 		this.addMouseListener(new MoveWindows());
 		this.addMouseMotionListener(new MoveWindows());
 		setUndecorated(true);
-
 		setVisible(true);
-
+		
 	}
 
 	public void newComponents() {
