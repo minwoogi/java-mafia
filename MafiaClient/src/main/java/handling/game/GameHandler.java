@@ -35,6 +35,7 @@ public class GameHandler {
 
 	public static void setTimer(long remainTime) { // * 투표 시간 타이머 * //
 		VoteTimer voteTimer = new VoteTimer(remainTime);
+		voteTimer.run();
 	}
 
 	public void setMafiaMode() { // * 마피아 모드 설정 * //
@@ -49,12 +50,28 @@ public class GameHandler {
 		}
 	}
 
-	public static void addMsg(String nickName, String text, JTextArea chatTa) { // * 채팅 올리기 * //
-		chatTa.setText(chatTa.getText() + "\n" + nickName + ": " + text + "\n");
+	public static void addMsg(int type, String text, JTextArea chatTa) { // * 채팅 올리기 * //
+		switch(type) {
+		case 5:{ //흰색 글씨
+			
+			break;
+		}
+		case 6:{ //빨간 글씨
+			break;
+			
+		}
+		case 7:{ //밝은 하늘색 글씨
+			break;
+		}
+		case 8:{ //회색 글씨
+			break;
+		}
+		}
+		chatTa.setText(chatTa.getText() + "\n" +text + "\n");
 	}
 
 	public static void addPersonList(JPanel panel, int gameNumber) {
-		JButton btn = new JButton(new ImageIcon("job/4.png")); // * 물음표 아이콘 * //
+		JButton btn = new JButton(); // * 물음표 아이콘 * //
 		personBtnSetting(btn, gameNumber+"");
 		if(ClientInf.getGameNumber() == gameNumber) {
 			setTextMe(btn);
@@ -62,10 +79,12 @@ public class GameHandler {
 		GameHandler.getGameFrame().btnMap.put(gameNumber, btn);
 		GameHandler.getGameFrame().btnState.put(btn,0);
 		panel.add(btn);
+		panel.repaint();
+		panel.revalidate();
 	}
 
 	public static void addDoubtList(JPanel panel, int gameNumber) {
-		JButton btn = new JButton(new ImageIcon("job/4.png")); // * 물음표 아이콘 * //
+		JButton btn = new JButton(); // * 물음표 아이콘 * //
 		doubtBtnSetting(btn, gameNumber+"");
 		if(ClientInf.getGameNumber() == gameNumber) {
 			setTextMe(btn);
@@ -74,6 +93,8 @@ public class GameHandler {
 	}
 
 	public static void personBtnSetting(JButton btn, String gameNumber) { // * 인원 버튼 세팅 * //
+		btn.setIcon(new ImageIcon("job/4.png"));
+		btn.setPressedIcon(new ImageIcon("job/4Push.png"));
 		btn.setPreferredSize(new Dimension(80, 80));
 		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 		btn.setFont(new Font("", Font.BOLD, 15));
@@ -89,6 +110,8 @@ public class GameHandler {
 	}
 
 	public static void doubtBtnSetting(JButton btn, String gameNumber) { // * 직업 의심 버튼 세팅 * //
+		btn.setIcon(new ImageIcon("job/4.png"));
+		btn.setPressedIcon(new ImageIcon("job/4Push.png"));
 		btn.setPreferredSize(new Dimension(80, 80));
 		btn.setHorizontalTextPosition(JButton.CENTER); // 텍스트 가운데
 		btn.setFont(new Font("", Font.BOLD, 15));
@@ -113,7 +136,9 @@ public class GameHandler {
 		// 3 - 의사
 		// 4 - 물음표
 		btn.setIcon(new ImageIcon("job/" + job + ".png"));
-		btn.setPressedIcon(new ImageIcon("job/"+job+".Push.png"));
+		btn.setPressedIcon(new ImageIcon("job/"+job+"Push.png"));
+		btn.revalidate();
+		btn.repaint();
 	}
 	
 	public static void deadBtnSetting(JButton btn,int job) {

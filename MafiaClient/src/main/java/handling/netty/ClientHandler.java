@@ -184,12 +184,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		case ReceieveHeader.SET_IMAGE:{
 			int gameNumber = reader.readInt();
 			int job = reader.readInt();
-			GameHandler.jobImgSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);        
+			GameHandler.jobImgSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);
+			break;
 		}
 		case ReceieveHeader.DEAD_PLAYER:{
 			int gameNumber = reader.readInt();
 			int job = reader.readInt();
 			GameHandler.deadBtnSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);
+			break;
 		}
 		case ReceieveHeader.TIMER: {
 			long remainTime = reader.readLong();
@@ -204,12 +206,13 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		}
 		case ReceieveHeader.VOTE: {
 			
+			
 			break;
 		}
 		case ReceieveHeader.CHAT: {
-			String nickName = reader.readString();
+			int type = reader.readInt();
 			String text = reader.readString();
-			GameHandler.addMsg(nickName, text, GameHandler.getGameFrame().getChatArea());
+			GameHandler.addMsg(type, text, GameHandler.getGameFrame().getChatArea());
 			break;
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //
@@ -219,6 +222,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			int messageId = reader.readInt();
 			ShowMessage showMsg = new ShowMessage(msgType, title, message,messageId);
 			break;
+		}
+		case ReceieveHeader.CLOSE_MESSAGE:{
+			
+			
 		}
 		default :{
 			System.out.println("[default 헤더 받음]");

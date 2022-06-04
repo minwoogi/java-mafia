@@ -30,4 +30,5 @@
 	    public static final int START_GAME = 27; // 게임시작
 	    public static final int SHOW_JOBCARD = 28; // 게임시작시 직업 알려주기
 	    public static final int SET_IMAGE = 29; // 직업 이미지 설정
+	    public static final int CLOSE_MESSAGE = 30; // * msg_id에 맞는 메시지 창 닫기
 	}

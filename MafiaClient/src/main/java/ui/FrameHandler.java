@@ -31,6 +31,7 @@ public class FrameHandler {
 	static LobbyFrame lobbyFrame;
 	static WaitingRoomFrame waitingRoomFrame;
 	static InviteFrame inviteFrame;
+	static ShowMessage showMessage;
 
 //	public static void failedLogin(boolean loginCheck) {
 //		if (loginCheck) {
@@ -261,6 +262,14 @@ public class FrameHandler {
 	
 	public static void setInviteFrame(InviteFrame inviteFrame) {
 		FrameHandler.inviteFrame = inviteFrame;
+	}
+	
+	public static void setShowMessage(ShowMessage showMessage) {
+		FrameHandler.showMessage = showMessage;
+	}
+	
+	public static ShowMessage getShowMessage() {
+		return FrameHandler.showMessage;
 	}
 
 }

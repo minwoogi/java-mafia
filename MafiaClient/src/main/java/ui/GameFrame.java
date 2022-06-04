@@ -44,9 +44,9 @@ public class GameFrame extends JFrame {
 	private JButton page;
 	private JTextField nightInf;
 	private JButton vote;
-	
-	public static HashMap<Integer,JButton> btnMap = new HashMap<>();
-	public static HashMap<JButton,Integer> btnState = new HashMap<>(); //1선택 0선택X
+
+	public static HashMap<Integer, JButton> btnMap = new HashMap<>();
+	public static HashMap<JButton, Integer> btnState = new HashMap<>(); // 1선택 0선택X
 
 	public JPanel getVotePanel() {
 		return votePanel;
@@ -88,7 +88,9 @@ public class GameFrame extends JFrame {
 		this.addMouseListener(new MoveWindows());
 		this.addMouseMotionListener(new MoveWindows());
 		setUndecorated(true);
+
 		setVisible(true);
+
 	}
 
 	public void newComponents() {
@@ -120,7 +122,6 @@ public class GameFrame extends JFrame {
 		doubtPanel.setBackground(new Color(0, 0, 0, 150));
 		doubtPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 21, 15));
 		doubtPanel.setVisible(false);
-
 
 		btnInvisible(sendBtn);
 		btnInvisible(vote);
@@ -164,18 +165,18 @@ public class GameFrame extends JFrame {
 		timer.setForeground(Color.WHITE);
 		timer.setHorizontalAlignment(JTextField.CENTER);
 		timer.setEnabled(false);
-		
-		vote.setBounds(233, 555,93, 38);
+
+		vote.setBounds(233, 555, 93, 38);
 		vote.setPressedIcon(new ImageIcon("btnImg/votePush.png"));
-		vote.addActionListener(new ActionListener() {
+		vote.addActionListener(new ActionListener() { // * 투표버튼 * //
 			public void actionPerformed(ActionEvent e) {
 				Iterator<Integer> mapIter = GameHandler.getGameFrame().btnMap.keySet().iterator();
-				while(mapIter.hasNext()){
-					Integer key = mapIter.next();             
-					if(GameHandler.getGameFrame().btnState.get(GameHandler.getGameFrame().btnMap.get(key)) == 1) {
-						ClientHandler.send(GamePacket.makeVotePacket(key));					
+				while (mapIter.hasNext()) {
+					Integer key = mapIter.next();
+					if (GameHandler.getGameFrame().btnState.get(GameHandler.getGameFrame().btnMap.get(key)) == 1) {
+						ClientHandler.send(GamePacket.makeVotePacket(key));
 					}
-		        }
+				}
 			}
 		});
 
