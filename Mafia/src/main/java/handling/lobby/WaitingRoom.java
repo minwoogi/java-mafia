@@ -6,6 +6,7 @@ import java.util.List;
 import client.MafiaClient;
 import game.MafiaGame;
 import handling.packet.ClientPacketCreator;
+import handling.packet.GamePacketCreator;
 import handling.packet.LobbyPacketCreator;
 import handling.packet.RoomPacketCreator;
 import information.LocationInformation;
@@ -194,11 +195,12 @@ public class WaitingRoom {
 				c.setDead(false);
 				c.warp(LocationInformation.GAME_ROOM); // 게임장으로 이동
 				c.dropMessage(2, "게임을 시작합니다.");
+				c.getSession().writeAndFlush(GamePacketCreator.startGame(this.getOnlines(), id));
 			}
 			this.isStart = true;
 			this.setGame(new MafiaGame(this));
 			Lobby.broadCast(LobbyPacketCreator.updateRoom(this));
-			// 마피아 게임 객체 생성
+			
 		}
 	}
 
@@ -208,15 +210,18 @@ public class WaitingRoom {
 			if (mafiaWin) {
 				if (ServerConstants.isMafia(c.getJob())) {
 					// 마피아 승리 보상
-
+					c.dropMessage(3, "[Victory] 마피아팀이 승리했습니다!");
 				} else {
+					c.dropMessage(3, "[Victory] 시민팀이 패배했습니다!");
 					// 시민팀 패배 보상
 				}
 			} else {
 				if (ServerConstants.isMafia(c.getJob())) {
+					c.dropMessage(3, "[Victory] 마피아팀이 패배했습니다!");
 					// 마피아 패배 보상
 
 				} else {
+					c.dropMessage(3, "[Victory] 시민팀이 승리했습니다!");
 					// 시민팀 승리 보상
 				}
 

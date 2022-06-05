@@ -111,6 +111,7 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 			if (!overlap) {
 				String code = Register.getCertificationCode(); // 인증코드 생성
 				String text = "인증코드는 [ " + code + " ] 입니다. 해당 코드를 인증창에 입력해 주세요.";
+				c.dropMessage(3, text);
 				c.setCertificationCode(code);
 				System.out.println(email + "으로 인증코드를 전송했습니다.");
 				System.out.println(text);
@@ -202,10 +203,11 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 		}
 		case ReceiveHeader.CHAT:
 			String message = pr.readString();
-			c.getWaitingRoom().getGame().dropMessage(5, message);
+			c.getWaitingRoom().getGame().chat(c, message);
 			break;
 		case ReceiveHeader.VOTE:
-
+			int gameNumber = pr.readInt();
+			c.getWaitingRoom().getGame().receiveVote(c, gameNumber);
 			break;
 		case ReceiveHeader.END_TIMER:
 			// 클라측 타이머 종료 시 전송

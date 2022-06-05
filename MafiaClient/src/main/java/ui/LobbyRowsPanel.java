@@ -3,8 +3,6 @@ package ui;
 import java.awt.GridLayout;
 import javax.swing.*;
 
-import information.RoomInf;
-
 /**
  *   RoomPanel을 RowsPanel에 추가
  **/

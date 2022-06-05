@@ -1,13 +1,9 @@
 package tools.packet;
 
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 public class MafiaPacketReader {
 	private final Charset charset = Charset.forName("UTF-8");
@@ -44,24 +40,28 @@ public class MafiaPacketReader {
 	}
 	
 	public final int readInt() {
-        final int byte1 = readByte();
-        final int byte2 = readByte();
-        final int byte3 = readByte();
-        final int byte4 = readByte();
-        return (byte4 << 24) + (byte3 << 16) + (byte2 << 8) + byte1;
+        final byte byte1 = readByte();
+        final byte byte2 = readByte();
+        final byte byte3 = readByte();
+        final byte byte4 = readByte();
+        byte[] bytes = {byte4, byte3, byte2, byte1};
+        return ByteBuffer.wrap(bytes).getInt();
 	}
 	
 	public final long readLong() {
-        final long byte1 = readByte();
-        final long byte2 = readByte();
-        final long byte3 = readByte();
-        final long byte4 = readByte();
-        final long byte5 = readByte();
-        final long byte6 = readByte();
-        final long byte7 = readByte();
-        final long byte8 = readByte();
-        return ((byte8 << 56) + (byte7 << 48) + (byte6 << 40) + (byte5 << 32) + (byte4 << 24) + (byte3 << 16)
-                + (byte2 << 8) + byte1);
+        final byte byte1 = readByte();
+        final byte byte2 = readByte();
+        final byte byte3 = readByte();
+        final byte byte4 = readByte();
+        final byte byte5 = readByte();
+        final byte byte6 = readByte();
+        final byte byte7 = readByte();
+        final byte byte8 = readByte();
+        byte[] bytes = {byte8, byte7, byte6, byte5, byte4, byte3, byte2, byte1};
+        ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
+        buffer.put(bytes);
+        buffer.flip();
+        return buffer.getLong();
 	}
 	
 	public final String readString() {

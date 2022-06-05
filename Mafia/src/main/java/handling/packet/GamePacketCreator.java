@@ -12,24 +12,26 @@ public class GamePacketCreator {
 	 * 3. 
 	 *
 	*/
+
+	public static byte[] startGame(int people, int id) {
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.START_GAME);
+		packet.writeInt(people);
+		packet.writeInt(id);
+		return packet.getPacket();
+	}
 	
-	
-	public static byte[] remainTime(long time) { 
+	public static byte[] remainTime(int time) { 
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.TIMER);
 		packet.writeLong(time);
 		return packet.getPacket();
 	}
 	
-	public static byte[] nowDays(int days) { // ¸î ¹ø Â° ³¯ÀÎÁö Àü¼Û
-		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.WHAT_DATE);
-		packet.writeInt(days);
-		return packet.getPacket();
-	}
 	
-	public static byte[] changeDayAndNight(boolean night) { // ¹ãÀÌ¸é true
+	public static byte[] changeDayAndNight(boolean night, int day) { // ¹ãÀÌ¸é true
 		// ¸¶ÇÇ¾Æ °ÔÀÓÀå ³»ÀÇ ¹ã ³·À» ¼³Á¤ÇÑ´Ù.
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.DAY_AND_NIGHT);
 		packet.writeBoolean(night);
+		packet.writeInt(day);
 		return packet.getPacket();		
 	}
 	
@@ -37,5 +39,32 @@ public class GamePacketCreator {
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.SHOW_JOB_CARD);
 		packet.writeInt(job);
 		return packet.getPacket();		
+	}
+	
+	public static byte[] chat(int type, String msg) {
+		/*
+		 * 5 : Èò»ö ±Û¾¾
+		 * 6 : »¡°£»ö ±Û¾¾
+		 * 7 : ¹àÀº ÇÏ´Ã»ö ±Û¾¾
+		 * 8 : È¸»ö ±Û¾¾
+		 */
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.CHAT);
+		packet.writeInt(type);
+		packet.writeString(msg);
+		return packet.getPacket();
+	}
+	
+	public static byte[] setImage(int id, int job) {
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.SET_IMAGE);
+		packet.writeInt(id);
+		packet.writeInt(job);
+		return packet.getPacket();
+	}
+	
+	public static byte[] deadPlayer(int id, int job) {
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.DEAD_PLAYER);
+		packet.writeInt(id);
+		packet.writeInt(job);
+		return packet.getPacket();
 	}
 }

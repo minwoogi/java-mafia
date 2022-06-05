@@ -46,6 +46,10 @@ public class ServerConstants {
 	public static final int QUESS = 4;
 	
 	public static final int CLASSIFY_JOB[][] = { // 마피아, 시민, 의사, 경찰 순
+			{0, 0, 1, 0},
+			{1, 0, 1, 0},
+			{1, 0, 1, 1},
+			{1, 1, 1, 1},
 			{1, 2, 1, 1}, // 5명 일 때
 			{2, 2, 1, 1}, // 6명 일 때
 			{2, 2, 1, 2}, // 7명 일 때
@@ -54,11 +58,12 @@ public class ServerConstants {
 			{3, 4, 1, 2}, // 10명 일 때
 	};
 	
-	public static final int DAY_TIME = 60 * 1000; // 토론 시간 
-	public static final int VOTE_TIME = 30 * 1000; // 투표 시간
-	public static final int OBJECTION_TIME = 30 * 1000; // 최후의 반론 시간
-	public static final int AGREE_VOTE_TIME = 30 * 1000; // 찬반 투표 시간
-	public static final int NIGHT_TIME = 60 * 1000; // 능력 사용 시간(밤)
+	public static final int DAY_TIME = 10 * 1000; // 토론 시간 
+	public static final int VOTE_TIME = 10 * 1000; // 투표 시간
+	public static final int OBJECTION_TIME = 10 * 1000; // 최후의 반론 시간
+	public static final int AGREE_VOTE_TIME = 10 * 1000; // 찬반 투표 시간
+	public static final int NIGHT_TIME = 10 * 1000; // 능력 사용 시간(밤)
+	public static final int END_TIME = 10 * 1000; // 게임 종료 후 유예 시간
 	
 	public static boolean isMafia(int job) {
 		return job == MAFIA;

@@ -1,26 +1,19 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
-
 import handling.game.GameHandler;
-import handling.netty.ClientHandler;
-import handlinig.packet.LobbyPacket;
 import information.ExpInf;
 import information.FrameLocation;
 import information.LocationInformation;
 import information.RoomInf;
 import information.UserInf;
 import ui.ShowMessage.ShowConfirm;
-import ui.WaitingRoomFrame.ReadyBtnHandler;
 import information.ClientInf;
 
 
@@ -34,15 +27,6 @@ public class FrameHandler {
 	static InviteFrame inviteFrame;
 	static ShowMessage showMessage;
 	static ShowConfirm showConfirm;
-
-//	public static void failedLogin(boolean loginCheck) {
-//		if (loginCheck) {
-//			FrameHandler.getLoginFrame().frame.dispose();
-//		} else {
-//			JOptionPane.showMessageDialog(loginFrame.panel, "id 또는 password가 잘못 입력되었습니다.", "error",
-//					JOptionPane.ERROR_MESSAGE);
-//		}
-//	}
 
 	public static void useId(boolean overlap) {  // * 회원가입시 사용 가능한 ID인지 확인 * // 
 		if (overlap) {
@@ -139,6 +123,7 @@ public class FrameHandler {
 		}catch(NullPointerException e) {
 		}
 	}
+	
 	public static void addInvteUser(String nickName) {
 		InviteUserPanel inviteUserPanel = new InviteUserPanel(nickName);
 		FrameHandler.getInviteFrame().inviteRowsPanel.addUserList(inviteUserPanel);
@@ -189,7 +174,19 @@ public class FrameHandler {
 	public static void quitWaittingFrame() {
 		FrameLocation.X = FrameHandler.getWaitingRoomFrame().getX();
 		FrameLocation.Y = FrameHandler.getWaitingRoomFrame().getY();
-		waitingRoomFrame.dispose();
+		try{
+			waitingRoomFrame.dispose();
+		}catch(NullPointerException e) {
+		}
+	}
+	
+	public static void quitGameFrame(){
+		FrameLocation.X = GameHandler.getGameFrame().getX();
+		FrameLocation.Y = GameHandler.getGameFrame().getY();
+		try {
+			GameHandler.getGameFrame().dispose();			
+		}catch(NullPointerException e) {
+		}
 	}
 	
 	public static void closeMsg(int msgId) { // * CLOSE_MESSAGE * //
@@ -215,6 +212,7 @@ public class FrameHandler {
 		}
 		case LocationInformation.WAITING_ROOM:{ // * 대기실 입장 * //
 			FrameHandler.quitLobbyFrame(); // * 로비 꺼지게 * //
+			FrameHandler.quitGameFrame(); //* 게임창 꺼지게 * //
 			new WaitingRoomFrame();
 			ClientInf.setReadyState(false);
 			FrameHandler.updateTierImage(ClientInf.getTier(), FrameHandler.getWaitingRoomFrame().getTierLabel()); // * 티어사진 표시 * //

@@ -16,7 +16,7 @@ public class SendHeader {
     public static final int CHAT = 12; // 채팅
     public static final int VOTE = 13; // 투표 결과
     public static final int TIMER = 14; // 타이머
-    public static final int DAY_AND_NIGHT = 15; // 밤 낮 정보
+    public static final int DAY_AND_NIGHT = 15; // 밤 낮, 날짜 정보
     public static final int VOTE_RESULT = 16; // 투표 집계 결과
     public static final int NICK_OVERLAP = 17; // 닉네임 중복 확인
     public static final int CHANGE_LOCATION = 18; // 위치 변경(로비 0, 방 1, 게임장 2)
@@ -24,10 +24,10 @@ public class SendHeader {
     public static final int USER_INFORMATION = 20; // 유저 정보 전송
     public static final int LOBBY_REMOVE_ROOM = 21; // 로비에서 방 없어졌다고 전송
     public static final int SHOW_MESSAGE = 22; // 메시지 띄우기
-    public static final int DEAD_PLAYER = 23; // 플레이어 사망, 사유 전송
-    public static final int START_GAME = 24; // 게임 시작 시 유저 정보 전송(유저 수, id, number)
-    public static final int WHAT_DATE = 25; // 게임 중 몇 번 째 날인지
+    public static final int DEAD_PLAYER = 23; // 플레이어 사망(자리, 직업)
     public static final int LEADER = 26; // 방장 변경 여부
-    public static final int SET_IMAGE = 27;
+    public static final int START_GAME = 27; // 게임 시작 시 유저 정보 전송(유저 수, id, number)
     public static final int SHOW_JOB_CARD = 28; // 직업 분배 후 띄울 메시지 (int 직업코드)
+    public static final int SET_IMAGE = 29; // 게임 내 직업 아이콘 설정 (자리, 직업)
+    public static final int CLOSE_MESSAGE = 30; // 메시지 닫기
 }

@@ -1,7 +1,6 @@
 package handling.netty;
 
 import java.lang.reflect.Field;
-
 import handling.game.GameHandler;
 import handling.packet.header.ReceieveHeader;
 import information.RoomInf;
@@ -12,7 +11,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import tools.MafiaPacketReader;
 import ui.FrameHandler;
-import ui.LobbyFrame;
 import ui.ShowMessage;
 
 /**
@@ -211,8 +209,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		}
 		case ReceieveHeader.CHAT: {
 			int type = reader.readInt();
+			int size = reader.readInt();
 			String text = reader.readString();
-			GameHandler.addMsg(type, text, GameHandler.getGameFrame().getChatArea());
+			GameHandler.addTextPanel(type, size, text);
 			break;
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //

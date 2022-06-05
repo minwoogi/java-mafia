@@ -21,8 +21,6 @@ import javax.swing.border.Border;
 import handling.netty.ClientHandler;
 import handlinig.packet.LobbyPacket;
 import information.ClientInf;
-import information.FrameLocation;
-import information.LocationInformation;
 import information.RoomInf;
 
 public class LobbyFrame extends JFrame {

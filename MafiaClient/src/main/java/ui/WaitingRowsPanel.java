@@ -3,8 +3,6 @@ package ui;
 import java.awt.GridLayout;
 import javax.swing.*;
 
-import information.UserInf;
-
 
 public class WaitingRowsPanel extends JPanel {
 

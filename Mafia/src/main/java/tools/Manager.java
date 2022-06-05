@@ -81,6 +81,7 @@ public class Manager {
 	public void clearRoomClient() {
 		room_cl_model.clear();
 	}
+	
 	public void addRoomClient(WaitingRoom room) {
 		int selected = room_list.getSelectedIndex();
 		if (selected != -1) {

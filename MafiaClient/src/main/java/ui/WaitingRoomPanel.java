@@ -4,15 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.*;
-
-import handling.netty.ClientHandler;
-import handlinig.packet.WaitingRoomPacket;
 import information.ClientInf;
-import information.RoomInf;
 import information.UserInf;
 
 public class WaitingRoomPanel extends JPanel {

@@ -13,20 +13,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.util.HashMap;
-
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
-import javax.swing.plaf.basic.BasicOptionPaneUI.ButtonActionListener;
-
 import handling.netty.ClientHandler;
-import handlinig.packet.LobbyPacket;
 import handlinig.packet.WaitingRoomPacket;
 import information.ClientInf;
 import information.FrameLocation;
-import information.UserInf;
 
 /**
  * 대기실 프레임

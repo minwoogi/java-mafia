@@ -28,6 +28,11 @@ public class ClientPacketCreator {
 		return packet.getPacket();
 	}
 
+	public static byte[] closeMessage(int msgId) {
+		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.CLOSE_MESSAGE);
+		packet.writeInt(msgId);
+		return packet.getPacket();
+	}
 	public static byte[] setLeader(boolean isLeader) {
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.LEADER);
 		packet.writeBoolean(isLeader);

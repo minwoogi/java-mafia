@@ -10,16 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
-import information.FrameLocation;
-import ui.LobbyFrame.MoveWindow;
 
 public class InviteFrame extends JFrame {
 
@@ -104,19 +100,6 @@ public class InviteFrame extends JFrame {
 
 		public InviteRowsPanel() {
 			setLayout(new GridLayout(0, 1, 0, 0));
-//			InviteUserPanel userPanel = new InviteUserPanel("minwook");
-//			InviteUserPanel userPanel2 = new InviteUserPanel("minwook");
-//			InviteUserPanel userPanel3 = new InviteUserPanel("minwook");
-//			InviteUserPanel userPanel4 = new InviteUserPanel("minwook");
-//			InviteUserPanel userPanel5 = new InviteUserPanel("minwook");
-//			InviteUserPanel userPanel6 = new InviteUserPanel("minwook");
-//
-//			addUserList(userPanel);
-//			addUserList(userPanel2);
-//			addUserList(userPanel3);
-//			addUserList(userPanel4);
-//			addUserList(userPanel5);
-//			addUserList(userPanel6);
 			setVisible(true);
 
 		}

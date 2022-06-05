@@ -6,24 +6,21 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-
-import handling.netty.ClientHandler;
-import handlinig.packet.GamePacket;
 import information.ClientInf;
 import ui.GameFrame;
 import ui.ShowMessage;
+import ui.TextPanel;
 
 public class GameHandler {
 
 	static GameFrame gameFrame;
+	static VoteTimer timer;
 
 	public static void setGameFrame(GameFrame gameFrame) {
 		GameHandler.gameFrame = gameFrame;
@@ -34,8 +31,11 @@ public class GameHandler {
 	}
 
 	public static void setTimer(long remainTime) { // * 투표 시간 타이머 * //
-		VoteTimer voteTimer = new VoteTimer(remainTime);
-		voteTimer.start();
+		if(timer != null) {
+			timer.stopThread();
+		}
+		timer = new VoteTimer(remainTime);
+		timer.start();
 	}
 
 	public void setMafiaMode() { // * 마피아 모드 설정 * //
@@ -48,28 +48,6 @@ public class GameHandler {
 		}else {
 			nightTf.setText(day+ "번째 낮");
 		}
-	}
-
-	public static void addMsg(int type, String text, JTextArea chatTa) { // * 채팅 올리기 * //
-		switch(type) {
-		case 5:{ //흰색 글씨
-			
-			break;
-		}
-		case 6:{ //빨간 글씨
-			
-			break;
-		}
-		case 7:{ //밝은 하늘색 글씨
-			
-			break;
-		}
-		case 8:{ //회색 글씨
-			
-			break;
-		}
-		}
-		chatTa.append(text + "\n");
 	}
 
 	public static void addPersonList(JPanel panel, int gameNumber) {
@@ -104,11 +82,18 @@ public class GameHandler {
 		btn.setFocusPainted(false);
 		btn.setContentAreaFilled(false);
 		btn.setText("No."+gameNumber);
-		btn.addActionListener(new voteBtnHandler());
+		VoteBtnHandler handler = new VoteBtnHandler();
+		GameFrame.btnHandler.put(btn, handler);
+		btn.addActionListener(handler);
 	}
 	
 	public static void setTextMe(JButton btn) { // * 내 버튼 ME 로 설정 
 		btn.setText("ME");
+	}
+	
+	public static void addTextPanel(int type, int size, String text) {
+		TextPanel textPanel = new TextPanel(type,size,text);
+		GameHandler.getGameFrame().getChatPanel().addTextPanel(textPanel);
 	}
 
 	public static void doubtBtnSetting(JButton btn, String gameNumber) { // * 직업 의심 버튼 세팅 * //
@@ -146,7 +131,10 @@ public class GameHandler {
 	public static void deadBtnSetting(JButton btn,int job) {
 		btn.setIcon(new ImageIcon("job/dead" + job + ".png"));
 		btn.setPressedIcon(new ImageIcon("job/dead"+job+".png"));
-		btn.setEnabled(false);
+		btn.removeActionListener(GameFrame.btnHandler.get(btn));
+		btn.setFocusPainted(false);
+		btn.setContentAreaFilled(false);
+		btn.setBorderPainted(false);
 	}
 	
 	public static void initChoicedBtn() {  // * 버튼 모두 선택안한걸로 초기화 * //
@@ -156,10 +144,10 @@ public class GameHandler {
 			GameHandler.getGameFrame().btnState.put(GameHandler.getGameFrame().btnMap.get(key),0);             
 			GameHandler.getGameFrame().btnMap.get(key).setBorder(new EmptyBorder(5,3,5,3));
         }
-		
+	
 	}
 	
-	static class voteBtnHandler implements ActionListener{
+	static class VoteBtnHandler implements ActionListener{ // * 버튼 하나씩 클릭 * //
 		public void actionPerformed(ActionEvent e) {
 			initChoicedBtn();
 			JButton btn = (JButton)e.getSource();
@@ -176,9 +164,11 @@ public class GameHandler {
 		long remainTime; // * 타이머 남은시간 * //
 
 		public VoteTimer(long timeReceieve) {
+			System.out.println(timeReceieve);
 			this.timeReceieve = timeReceieve / 1000;
 			remainTime = timeReceieve / 1000;
 			startTime = System.currentTimeMillis();
+			System.out.println(remainTime);
 		}
 
 		public void update() {
@@ -186,6 +176,7 @@ public class GameHandler {
 			time = (offTime - startTime) / 1000;
 			remainTime = timeReceieve - time;
 			timer = convertTime(timeReceieve);
+			System.out.println(timer);
 			GameHandler.getGameFrame().getTimer().setText(timer);
 		}
 
@@ -198,11 +189,13 @@ public class GameHandler {
 
 		public void stopThread() {
 			super.interrupt();
+			startTime = 0;
+			timer = null;
 		}
 
 		public void run() {
 			System.out.println("run");
-			while (remainTime > 0) {
+			while (!this.isInterrupted() &&(System.currentTimeMillis() - startTime) / 1000 <=  timeReceieve) {
 				update();
 				try {
 					sleep(1000);

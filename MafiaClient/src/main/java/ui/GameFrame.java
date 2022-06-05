@@ -1,7 +1,6 @@
 package ui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -14,20 +13,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Iterator;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
 import handling.game.GameHandler;
 import handling.netty.ClientHandler;
 import handlinig.packet.GamePacket;
+import information.FrameLocation;
 
 public class GameFrame extends JFrame {
 
@@ -35,7 +30,8 @@ public class GameFrame extends JFrame {
 	private JPanel rightPanel;
 	private JPanel votePanel;
 	private JPanel doubtPanel;
-	private JTextArea chatArea;
+	private JPanel centerChatPanel;
+	private GameChatPanel chatPanel;
 	private JTextField chatTf;
 	private JTextField timer;
 	private JButton sendBtn;
@@ -47,17 +43,20 @@ public class GameFrame extends JFrame {
 
 	public static HashMap<Integer, JButton> btnMap = new HashMap<>();
 	public static HashMap<JButton, Integer> btnState = new HashMap<>(); // 1선택 0선택X
+	public static HashMap<JButton, ActionListener> btnHandler = new HashMap<>();
 
+	
+	public GameChatPanel getChatPanel() {
+		return chatPanel;
+	}
+	
 	public JPanel getVotePanel() {
 		return votePanel;
 	}
+	
 
 	public JTextField getChatTf() {
 		return chatTf;
-	}
-
-	public JTextArea getChatArea() {
-		return chatArea;
 	}
 
 	public JPanel getDoubtPanel() {
@@ -78,7 +77,7 @@ public class GameFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1100, 600);
 		setResizable(false);
-		setLocationRelativeTo(null);
+		setLocation(FrameLocation.X,FrameLocation.Y);
 		setLayout(new GridLayout(0, 2));
 
 		newComponents();
@@ -91,6 +90,15 @@ public class GameFrame extends JFrame {
 		setUndecorated(true);
 		setVisible(true);
 		
+		GameHandler.addPersonList(votePanel, 1);
+		GameHandler.deadBtnSetting(btnMap.get(1), 1);
+		GameHandler.addTextPanel(6, 20, "No.1 : 안녕하세요 안녕하세요 안녕하세요 안");
+		GameHandler.addTextPanel(6, 20, "No.1 : 안녕하세요 안녕하세요 안녕하세요");
+		GameHandler.addTextPanel(6, 20, "No.1 : 안녕하세요 안녕하세요 안녕하세요");
+		
+		this.revalidate();
+		this.repaint();
+	
 	}
 
 	public void newComponents() {
@@ -98,14 +106,16 @@ public class GameFrame extends JFrame {
 		rightPanel = new RightPanel();
 		votePanel = new JPanel();
 		doubtPanel = new JPanel();
-		chatArea = new JTextArea();
-		scroll = new JScrollPane(chatArea);
-		chatTf = new JTextField();
+		centerChatPanel = new JPanel();
+		chatPanel = new GameChatPanel();
+		scroll = new JScrollPane(centerChatPanel,scroll.VERTICAL_SCROLLBAR_AS_NEEDED,scroll.HORIZONTAL_SCROLLBAR_NEVER);
+		chatTf = new JTextField(25);
 		sendBtn = new JButton(new ImageIcon("btnImg/gameSendBtn.png"));
 		nightInf = new JTextField();
 		timer = new JTextField();
 		page = new JButton(new ImageIcon("btnImg/rightArrow.png"));
 		vote = new JButton(new ImageIcon("btnImg/vote.png"));
+		
 
 	}
 
@@ -123,21 +133,13 @@ public class GameFrame extends JFrame {
 		doubtPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 21, 15));
 		doubtPanel.setVisible(false);
 
+		centerChatPanel.setBackground(new Color(0,0,0,0));
 		btnInvisible(sendBtn);
 		btnInvisible(vote);
 		sendBtn.setBounds(420, 500, 70, 50);
 		sendBtn.setPressedIcon(new ImageIcon("btnImg/gameSendPush.png"));
 
-		chatArea.setOpaque(true); // * 투명 * //
-		chatArea.setBorder(javax.swing.BorderFactory.createEmptyBorder());
-		chatArea.setFont(new Font("", Font.BOLD, 20));
-		chatArea.setForeground(Color.WHITE);
-		chatArea.setBackground(new Color(0, 0, 0, 150));
-		chatArea.setOpaque(false);
-		chatArea.setEnabled(false);
-
 		scroll.setBounds(60, 40, 430, 410);
-		scroll.setVerticalScrollBarPolicy(scroll.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scroll.setOpaque(false);
 		scroll.setBackground(new Color(0, 0, 0, 0));
 		scroll.getViewport().setOpaque(false);
@@ -227,6 +229,7 @@ public class GameFrame extends JFrame {
 		rightPanel.add(page);
 		rightPanel.add(doubtPanel);
 		rightPanel.add(vote);
+		centerChatPanel.add(chatPanel);
 	}
 
 	public void btnInvisible(JButton btn) { // * 버튼 투명화(이미지 보이게) * //
@@ -278,11 +281,6 @@ public class GameFrame extends JFrame {
 			int Y = thisY + yMoved;
 			jf.setLocation(X, Y);
 		}
-	}
-
-	public void addLog(String log) {
-		chatArea.append(log + "\n"); // 로그 내용을 JTextArea 위에 붙여주고
-		chatArea.setCaretPosition(chatArea.getDocument().getLength()); // 맨아래로 스크롤한다.
 	}
 
 	public static void main(String[] args) {

@@ -34,6 +34,7 @@ public class MafiaClient {
 	private int job; // 게임 내 직업
 	private boolean isReady = false; // 대기실 준비 상태
 	private WaitingRoom waitRoom;
+	private int vote = 0; // 투표 가능 횟수
 	private int citizenVote, doctorVote, policeVote, mafiaVote; // 어떤 직업군에게 받은 투표 수
 	private int agree; // 처형 찬성 수
 	private boolean blockChat = false; // 말하기 금지
@@ -63,7 +64,9 @@ public class MafiaClient {
 		if (this.location == LocationInformation.WAITING_ROOM)
 			this.getWaitingRoom().exitRoom(this);
 		if (this.location == LocationInformation.GAME_ROOM) {
-			this.getWaitingRoom().broadCast(null);
+			this.getWaitingRoom().getGame().chat(6, this.getId() + "번 님께서 접속을 종료했습니다.");
+			this.getWaitingRoom().getGame().killPlayer(this);
+			this.getWaitingRoom().exitRoom(this);
 		}
 		this.setConnected(false);
 		this.changeLoggedin(this.getAccId(), 0);
@@ -409,6 +412,23 @@ public class MafiaClient {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getVote() {
+		return vote;
+	}
+
+	public void setVote(int vote) {
+		this.vote = vote;
+	}
+	
+	public void clearVote() {
+		this.setVote(0);
+		this.setCitizenVote(0);
+		this.setDoctorVote(0);
+		this.setMafiaVote(0);
+		this.setPoliceVote(0);
+		this.setAgree(0);
 	}
 
 }

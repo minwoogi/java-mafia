@@ -1,17 +1,14 @@
 package ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import handling.netty.ClientHandler;
 import handlinig.packet.LobbyPacket;
-import information.FrameLocation;
 import information.RoomInf;
 
 public class LobbyRoomPanel extends JPanel {
