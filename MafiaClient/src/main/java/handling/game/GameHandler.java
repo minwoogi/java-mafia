@@ -119,6 +119,7 @@ public class GameHandler {
 	
 	public static void setTextMe(JButton btn) { // * 내 버튼 ME 로 설정 
 		btn.setText("ME");
+		btn.setForeground(Color.BLUE);
 	}
 	
 	public static void addTextPanel(int type, String text) {

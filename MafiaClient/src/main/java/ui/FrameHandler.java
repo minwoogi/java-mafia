@@ -227,23 +227,20 @@ public class FrameHandler {
 	}
 
 	public static void setFrameLocation() { // * 현재 프레임 위치 얻기 * //
-		if (GameHandler.getGameFrame() == null) {
-			return;
-		} else {
+		try {
 			FrameLocation.X = GameHandler.getGameFrame().getX();
-			FrameLocation.Y = GameHandler.getGameFrame().getY();
+			FrameLocation.Y = GameHandler.getGameFrame().getY();			 
+		}catch(NullPointerException e) {
 		}
-		if (FrameHandler.getWaitingRoomFrame() == null) {
-			return;
-		} else {
+		try{
 			FrameLocation.X = FrameHandler.getWaitingRoomFrame().getX();
-			FrameLocation.Y = FrameHandler.getWaitingRoomFrame().getY();
+			FrameLocation.Y = FrameHandler.getWaitingRoomFrame().getY();			
+		}catch(NullPointerException e) {
 		}
-		if (FrameHandler.getLobbyFrame() == null) {
-			return;
-		} else {
+		try{
 			FrameLocation.X = FrameHandler.getLobbyFrame().getX();
-			FrameLocation.Y = FrameHandler.getLobbyFrame().getY();
+			FrameLocation.Y = FrameHandler.getLobbyFrame().getY();			
+		}catch(NullPointerException e) {
 		}
 	}
 

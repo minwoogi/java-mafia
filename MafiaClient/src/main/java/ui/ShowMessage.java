@@ -22,7 +22,6 @@ import javax.swing.WindowConstants;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-
 import handling.game.GameHandler;
 import handling.netty.ClientHandler;
 import handlinig.packet.ShowMsgPacket;
@@ -43,11 +42,11 @@ public class ShowMessage extends JFrame {
 	private JPanel btnPanel;
 	private JButton okBtn;
 	private JTextArea textArea;
-	
+
 	public ShowMessage() {
 	}
 
-	public ShowMessage(int type, String title, String message,int msgId) {
+	public ShowMessage(int type, String title, String message, int msgId) {
 		switch (type) {
 		case 1: { // * ERROR_MESSAGE * //
 			viewErrorMsg(title, message);
@@ -66,7 +65,7 @@ public class ShowMessage extends JFrame {
 			break;
 		}
 		case 5: { // * 게임장 내 일반 메시지 (흰색) title == null * //
-			gameMsg(type,message);
+			gameMsg(type, message);
 			break;
 		}
 		case 6: { // * 게임장 내 공지 메시지 (굵은 파란색) title == null * //
@@ -77,12 +76,12 @@ public class ShowMessage extends JFrame {
 			gameMsg(type, message);
 			break;
 		}
-		case 8:{
-			new ShowConfirm(type,title,message,msgId); // * Yes or No * //
+		case 8: {
+			new ShowConfirm(type, title, message, msgId); // * Yes or No * //
 			break;
 		}
-		case 9:{
-			new ShowConfirm(type,title,message,msgId); // * Yes or No or Cancel * //
+		case 9: {
+			new ShowConfirm(type, title, message, msgId); // * Yes or No or Cancel * //
 			break;
 		}
 		}
@@ -135,7 +134,6 @@ public class ShowMessage extends JFrame {
 		jobBtn.setFocusPainted(false);
 		jobBtn.setContentAreaFilled(false);
 		jobBtn.setBorderPainted(false);
-		
 
 		jobBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -152,7 +150,7 @@ public class ShowMessage extends JFrame {
 		setSize(400, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		FrameHandler.setFrameLocation();
-		setLocation(FrameLocation.X+330,FrameLocation.Y+150);
+		setLocation(FrameLocation.X + 330, FrameLocation.Y + 150);
 		setResizable(false);
 		setAlwaysOnTop(true);
 
@@ -199,18 +197,18 @@ public class ShowMessage extends JFrame {
 
 		setVisible(true);
 	}
-	
-	
-	class ShowConfirm extends JFrame{
+
+	class ShowConfirm extends JFrame {
 		int msgId;
-		public ShowConfirm(int type, String title, String message , int msgId) {
+
+		public ShowConfirm(int type, String title, String message, int msgId) {
 			FrameHandler.setShowConfirm(this);
 			this.msgId = msgId;
 			setTitle(title);
 			FrameHandler.setFrameLocation();
 			setSize(400, 200);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setLocation(FrameLocation.X+330,FrameLocation.Y+150);
+			setLocation(FrameLocation.X + 330, FrameLocation.Y + 150);
 			setResizable(false);
 			setAlwaysOnTop(true);
 			Image icon = getToolkit().getImage("optionPaneIcon/question.png");
@@ -239,27 +237,25 @@ public class ShowMessage extends JFrame {
 			okBtn.setFocusPainted(false);
 			okBtn.setContentAreaFilled(false);
 			okBtn.setBorderPainted(false);
-			okBtn.setPreferredSize(new Dimension(93,38));
+			okBtn.setPreferredSize(new Dimension(93, 38));
 
 			JButton noBtn = new JButton(new ImageIcon("btnImg/noBtn.png"));
 			noBtn.setPressedIcon(new ImageIcon("btnImg/noBtnPush.png"));
-			noBtn.setPreferredSize(new Dimension(93,38));
+			noBtn.setPreferredSize(new Dimension(93, 38));
 			noBtn.setFocusPainted(false);
 			noBtn.setContentAreaFilled(false);
 			noBtn.setBorderPainted(false);
 
-			
-			
 			mainPanel.add(btnPanel, BorderLayout.SOUTH);
 			mainPanel.add(textPane, BorderLayout.CENTER);
 			btnPanel.add(okBtn, Panel.CENTER_ALIGNMENT);
 			btnPanel.add(noBtn, Panel.CENTER_ALIGNMENT);
 			add(mainPanel);
-			
-			if(type == 9) {
-				JButton  cancelBtn = new JButton(new ImageIcon("btnImg/cancel.png"));
+
+			if (type == 9) {
+				JButton cancelBtn = new JButton(new ImageIcon("btnImg/cancel.png"));
 				cancelBtn.setPressedIcon(new ImageIcon("btnImg/cancelPush.png"));
-				cancelBtn.setPreferredSize(new Dimension(93,38));
+				cancelBtn.setPreferredSize(new Dimension(93, 38));
 				cancelBtn.setFocusPainted(false);
 				cancelBtn.setContentAreaFilled(false);
 				cancelBtn.setBorderPainted(false);
@@ -274,13 +270,14 @@ public class ShowMessage extends JFrame {
 
 			okBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ClientHandler.send(ShowMsgPacket.makeMessagePacket(msgId,1));
+					ClientHandler.send(ShowMsgPacket.makeMessagePacket(msgId, 1));
 					dispose();
 				}
 			});
+			
 			noBtn.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ClientHandler.send(ShowMsgPacket.makeMessagePacket(msgId,0));
+					ClientHandler.send(ShowMsgPacket.makeMessagePacket(msgId, 0));
 					dispose();
 				}
 			});
@@ -293,7 +290,7 @@ public class ShowMessage extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 		FrameHandler.setFrameLocation();
-		setLocation(FrameLocation.X+330,FrameLocation.Y+150);
+		setLocation(FrameLocation.X + 330, FrameLocation.Y + 150);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setBackground(new Color(222, 222, 222));
@@ -366,8 +363,6 @@ public class ShowMessage extends JFrame {
 		panel.add(jobBox);
 		setVisible(true);
 	}
-	
-	
 
 	class BackGroundPanel extends JPanel { // * 직업 의심 배경 * //
 		Image background = new ImageIcon("backgroundImage/doubtBack.png").getImage();

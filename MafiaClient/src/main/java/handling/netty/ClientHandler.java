@@ -120,6 +120,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		}
 		case ReceieveHeader.EXIT_ROOM:{ // * ´ë±â½Ç ÅðÀå * //
 			int userId = reader.readInt();
+			if(FrameHandler.getWaitingRoomFrame() == null)
+				break;
 			FrameHandler.removeUserPanel(userId,FrameHandler.getWaitingRoomFrame().userPanel.get(userId));
 			FrameHandler.getWaitingRoomFrame().userList.remove(userId);
 			break;
@@ -140,6 +142,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			boolean isReady = reader.readBoolean();
 			int level = reader.readInt();
 			int tier = reader.readInt();
+			if(FrameHandler.getWaitingRoomFrame() == null)
+				break;
 			UserInf userInf = new UserInf(userId,userNick,isReady,level,tier);
 			userInf.setLeader(superId == userId);
 			if(FrameHandler.getWaitingRoomFrame().userList.containsKey(userId)) {
@@ -182,12 +186,16 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		case ReceieveHeader.SET_IMAGE:{ // * Á÷¾÷ ÀÌ¹ÌÁö set * //
 			int gameNumber = reader.readInt(); 
 			int job = reader.readInt();
+			if(GameHandler.getGameFrame() == null)
+				break;
 			GameHandler.jobImgSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);
 			break;
 		}
 		case ReceieveHeader.DEAD_PLAYER:{ // * Á×Àº »ç¶÷ set * //
 			int gameNumber = reader.readInt();
 			int job = reader.readInt();
+			if(GameHandler.getGameFrame() == null)
+				break;
 			GameHandler.deadBtnSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);
 			break;
 		}
@@ -200,6 +208,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 		case ReceieveHeader.DAY_AND_NIGHT: { // * ¹ã ³· Á¤º¸ * //
 			boolean isNight = reader.readBoolean();
 			int day = reader.readInt();
+			if(GameHandler.getGameFrame() == null)
+				break;
 			GameHandler.setNightText(isNight,day, GameHandler.getGameFrame().getNightInf());
 			break;
 		}
