@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import information.FrameLocation;
+
 public class InviteFrame extends JFrame {
 
 	private JPanel mainPanel;
@@ -32,7 +34,7 @@ public class InviteFrame extends JFrame {
 		FrameHandler.setInviteFrame(this);
 		setSize(350, 500);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setLocation(FrameLocation.X, FrameLocation.Y);
+		setLocation(FrameLocation.X+375 , FrameLocation.Y+50);
 		setLocationRelativeTo(null);
 		setUndecorated(true);
 

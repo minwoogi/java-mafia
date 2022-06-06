@@ -12,6 +12,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import handling.netty.ClientHandler;
 import handlinig.packet.LobbyPacket;
+import information.FrameLocation;
 
 public class MakeRoom extends JFrame {
 
@@ -26,9 +27,8 @@ public class MakeRoom extends JFrame {
 	public MakeRoom() {
 		setSize(400, 250);
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		setLocationRelativeTo(null);
+		setLocation(FrameLocation.X+350,FrameLocation.Y+150);
 		setResizable(false);
-
 		newComponents();
 		setComponents();
 		addComponents();
@@ -36,7 +36,6 @@ public class MakeRoom extends JFrame {
 		setUndecorated(true);
 		this.addMouseListener(new MoveWindows());
 		this.addMouseMotionListener(new MoveWindows());
-
 		setVisible(true);
 	}
 
@@ -94,6 +93,7 @@ public class MakeRoom extends JFrame {
 
 		cancelBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				FrameHandler.getLobbyFrame().setMakeRoomState(false);
 				dispose();
 			}
 		});

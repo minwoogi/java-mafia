@@ -241,8 +241,8 @@ public class WaitingRoomFrame extends JFrame {
 		});
 		inviteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ClientHandler.send(WaitingRoomPacket.makeinviteClickPacket(1));
 				new InviteFrame();
+				ClientHandler.send(WaitingRoomPacket.makeinviteClickPacket(1));
 			}
 		});
 		

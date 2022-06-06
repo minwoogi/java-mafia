@@ -54,6 +54,7 @@ public class LobbyFrame extends JFrame {
 	private JButton levelBack;
 	private Point initialClick;
 	private JButton logOutBtn;
+	private boolean makeRoomState;
 	LobbyRowsPanel rowsPanel;
 	Map<Integer, LobbyRoomPanel> roomList;
 	Map<Integer, String> roomNameList;
@@ -81,6 +82,14 @@ public class LobbyFrame extends JFrame {
 	public JProgressBar getExpBar() {
 		return expBar;
 	}
+	
+	public boolean isMakeRoomState() {
+		return makeRoomState;
+	}
+
+	public void setMakeRoomState(boolean makeRoomState) {
+		this.makeRoomState = makeRoomState;
+	}
 
 	public LobbyFrame() {
 		FrameHandler.setLobbyFrame(this);
@@ -93,6 +102,7 @@ public class LobbyFrame extends JFrame {
 
 		roomList = new HashMap<>();
 		roomNameList = new HashMap<>();
+		makeRoomState = false;
 		newComponents();
 		setComponents();
 		addComponents();
@@ -253,7 +263,11 @@ public class LobbyFrame extends JFrame {
 	public void addActionBtn() {
 		makeRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new MakeRoom();
+				if(!makeRoomState) {
+					FrameHandler.setFrameLocation();
+					new MakeRoom();
+					makeRoomState = true;
+				}
 			}
 		});
 
@@ -344,9 +358,4 @@ public class LobbyFrame extends JFrame {
 			jf.setLocation(X, Y);
 		}
 	}
-	
-	public static void main(String[] args) {
-		new LobbyFrame();
-	}
-
 }

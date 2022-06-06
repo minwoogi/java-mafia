@@ -13,11 +13,23 @@ public class BackgroundMusic {
 	
 	static Clip clip;
 	
-	public BackgroundMusic(String file) {
+	public BackgroundMusic() {
 		FrameHandler.setBackgroundMusic(this);
-		playBgm(file);
 	}
 	public static void playBgm(String file) {
+		try {
+			AudioInputStream ais =
+					AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
+			clip = AudioSystem.getClip();
+			clip.open(ais);
+			clip.loop(clip.LOOP_CONTINUOUSLY);
+			clip.start();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void playSoundEffect(String file) {
 		try {
 			AudioInputStream ais =
 					AudioSystem.getAudioInputStream(new BufferedInputStream(new FileInputStream(file)));
@@ -29,7 +41,7 @@ public class BackgroundMusic {
 		}
 	}
 	
-	public static void stopBgm() {
+	public static void stopSound() {
 		clip.stop();
 		clip.close();
 	}

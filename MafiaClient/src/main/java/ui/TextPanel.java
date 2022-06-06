@@ -31,7 +31,7 @@ public class TextPanel extends JPanel {
 			break;
 		}
 		case 8: { // È¸»ö ±Û¾¾
-			lbl.setForeground(Color.GRAY);
+			lbl.setForeground(Color.LIGHT_GRAY);
 			break;
 		}
 		case 9: {

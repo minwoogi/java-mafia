@@ -207,9 +207,9 @@ public class ShowMessage extends JFrame {
 			FrameHandler.setShowConfirm(this);
 			this.msgId = msgId;
 			setTitle(title);
+			FrameHandler.setFrameLocation();
 			setSize(400, 200);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			FrameHandler.setFrameLocation();
 			setLocation(FrameLocation.X+330,FrameLocation.Y+150);
 			setResizable(false);
 			setAlwaysOnTop(true);
@@ -291,8 +291,9 @@ public class ShowMessage extends JFrame {
 	public void gameMsg(int type, String message) { // * 5,6,7 ¸Þ¼¼Áö * //
 		setSize(400, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
 		setResizable(false);
+		FrameHandler.setFrameLocation();
+		setLocation(FrameLocation.X+330,FrameLocation.Y+150);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.setBackground(new Color(222, 222, 222));

@@ -228,6 +228,7 @@ public class GameHandler {
 				try {
 					sleep(1000);
 				} catch (InterruptedException e) {
+					return ;
 				}
 			}
 		}
