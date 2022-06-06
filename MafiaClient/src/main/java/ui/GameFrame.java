@@ -92,12 +92,6 @@ public class GameFrame extends JFrame {
 		
 		GameHandler.addPersonList(votePanel, 1);
 		GameHandler.deadBtnSetting(btnMap.get(1), 1);
-		GameHandler.addTextPanel(6, 20, "No.1 : æ»≥Á«œººø‰ æ»≥Á«œººø‰ æ»≥Á«œººø‰ æ»");
-		GameHandler.addTextPanel(6, 20, "No.1 : æ»≥Á«œººø‰ æ»≥Á«œººø‰ æ»≥Á«œººø‰");
-		GameHandler.addTextPanel(6, 20, "No.1 : æ»≥Á«œººø‰ æ»≥Á«œººø‰ æ»≥Á«œººø‰");
-		
-		this.revalidate();
-		this.repaint();
 	
 	}
 
