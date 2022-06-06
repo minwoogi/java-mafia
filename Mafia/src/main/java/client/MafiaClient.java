@@ -44,6 +44,8 @@ public class MafiaClient {
 	private boolean dead = false; // 사망 여부
 	private boolean isConnected = false;
 	private String certification_code;
+	private int inviteRoomId = -1; // 초대받은 방 id
+	private int msgType = -1; // 0 : 게임장 처형 투표, 1 : 초대 메시지
 	private int msgId = -1;
 	private int msgValue = -1;
 	private boolean showMsg = false;
@@ -467,6 +469,10 @@ public class MafiaClient {
 		this.setAgree(0);
 	}
 	
+	public void inviteRoom(WaitingRoom room) {
+		
+	}
+	
 	public int createMsgId() {
 		if(AUTO_INCREASE_MSG_ID == Integer.MAX_VALUE) 
 			AUTO_INCREASE_MSG_ID = 0;
@@ -478,6 +484,8 @@ public class MafiaClient {
 			this.getSession().writeAndFlush(ClientPacketCreator.closeMessage(this.getMsgId()));
 		this.setMsgValue(-1);
 		this.setMsgId(-1);
+		this.setMsgType(-1);
+		this.setInviteRoomId(-1);
 	}
 
 	public int getMsgId() {
@@ -503,6 +511,22 @@ public class MafiaClient {
 
 	public void setShowMsg(boolean showMsg) {
 		this.showMsg = showMsg;
+	}
+
+	public int getMsgType() {
+		return msgType;
+	}
+
+	public void setMsgType(int msgType) {
+		this.msgType = msgType;
+	}
+
+	public int getInviteRoomId() {
+		return inviteRoomId;
+	}
+
+	public void setInviteRoomId(int inviteRoomId) {
+		this.inviteRoomId = inviteRoomId;
 	}
 
 }

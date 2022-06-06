@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DatabaseConnection {
-	final private static String IP = "localhost";
+	final private static String IP = "211.52.166.160";
 	final private static int PORT = 3306;
 	final private static String SCHEMA = "mafia";
 	final private static String DB_ID = "root";

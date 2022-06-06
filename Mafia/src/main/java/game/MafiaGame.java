@@ -24,10 +24,10 @@ public class MafiaGame {
 	private int remainTime = 0; // 남은 시간
 	private int status = 0;
 	private Timer timer = new Timer();
-	private ArrayList<Integer> agreeVote  = new ArrayList<Integer>();
-	private int agree = 0;
-	private int oppose = 0;
-
+	private ArrayList<Integer> agreeVote = new ArrayList<Integer>();
+	private int agree = 0; // 찬성한 사람 수
+	private int oppose = 0; // 거부한 사람 수 
+	private int vote = 0; // 투표 한 사람 수
 	/*
 	 * status 는 현재 진행중인 시간대 0 : 토론 시간(낮) 1 : 투표 시간(낮) 2 : 최후의 반론 시간(낮) 3 : 투표 대상자 찬반
 	 * 투표 시간(낮) 4 : 능력 사용 시간(밤)
@@ -67,13 +67,13 @@ public class MafiaGame {
 			this.getClients().get(count).setJob(ServerConstants.POLICE);
 			this.polices.add(room.getClients().get(count++));
 		}
-		
+
 		for (MafiaClient c : this.getClients()) {
 			c.showJobCard(c.getJob());
 			this.broadCast(GamePacketCreator.setImage(c.getId(), ServerConstants.QUESS));
 			c.getSession().writeAndFlush(GamePacketCreator.setImage(c.getId(), c.getJob()));
 		}
-		for (MafiaClient c : this.mafias) 
+		for (MafiaClient c : this.mafias)
 			this.broadCast(this.mafias, GamePacketCreator.setImage(c.getId(), c.getJob()));
 	}
 
@@ -83,9 +83,23 @@ public class MafiaGame {
 			return;
 		}
 		if (c.isDead()) {
-			this.broadCastDeadPlayer(GamePacketCreator.chat(8, c.getId() + "번 : " + msg));
+			this.broadCastDeadPlayer(GamePacketCreator.chat(8, "[죽은자] " + c.getId() + "번 : " + msg));
 		} else {
-			this.chat(null, 5, c.getId() + "번 : " + msg);
+			if (this.isNight()) {
+				if (ServerConstants.isMafia(c.getJob()))
+					this.chat(this.mafias, 6, "[마피아] " + c.getId() + "번 : " + msg);
+
+				if (ServerConstants.isPolice(c.getJob()))
+					this.chat(this.polices, 7, "[경찰] " + c.getId() + "번 : " + msg);
+
+				if (ServerConstants.isDoctor(c.getJob()))
+					this.chat(this.doctors, 7, "[의사] " + c.getId() + "번 : " + msg);
+				
+				if (ServerConstants.isCitizen(c.getJob()))
+					return;
+			} else {
+				this.chat(null, 5, c.getId() + "번 : " + msg);
+			}
 		}
 	}
 
@@ -122,7 +136,7 @@ public class MafiaGame {
 
 	public void setRemainTime(int remainTime) { // 타이머 설정
 		this.remainTime = remainTime;
-		broadCast(GamePacketCreator.remainTime(remainTime));
+		broadCast(GamePacketCreator.remainTime(this.status, remainTime));
 		timer.setTime(remainTime);
 	}
 
@@ -143,20 +157,31 @@ public class MafiaGame {
 		this.status = status;
 		switch (status) {
 		case 0: // 토론 시간대
+			for (MafiaClient c : this.getClients()) {
+				c.setBlockChat(false);
+			}
 			this.addDays(1); // 1일 추가
 			if (this.getDays() > 1)
 				this.useAbilityResult();
 			if (isEnd()) {
 				this.end = true;
+				this.status = 5;
 				this.setRemainTime(ServerConstants.END_TIME);
 				this.setNight(false);
-				this.chat(6, "[알림] 게임이 잠시 후 종료 될 예정입니다. 승리팀은 " + (this.isMafiaWin() ? "마피아" : "시민") + "팀 입니다.");
+				for(MafiaClient c : this.getClients()) {
+					if(c.isConnected()) {
+						c.setDead(false);
+						c.setBlockChat(false);
+					}
+				}
+				this.chat(this.isMafiaWin() ? 6 : 7, "[알림] 게임이 잠시 후 종료 될 예정입니다. 승리팀은 " + (this.isMafiaWin() ? "마피아" : "시민") + "팀 입니다.");
 				return;
 			}
 			this.setRemainTime(ServerConstants.DAY_TIME);
 			this.setNight(false);
 			break;
 		case 1: // 투표 시간대
+			this.setVote(0);
 			for (MafiaClient c : this.getRoom().getClients())
 				c.clearVote();
 			for (MafiaClient c : this.getRoom().getClients())
@@ -168,11 +193,12 @@ public class MafiaGame {
 			this.execution = null;
 			boolean skip = this.citizenVoteResult();
 			if (skip) {
-				this.setStatus(4);
+				this.skipPhase(4);
 				return;
 			}
-			for(MafiaClient c : this.getClients()) {
-				c.setBlockChat(true);
+			for (MafiaClient c : this.getClients()) {
+				if(!c.isDead())
+					c.setBlockChat(true);
 			}
 			this.getExcution().setBlockChat(false);
 			this.setRemainTime(ServerConstants.OBJECTION_TIME);
@@ -182,29 +208,38 @@ public class MafiaGame {
 			this.agreeVote.clear();
 			this.setAgree(0);
 			this.setOppose(0);
-			for(MafiaClient c : this.getClients()) {
-				if(c.isDead()) 
+			for (MafiaClient c : this.getClients()) {
+				if (c.isDead())
 					continue;
-				c.setBlockChat(true);
 				c.dropMessage(8, this.execution.getId() + "번의 처형에 대한 찬반 투표중입니다. 처형하시겠습니까?");
+				c.setMsgType(0);
+				c.setBlockChat(true);
 				this.agreeVote.add(c.getMsgId());
-				System.out.println(c.getMsgId() + " 추가됨");
 			}
 			this.setRemainTime(ServerConstants.AGREE_VOTE_TIME);
 			this.setNight(false);
 			break;
 		case 4: // 능력 사용 시간대
-			for(MafiaClient c : this.getClients()) {
-				if(c.isShowMsg()) 
+			this.setVote(0);
+			for (MafiaClient c : this.getClients()) {
+				if (c.isShowMsg())
 					c.closeMessage();
-				c.setBlockChat(false);
+				if(!c.isDead())
+					c.setBlockChat(false);
 			}
 			this.agreeOppositeResult();
 			this.agreeVote.clear();
 			if (isEnd()) {
 				this.end = true;
+				this.status = 5;
 				this.setRemainTime(ServerConstants.END_TIME);
 				this.setNight(false);
+				for(MafiaClient c : this.getClients()) {
+					if(c.isConnected()) {
+						c.setDead(false);
+						c.setBlockChat(false);
+					}
+				}
 				this.chat(6, "[알림] 게임이 잠시 후 종료 될 예정입니다. 승리팀은 " + (this.isMafiaWin() ? "마피아" : "시민") + "팀 입니다.");
 				return;
 			}
@@ -216,14 +251,18 @@ public class MafiaGame {
 				c.setVote(1);
 			for (MafiaClient c : this.polices)
 				c.setVote(1);
+			for (MafiaClient c : this.citizens)
+				if (!c.isDead())
+					c.setBlockChat(true);
 			this.setRemainTime(ServerConstants.NIGHT_TIME);
 			this.setNight(true);
 			break;
 		case 5: // 게임 종료 시
-			this.getRoom().endGame(this.isMafiaWin());			
+			this.getRoom().endGame(this.isMafiaWin());
 			this.timer.stopThread();
+			return;
 		}
-		String text[] = { "토론 시간대", "투표 시간대", "최후의 반론 시간대", "찬반 투표 시간대", "능력 사용 시간대", "게임 종료"};
+		String text[] = { "토론 시간대", "투표 시간대", "최후의 반론 시간대", "찬반 투표 시간대", "능력 사용 시간대", "게임 종료" };
 		this.chat(9, "현재 [" + text[status] + "] 입니다.");
 	}
 
@@ -238,17 +277,20 @@ public class MafiaGame {
 	public List<MafiaClient> getClients() {
 		return this.getRoom().getClients();
 	}
-	
+
 	public void receiveAgreeOppose(int msgId, int value) {
-		if(!this.hasMessage(msgId))
+		if (!this.hasMessage(msgId))
 			return;
-		
-		if(value == 1) 
+
+		if (value == 1)
 			this.setAgree(this.getAgree() + 1);
-		else 
+		else
 			this.setOppose(this.getOppose() + 1);
-		if(this.getAgree() + this.getOppose() == this.getAlivePerson()) {
-			
+		if (this.getAgree() + this.getOppose() == this.getAlivePerson()) {
+			this.skipPhase(4);
+			return;
+		} else {
+			this.chat(7, "[알림] 현재 " + this.getVote() + "명이 찬반투표에 임했습니다. " + this.getAlivePerson() + "명이 모두 투표하면 시간이 줄어듭니다.");
 		}
 	}
 
@@ -265,22 +307,39 @@ public class MafiaGame {
 			return;
 		}
 		voter.setVote(0);
+		this.setVote(this.getVote() + 1);
 		if (this.getStatus() == 1) { // 낮 투표 시간
+			int voters = 0;
 			c.setCitizenVote(c.getCitizenVote() + 1);
 			voter.dropMessage(3, gameNumber + "번에게 투표를 했습니다.");
+			for(MafiaClient client : this.getClients()) {
+				if(client.isConnected() && !client.isDead())
+					voters++;
+			}
+			if(voters == this.getVote()) 
+				this.skipPhase(2);
+			else 
+				this.chat(7, "[알림] 현재 " + this.getVote() + "명이 투표에 임했습니다. " + voters + "명이 모두 투표하면 시간이 줄어듭니다.");
 		} else if (this.getStatus() == 4) { // 밤 능력 사용 시간
 			if (ServerConstants.isMafia(voter.getJob())) {
 				c.setMafiaVote(c.getMafiaVote() + 1);
 				voter.dropMessage(3, gameNumber + "번을 지목했습니다.");
-				chat(this.mafias, 7, gameNumber + "번이 마피아에게 지목당했습니다. (" + c.getMafiaVote() + "표)");
+				this.chat(this.mafias, 7, gameNumber + "번이 마피아에게 지목당했습니다. (" + c.getMafiaVote() + "표)");
 			} else if (ServerConstants.isDoctor(voter.getJob())) {
 				c.setDoctorVote(c.getDoctorVote() + 1);
 				voter.dropMessage(3, gameNumber + "번을 마피아에게 한 번 보호합니다.");
 			} else if (ServerConstants.isPolice(voter.getJob())) {
 				c.setPoliceVote(c.getPoliceVote() + 1);
 				voter.dropMessage(3, gameNumber + "번을 마피아로 의심합니다.");
-				chat(this.mafias, 8, gameNumber + "번이 경찰에게 지목당했습니다. (" + c.getPoliceVote() + "표)");
+				this.chat(this.polices, 8, gameNumber + "번이 경찰에게 지목당했습니다. (" + c.getPoliceVote() + "표)");
 			}
+			int voters = 0;
+			for(MafiaClient client : this.getClients()) {
+				if(client.isConnected() && !client.isDead() && (ServerConstants.isMafia(client.getJob()) || ServerConstants.isDoctor(client.getJob()) || ServerConstants.isPolice(client.getJob())))
+					voters++;
+			}
+			if(voters == this.getVote()) 
+				this.skipPhase(0);			
 		}
 	}
 
@@ -317,7 +376,6 @@ public class MafiaGame {
 		} else {
 			this.chat(7, "[생존] " + this.execution.getId() + "번의 처형에 과반 수 이상 동의하지 않아 생존하였습니다.");
 		}
-		
 	}
 
 	public void useAbilityResult() { // 능력 사용 결과
@@ -368,6 +426,7 @@ public class MafiaGame {
 		boolean end = false;
 		int mafia = getAliveMafia();
 		int citizen = getAliveCitizen();
+		
 		return (mafia == 0 || citizen == 0);
 	}
 
@@ -383,7 +442,8 @@ public class MafiaGame {
 	public int getAliveCitizen() {
 		int citizen = 0;
 		for (MafiaClient c : this.getClients()) {
-			if (c.isConnected() && !c.isDead() && !ServerConstants.isMafia(c.getJob()))
+			if (c.isConnected() && !c.isDead() && !ServerConstants.isMafia(c.getJob())
+					&& !ServerConstants.isDoctor(c.getJob()))
 				citizen++;
 		}
 		return citizen;
@@ -398,6 +458,11 @@ public class MafiaGame {
 		return persons;
 	}
 
+	public void skipPhase(int phase) {
+		this.status = (phase - 1) == -1 ? 4 : phase - 1;
+		this.setRemainTime(0);
+	}
+	
 	public int getNextPhase() { // 다음 단계 반환
 		// 토론 시간 -> 투표 시간 -> 최후의 반론 시간 -> 찬반 투표 시간 -> 능력 사용 시간 -> 토론 시간 ...
 		int status = this.getStatus() + 1;
@@ -423,7 +488,8 @@ public class MafiaGame {
 
 	public void killPlayer(MafiaClient c) {
 		c.setDead(true);
-		this.broadCast(GamePacketCreator.deadPlayer(c.getId(), ServerConstants.isMafia(c.getJob()) ? ServerConstants.MAFIA : ServerConstants.CITIZEN));
+		this.broadCast(GamePacketCreator.deadPlayer(c.getId(),
+				ServerConstants.isMafia(c.getJob()) ? ServerConstants.MAFIA : ServerConstants.CITIZEN));
 	}
 
 	public int getAgree() {
@@ -433,15 +499,15 @@ public class MafiaGame {
 	public void setAgree(int agree) {
 		this.agree = agree;
 	}
-	
+
 	public MafiaClient getExcution() {
 		return this.execution;
 	}
-	
+
 	public boolean hasMessage(int msgId) {
 		boolean has = false;
-		for(int msg : this.agreeVote) {
-			if(msg == msgId && this.getStatus() == 3)
+		for (int msg : this.agreeVote) {
+			if (msg == msgId && this.getStatus() == 3)
 				return true;
 		}
 		System.out.println(has);
@@ -454,6 +520,14 @@ public class MafiaGame {
 
 	public void setOppose(int oppose) {
 		this.oppose = oppose;
+	}
+
+	public int getVote() {
+		return vote;
+	}
+
+	public void setVote(int vote) {
+		this.vote = vote;
 	}
 
 	class Timer extends Thread {
@@ -471,17 +545,17 @@ public class MafiaGame {
 
 		public void run() {
 			while (!this.isInterrupted()) {
-				if (System.currentTimeMillis() - this.startTime >= this.remainTime) {
-					if(end) {
-						setStatus(5);
-						return;
-					}
-					setStatus(getNextPhase());
-				}
 				try {
 					this.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
+				}
+				if (System.currentTimeMillis() - this.startTime >= this.remainTime) {
+					if (end) {
+						setStatus(5);
+						return;
+					}
+					setStatus(getNextPhase());
 				}
 			}
 		}

@@ -66,6 +66,8 @@ public class WaitingRoom {
 			this.broadCast(RoomPacketCreator.updateRoom(leader, leader.getAccId()));
 			if(beforeLeader != null && beforeLeader.getLocation() == LocationInformation.WAITING_ROOM)
 				this.broadCast(RoomPacketCreator.updateRoom(beforeLeader, leader.getAccId()));
+		} else {
+			beforeLeader.getSession().writeAndFlush(ClientPacketCreator.setLeader(false));
 		}
 	}
 

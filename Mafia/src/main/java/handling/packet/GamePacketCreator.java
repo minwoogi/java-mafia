@@ -20,8 +20,9 @@ public class GamePacketCreator {
 		return packet.getPacket();
 	}
 	
-	public static byte[] remainTime(int time) { 
+	public static byte[] remainTime(int type, int time) { 
 		MafiaPacketWriter packet = new MafiaPacketWriter(SendHeader.TIMER);
+		packet.writeInt(type);
 		packet.writeLong(time);
 		return packet.getPacket();
 	}

@@ -79,7 +79,7 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 				c.login(id);
 				System.out.println("[" + c.getInetAddress() + "] 에서 " + id + " 계정으로 로그인에 성공했습니다.");
 			} else if (login == 1) {
-				c.dropMessage(8, "아이디 또는 비밀번호가 일치하지 않습니다.");
+				c.dropMessage(4, "아이디 또는 비밀번호가 일치하지 않습니다.");
 			} else if (login == 2) {
 				c.dropMessage(4, "'" + id + "' 계정은 현재 접속중인 계정입니다.");
 			}
@@ -196,19 +196,42 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 		case ReceiveHeader.SHOW_MESSAGE: {
 			int msgId = pr.readInt();
 			int flag = pr.readInt();
-			if(c.getWaitingRoom() != null && c.getWaitingRoom().getGame() != null) {
+			if(c.getMsgType() == 0 && c.getWaitingRoom() != null && c.getWaitingRoom().getGame() != null) {
 				MafiaGame g = c.getWaitingRoom().getGame();
 				g.receiveAgreeOppose(msgId, flag);
+			} else if(c.getMsgType() == 1) {
+				if(flag == 1) {
+					System.out.println(c.getInviteRoomId());
+					c.warp(LocationInformation.WAITING_ROOM, Lobby.getRoom(c.getInviteRoomId()));
+				}
 			}
+			System.out.println("msgType : " + c.getMsgType());
+			System.out.println("roomId : " + c.getInviteRoomId());
 			System.out.println("SHOW_MESSAGE : msgId : " + msgId + ", flag : " + flag);
 			c.setShowMsg(false);
+			c.closeMessage();
 			break;
 		}
 		case ReceiveHeader.INVITE_USER: {
+			String name = pr.readString();
+			for(MafiaClient visiter : Lobby.getClients()) {
+				if(visiter.getCharName().equals(name)) {
+					if(visiter.getMsgType() == 1) {
+						c.dropMessage(2, name + "님은 이미 초대장을 받은 상태입니다.");
+						break;
+					}
+					visiter.dropMessage(8, "[" + c.getWaitingRoom().getName() + "] 방에서 " + c.getCharName() + " 님이 초대장을 보냈습니다. 입장하시겠습니까?");
+					visiter.setMsgType(1);
+					visiter.setInviteRoomId(c.getWaitingRoom().getId());
+					break;
+				}
+			}
 			break;
 		}
 		case ReceiveHeader.CHAT:
 			String message = pr.readString();
+			if(message.equals(""))
+				break;
 			c.getWaitingRoom().getGame().chat(c, message);
 			break;
 		case ReceiveHeader.VOTE:
