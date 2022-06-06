@@ -13,8 +13,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.border.Border;
 
@@ -50,6 +56,11 @@ public class LobbyFrame extends JFrame {
 	private JButton logOutBtn;
 	LobbyRowsPanel rowsPanel;
 	Map<Integer, LobbyRoomPanel> roomList;
+	Map<Integer, String> roomNameList;
+
+	public Map<Integer, String> getRoomNameList() {
+		return roomNameList;
+	}
 
 	public Map<Integer, LobbyRoomPanel> getRoomList() {
 		return roomList;
@@ -81,6 +92,7 @@ public class LobbyFrame extends JFrame {
 		setLayout(new GridLayout(0, 2));
 
 		roomList = new HashMap<>();
+		roomNameList = new HashMap<>();
 		newComponents();
 		setComponents();
 		addComponents();
@@ -247,15 +259,15 @@ public class LobbyFrame extends JFrame {
 
 		searchRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//FrameHandler.removeAllPanel();
+				FrameHandler.removeAllPanel();
 				if (!searchRoomTf.getText().equals("")) {
 					String keyword = searchRoomTf.getText();
-					if (roomList.containsValue(keyword)) {
-						//FrameHandler.addRoomPanel(roomList.get(getKey(roomList, keyword)));
+					if (roomNameList.containsValue(keyword)) {
+						FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomList.get(getKey(roomNameList,keyword)));
 					}
 				} else {
 					roomList.forEach((key, value) -> {
-						//FrameHandler.addRoomPanel(roomList.get(key));
+						FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomList.get(key));
 					});
 				}
 			}
@@ -267,12 +279,13 @@ public class LobbyFrame extends JFrame {
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (isLogOut == 0) {
 					ClientHandler.send(LobbyPacket.makeLogOutPacket(ClientInf.getUserId()));
+					System.exit(0);
 				}
 			}
 		});
 	}
 
-	public static <Integer, RoomInf> Integer getKey(Map<Integer, RoomInf> map, String value) { // * value값으로 key 얻기 * //
+	public static <Integer,String> Integer getKey(Map<Integer, String> map, String value) { // * value값으로 key 얻기 * //
 		for (Integer key : map.keySet()) {
 			if (value.equals(map.get(key))) {
 				return key;
@@ -330,6 +343,10 @@ public class LobbyFrame extends JFrame {
 			int Y = thisY + yMoved;
 			jf.setLocation(X, Y);
 		}
+	}
+	
+	public static void main(String[] args) {
+		new LobbyFrame();
 	}
 
 }

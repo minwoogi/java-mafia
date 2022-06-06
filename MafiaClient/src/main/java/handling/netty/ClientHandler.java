@@ -192,8 +192,9 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			break;
 		}
 		case ReceieveHeader.TIMER: { // * 남은시간 set * //
+			int timeType = reader.readInt();
 			long remainTime = reader.readLong();
-			GameHandler.setTimer(remainTime);
+			GameHandler.setTimer(timeType,remainTime);
 			break;
 		}
 		case ReceieveHeader.DAY_AND_NIGHT: { // * 밤 낮 정보 * //
@@ -206,7 +207,6 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			int type = reader.readInt();
 			String text = reader.readString();
 			GameHandler.addTextPanel(type, text);
-			GameHandler.setScrollMax(GameHandler.getGameFrame().getScroll());
 			break;
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //

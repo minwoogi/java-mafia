@@ -32,11 +32,39 @@ public class GameHandler {
 		return GameHandler.gameFrame;
 	}
 
-	public static void setTimer(long remainTime) { // * 투표 시간 타이머 * //
+	public static void setTimer(int timeType ,long remainTime) { // * 투표 시간 타이머 * //
+		String timeState = "";
+		switch(timeType) {
+		case 0:{
+			timeState = "토론시간 ";
+			break;
+		}
+		case 1:{
+			timeState = "투표시간 ";
+			break;
+		}
+		case 2:{
+			timeState = "최후의 반론 ";
+			break;
+		}
+		case 3:{
+			timeState = "찬반 투표 ";
+			break;
+		}
+		case 4:{
+			timeState = "능력 사용 ";
+			break;
+		}
+		case 5:{
+			timeState = "종료 ";
+			break;
+		}
+		}
+		
 		if(timer != null) {
 			timer.stopThread();
 		}
-		timer = new VoteTimer(remainTime);
+		timer = new VoteTimer(remainTime,timeState);
 		timer.start();
 	}
 
@@ -87,10 +115,6 @@ public class GameHandler {
 		VoteBtnHandler handler = new VoteBtnHandler();
 		GameFrame.btnHandler.put(btn, handler);
 		btn.addActionListener(handler);
-	}
-	
-	public static void setScrollMax(JScrollPane scroll) {
-		scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
 	}
 	
 	public static void setTextMe(JButton btn) { // * 내 버튼 ME 로 설정 
@@ -164,17 +188,17 @@ public class GameHandler {
 	}
 	
 	static class VoteTimer extends Thread { // * timer * //
+		String timeState;
 		long time, startTime, offTime;
 		String timer;
 		long timeReceieve; // * 서버에서 받은 시간 * //
 		long remainTime; // * 타이머 남은시간 * //
 
-		public VoteTimer(long timeReceieve) {
-			System.out.println(timeReceieve);
+		public VoteTimer(long timeReceieve,String timeState) {
+			this.timeState = timeState;
 			this.timeReceieve = timeReceieve / 1000;
 			remainTime = timeReceieve / 1000;
 			startTime = System.currentTimeMillis();
-			System.out.println(remainTime);
 		}
 
 		public void update() {
@@ -182,7 +206,6 @@ public class GameHandler {
 			time = (offTime - startTime) / 1000;
 			remainTime = timeReceieve - time;
 			timer = convertTime(timeReceieve);
-			System.out.println(timer);
 			GameHandler.getGameFrame().getTimer().setText(timer);
 		}
 
@@ -190,7 +213,7 @@ public class GameHandler {
 			long minute = remainTime / 60;
 			remainTime -= 60 * minute;
 			String second = remainTime < 10 ? "0" + remainTime : remainTime + "";
-			return "남은 시간 " + (minute < 10 ? "0" + minute + " : " : minute + " : ") + second;
+			return timeState + (minute < 10 ? "0" + minute + " : " : minute + " : ") + second;
 		}
 
 		public void stopThread() {
@@ -200,14 +223,11 @@ public class GameHandler {
 		}
 
 		public void run() {
-			System.out.println("run");
 			while (!this.isInterrupted() &&(System.currentTimeMillis() - startTime) / 1000 <=  timeReceieve) {
 				update();
 				try {
 					sleep(1000);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
-					return;
 				}
 			}
 		}

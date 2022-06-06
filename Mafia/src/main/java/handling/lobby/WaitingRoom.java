@@ -211,29 +211,33 @@ public class WaitingRoom {
 	public void endGame(boolean mafiaWin) { // 게임 종료 시 호출
 		this.isStart = false;
 		for (MafiaClient c : clients) {
+			c.setReady(false); // 모든 유저 레디해제
+			c.setDead(false);
+			c.setBlockChat(false);
+		}
+		for (MafiaClient c : clients) {
 			if (mafiaWin) {
 				if (ServerConstants.isMafia(c.getJob())) {
 					// 마피아 승리 보상
-					c.dropMessage(3, "[Victory] 마피아팀이 승리했습니다!");
+					c.gainExp(12);
+					c.dropMessage(2, "[Victory] 마피아팀이 승리했습니다!\n+12 경험치를 얻었습니다.");
 				} else {
-					c.dropMessage(3, "[Victory] 시민팀이 패배했습니다!");
+					c.gainExp(5);
+					c.dropMessage(2, "[Victory] 시민팀이 패배했습니다!\n+5 경험치를 얻었습니다.");
 					// 시민팀 패배 보상
 				}
 			} else {
 				if (ServerConstants.isMafia(c.getJob())) {
-					c.dropMessage(3, "[Victory] 마피아팀이 패배했습니다!");
+					c.gainExp(6);
+					c.dropMessage(2, "[Victory] 마피아팀이 패배했습니다!\n+6 경험치를 얻었습니다.");
 					// 마피아 패배 보상
-
 				} else {
-					c.dropMessage(3, "[Victory] 시민팀이 승리했습니다!");
+					c.gainExp(10);
+					c.dropMessage(2, "[Victory] 시민팀이 승리했습니다!\n+10 경험치를 얻었습니다.");
 					// 시민팀 승리 보상
 				}
 
 			}
-			c.setReady(false); // 모든 유저 레디해제
-			c.setDead(false);
-			c.setBlockChat(false);
-			c.setJob(0);
 			c.warp(LocationInformation.WAITING_ROOM, this);
 		}
 		Lobby.broadCast(LobbyPacketCreator.updateRoom(this)); // 방 정보 전송

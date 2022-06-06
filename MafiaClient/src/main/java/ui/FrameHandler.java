@@ -13,6 +13,7 @@ import information.FrameLocation;
 import information.LocationInformation;
 import information.RoomInf;
 import information.UserInf;
+import tools.BackgroundMusic;
 import ui.ShowMessage.ShowConfirm;
 import information.ClientInf;
 
@@ -27,7 +28,19 @@ public class FrameHandler {
 	static InviteFrame inviteFrame;
 	static ShowMessage showMessage;
 	static ShowConfirm showConfirm;
-
+	static BackgroundMusic bgm;
+	
+	public static void playBgm(String file) {
+		BackgroundMusic bgm = new BackgroundMusic(file);
+	}
+	
+	public static void stopBgm() {
+		try {
+			bgm.stopBgm();			
+		}catch(Exception e) {
+		}
+	}
+	
 	public static void useId(boolean overlap) {  // * 회원가입시 사용 가능한 ID인지 확인 * // 
 		if (overlap) {
 			JOptionPane.showMessageDialog(loginFrame.panel, "이미 존재하는 아이디입니다.", "Overlap", JOptionPane.ERROR_MESSAGE);
@@ -102,6 +115,7 @@ public class FrameHandler {
 	public static void updateExpBar(int exp, JProgressBar bar, int level) { // * 경험치 퍼센트 표시 * //
 		float tmp = exp;
 		bar.setValue((int) ((tmp / ExpInf.needExp(level)) * 100.0));
+		bar.setString((int) ((tmp / ExpInf.needExp(level)) * 100.0)+"%  ["+exp+"/"+ExpInf.needExp(level)+"]");
 	}
 
 	public static void UpdateNickName(String nickName, JButton btn) { // * 로비나 방안에서 닉네임 표시 * //
@@ -133,6 +147,7 @@ public class FrameHandler {
 		LobbyRoomPanel roomPanel = new LobbyRoomPanel(roomInf);
 		roomPanel.setRoomInfTf(roomInf);
 		FrameHandler.getLobbyFrame().getRoomList().put(roomInf.getRoomId(), roomPanel);
+		FrameHandler.getLobbyFrame().getRoomNameList().put(roomInf.getRoomId(),roomInf.getRoomName());
 		FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomPanel);
 	}
 	
@@ -143,6 +158,7 @@ public class FrameHandler {
 	public static void removeRoomPanel(int roomId ,LobbyRoomPanel lobbyRoomPanel) { // * 로비 프레임에서 방 삭제 * //
 		FrameHandler.getLobbyFrame().rowsPanel.removeRoomPanel(lobbyRoomPanel);
 		FrameHandler.getLobbyFrame().getRoomList().remove(roomId);
+		FrameHandler.getLobbyFrame().getRoomNameList().remove(roomId);
 	}
 	
 	public static void addUserPanel(UserInf userInf) { // * 대기실 프레임에서 인원 추가 * //
@@ -162,7 +178,10 @@ public class FrameHandler {
 	}
 	
 	public static void quitLoginFrame() {
-		loginFrame.frame.dispose();
+		try {			
+			loginFrame.frame.dispose();
+		}catch(NullPointerException e) {
+		}
 	}
 	
 	public static void quitLobbyFrame() {
@@ -221,10 +240,15 @@ public class FrameHandler {
 	}
 	
 	public static void warp(int location) {  // * CHANGE_LOCATION * //
+		stopBgm();
+		FrameHandler.quitLoginFrame();
+		FrameHandler.quitGameFrame();
+		FrameHandler.quitLobbyFrame();
+		FrameHandler.quitWaittingFrame();
 		switch(location) {
-		case LocationInformation.LOBBY:{ // * 로비 입장 * //
-			FrameHandler.quitLoginFrame();
+		case LocationInformation.LOBBY:{ // * 로비 입장 * //	
 			new LobbyFrame();
+			playBgm("bgm/ofeliasdream.wav");
 			FrameHandler.updateTierImage(ClientInf.getTier(), FrameHandler.getLobbyFrame().getTierLabel()); // * 티어사진 표시 * //
 			FrameHandler.updateLevel(ClientInf.getLevel(), FrameHandler.getLobbyFrame().getLevelLabel()); // * 레벨 표시 * //
 			FrameHandler.UpdateNickName(ClientInf.getNickName(), FrameHandler.getLobbyFrame().getNickNameLabel()); // * 닉네임 표시 * //
@@ -232,8 +256,7 @@ public class FrameHandler {
 			break;
 		}
 		case LocationInformation.WAITING_ROOM:{ // * 대기실 입장 * //
-			FrameHandler.quitLobbyFrame(); // * 로비 꺼지게 * //
-			FrameHandler.quitGameFrame(); //* 게임창 꺼지게 * //
+			playBgm("bgm/creepy.wav");
 			new WaitingRoomFrame();
 			ClientInf.setReadyState(false);
 			FrameHandler.updateTierImage(ClientInf.getTier(), FrameHandler.getWaitingRoomFrame().getTierLabel()); // * 티어사진 표시 * //
@@ -243,7 +266,7 @@ public class FrameHandler {
 			break;
 		}
 		case LocationInformation.GAME_ROOM:{ // * 게임방 입장 * //
-			FrameHandler.quitWaittingFrame();
+			playBgm("bgm/evolution.wav");
 			new GameFrame();
 			break;
 		}
@@ -308,5 +331,16 @@ public class FrameHandler {
 	public static void setShowConfirm(ShowConfirm showConfirm) {
 		FrameHandler.showConfirm = showConfirm;
 	}
+	
+	public static BackgroundMusic getBackgroundMusic() {
+		return FrameHandler.bgm;
+	}
+	
+	public static void setBackgroundMusic(BackgroundMusic backgroundMusic) {
+		FrameHandler.bgm = backgroundMusic;
+	}
+	
+	
+	
 
 }

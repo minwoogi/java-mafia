@@ -6,7 +6,7 @@ import tools.MafiaPacketWriter;
 public class ShowMsgPacket {
 	
 	public static byte[] makeMessagePacket(int id ,int flag) {
-		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.MAKE_ROOM);
+		MafiaPacketWriter writer = new MafiaPacketWriter(SendHeader.SHOW_MESSAGE);
 		writer.writeInt(id);
 		writer.writeInt(flag);
 		return writer.getPacket();

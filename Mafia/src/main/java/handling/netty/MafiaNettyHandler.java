@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 
 import client.MafiaClient;
+import game.MafiaGame;
 import handling.lobby.Lobby;
 import handling.lobby.WaitingRoom;
 import handling.login.handler.LoginHandler;
@@ -195,7 +196,12 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 		case ReceiveHeader.SHOW_MESSAGE: {
 			int msgId = pr.readInt();
 			int flag = pr.readInt();
+			if(c.getWaitingRoom() != null && c.getWaitingRoom().getGame() != null) {
+				MafiaGame g = c.getWaitingRoom().getGame();
+				g.receiveAgreeOppose(msgId, flag);
+			}
 			System.out.println("SHOW_MESSAGE : msgId : " + msgId + ", flag : " + flag);
+			c.setShowMsg(false);
 			break;
 		}
 		case ReceiveHeader.INVITE_USER: {

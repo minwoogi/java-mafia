@@ -19,6 +19,7 @@ public class SendHeader {
 	public static final int NICK_OVERLAP = 17; // 닉네임 중복
 	public static final int USER_INFORMATION = 20; // 유저 정보 업데이트
 	public static final int READY = 26; // 대기실에서 레디
+	public static final int SHOW_MESSAGE = 28; // 쇼메세지 정보 
 	public static final int LOGOUT = 29; // 로그아웃
 	public static final int START_GAME = 27; // 게임시작
 }

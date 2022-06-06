@@ -58,12 +58,12 @@ public class ServerConstants {
 			{3, 4, 1, 2}, // 10명 일 때
 	};
 	
-	public static final int DAY_TIME = 10 * 1000; // 토론 시간 
-	public static final int VOTE_TIME = 10 * 1000; // 투표 시간
-	public static final int OBJECTION_TIME = 10 * 1000; // 최후의 반론 시간
+	public static final int DAY_TIME = 3 * 1000; // 토론 시간 
+	public static final int VOTE_TIME = 5 * 1000; // 투표 시간
+	public static final int OBJECTION_TIME = 5 * 1000; // 최후의 반론 시간
 	public static final int AGREE_VOTE_TIME = 10 * 1000; // 찬반 투표 시간
 	public static final int NIGHT_TIME = 10 * 1000; // 능력 사용 시간(밤)
-	public static final int END_TIME = 10 * 1000; // 게임 종료 후 유예 시간
+	public static final int END_TIME = 3 * 1000; // 게임 종료 후 유예 시간
 	
 	public static boolean isMafia(int job) {
 		return job == MAFIA;
@@ -83,5 +83,17 @@ public class ServerConstants {
 	
 	public static int needExp(int level) {
 		return need_exp[level - 1];
+	}
+	
+	public static String getJobName(int job) {
+		if(isMafia(job))
+			return "마피아";
+		if(isCitizen(job)) 
+			return "시민";
+		if(isDoctor(job)) 
+			return "의사";
+		if(isPolice(job))
+			return "경찰";
+		return "이름 없음";
 	}
 }

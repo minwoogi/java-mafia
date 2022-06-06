@@ -13,6 +13,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -99,8 +101,6 @@ public class GameFrame extends JFrame {
 		this.addMouseMotionListener(new MoveWindows());
 		setUndecorated(true);
 		setVisible(true);
-		
-		GameHandler.addTextPanel(9, "현재 [투표시간]입니다.");
 
 	}
 
@@ -138,6 +138,7 @@ public class GameFrame extends JFrame {
 
 		centerChatPanel.setBackground(new Color(0, 0, 0, 0));
 		centerChatPanel.setOpaque(false);
+		centerChatPanel.setBorder(BorderFactory.createEmptyBorder(0 , -5, 0 , 0));
 
 		btnInvisible(sendBtn);
 		btnInvisible(vote);
@@ -275,7 +276,7 @@ public class GameFrame extends JFrame {
 		}
 	}
 
-	class BoundDocument extends PlainDocument {
+	class BoundDocument extends PlainDocument {  // * 텍스트 필드 글자 수 제한 * //
 		protected int charLimit;
 		protected JTextComponent textComp;
 

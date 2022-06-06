@@ -14,6 +14,7 @@ import handling.packet.GamePacketCreator;
 import handling.packet.LobbyPacketCreator;
 import handling.packet.RoomPacketCreator;
 import information.LocationInformation;
+import information.ServerConstants;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import tools.Manager;
@@ -21,6 +22,7 @@ import tools.Manager;
 public class MafiaClient {
 	public final static AttributeKey<MafiaClient> CLIENTKEY = AttributeKey.valueOf("mafiaclient_netty");
 	public final static ArrayList<MafiaClient> clients = new ArrayList<MafiaClient>();
+	public static int AUTO_INCREASE_MSG_ID = 1;
 	private int accId;
 	private int id; // 게임 내 고유 id
 	private String accName;
@@ -42,6 +44,9 @@ public class MafiaClient {
 	private boolean dead = false; // 사망 여부
 	private boolean isConnected = false;
 	private String certification_code;
+	private int msgId = -1;
+	private int msgValue = -1;
+	private boolean showMsg = false;
 
 	public MafiaClient(Channel session) {
 		this.session = session;
@@ -58,7 +63,6 @@ public class MafiaClient {
 	public void disconnect() { // 로그아웃 시
 		if (this.location != -1) { // 로그인 창이 아니면
 			this.saveDB();
-			
 		}
 		if (this.location == LocationInformation.LOBBY)
 			Lobby.removeClient(this);
@@ -165,8 +169,8 @@ public class MafiaClient {
 			ps.setInt(3, this.getGrade());
 			ps.setInt(4, this.getGradePoint());
 			ps.setString(5, this.getCharName());
-			ps.setInt(6, this.getAccId());
-			ps.setString(7, this.getEmail());
+			ps.setString(6, this.getEmail());
+			ps.setInt(7, this.getAccId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -336,9 +340,18 @@ public class MafiaClient {
 	}
 
 	public void dropMessage(int type, String title, String msg) {
-		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title, msg, 0));
+		int msgId = this.createMsgId();
+		this.getSession().writeAndFlush(ClientPacketCreator.showMessage(type, title, msg, msgId));
+		if(type == 8 || type == 9) {
+			if(this.isShowMsg())
+				this.closeMessage();
+			this.setMsgId(msgId);
+			this.setMsgValue(-1);
+			this.setShowMsg(true);
+		}
 	}
 
+	
 	public void showJobCard(int job) {
 		if(this.getLocation() == LocationInformation.GAME_ROOM)
 			this.getSession().writeAndFlush(GamePacketCreator.showJobCard(job));
@@ -377,12 +390,32 @@ public class MafiaClient {
 		this.level = level;
 	}
 
+	public void levelUp() {
+		this.level += 1;
+		this.setExp(0);
+		this.dropMessage(4, this.getCharName() + "님 " + (this.getLevel() - 1) + " -> "+ this.getLevel() +" 레벨업을 축하드립니다!");
+	}
 	public int getExp() {
 		return exp;
 	}
 
 	public void setExp(int exp) {
 		this.exp = exp;
+	}
+	
+	public void gainExp(int exp) {
+		int needExp = ServerConstants.needExp(this.getLevel());
+		this.exp += exp;
+		if(needExp <= this.exp) {
+			int before_exp = this.exp;
+			this.levelUp();
+			this.exp += before_exp - needExp;
+		}
+		this.sendInformation();			
+	}
+	
+	public void sendInformation() {
+		this.getSession().writeAndFlush(ClientPacketCreator.userInformation(this));
 	}
 
 	public boolean isDead() {
@@ -391,7 +424,6 @@ public class MafiaClient {
 
 	public void setDead(boolean dead) {
 		this.dead = dead;
-		this.setBlockChat(dead);
 	}
 
 	public boolean isConnected() {
@@ -433,6 +465,44 @@ public class MafiaClient {
 		this.setMafiaVote(0);
 		this.setPoliceVote(0);
 		this.setAgree(0);
+	}
+	
+	public int createMsgId() {
+		if(AUTO_INCREASE_MSG_ID == Integer.MAX_VALUE) 
+			AUTO_INCREASE_MSG_ID = 0;
+		return ++AUTO_INCREASE_MSG_ID;
+	}
+	
+	public void closeMessage() {
+		if(this.isShowMsg())
+			this.getSession().writeAndFlush(ClientPacketCreator.closeMessage(this.getMsgId()));
+		this.setMsgValue(-1);
+		this.setMsgId(-1);
+	}
+
+	public int getMsgId() {
+		return msgId;
+	}
+
+	public void setMsgId(int msgId) {
+		this.msgId = msgId;
+		this.setShowMsg(true);
+	}
+
+	public int getMsgValue() {
+		return msgValue;
+	}
+
+	public void setMsgValue(int msgValue) {
+		this.msgValue = msgValue;
+	}
+
+	public boolean isShowMsg() {
+		return showMsg;
+	}
+
+	public void setShowMsg(boolean showMsg) {
+		this.showMsg = showMsg;
 	}
 
 }

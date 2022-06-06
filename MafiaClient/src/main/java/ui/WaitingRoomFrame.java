@@ -237,7 +237,6 @@ public class WaitingRoomFrame extends JFrame {
 		quitBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClientHandler.send(WaitingRoomPacket.quitWaitingRoom(ClientInf.getUserId()));
-				FrameHandler.quitWaittingFrame();
 			}
 		});
 		inviteBtn.addActionListener(new ActionListener() {
