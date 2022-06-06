@@ -91,8 +91,8 @@ public class GameHandler {
 		btn.setText("ME");
 	}
 	
-	public static void addTextPanel(int type, int size, String text) {
-		TextPanel textPanel = new TextPanel(type,size,text);
+	public static void addTextPanel(int type, String text) {
+		TextPanel textPanel = new TextPanel(type,text);
 		GameHandler.getGameFrame().getChatPanel().addTextPanel(textPanel);
 	}
 

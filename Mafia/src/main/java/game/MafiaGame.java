@@ -143,6 +143,7 @@ public class MafiaGame {
 				this.end = true;
 				this.setRemainTime(ServerConstants.END_TIME);
 				this.setNight(false);
+				this.chat(6, "[알림] 게임이 잠시 후 종료 될 예정입니다. 승리팀은 " + (this.isMafiaWin() ? "마피아" : "시민") + "팀 입니다.");
 				return;
 			}
 			this.setRemainTime(ServerConstants.DAY_TIME);
@@ -174,6 +175,7 @@ public class MafiaGame {
 				this.end = true;
 				this.setRemainTime(ServerConstants.END_TIME);
 				this.setNight(false);
+				this.chat(6, "[알림] 게임이 잠시 후 종료 될 예정입니다. 승리팀은 " + (this.isMafiaWin() ? "마피아" : "시민") + "팀 입니다.");
 				return;
 			}
 			for (MafiaClient c : this.getRoom().getClients())

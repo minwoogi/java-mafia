@@ -19,6 +19,11 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.PlainDocument;
+
 import handling.game.GameHandler;
 import handling.netty.ClientHandler;
 import handlinig.packet.GamePacket;
@@ -31,6 +36,10 @@ public class GameFrame extends JFrame {
 	private JPanel votePanel;
 	private JPanel doubtPanel;
 	private JPanel centerChatPanel;
+	public JPanel getCenterChatPanel() {
+		return centerChatPanel;
+	}
+
 	private GameChatPanel chatPanel;
 	private JTextField chatTf;
 	private JTextField timer;
@@ -45,15 +54,13 @@ public class GameFrame extends JFrame {
 	public static HashMap<JButton, Integer> btnState = new HashMap<>(); // 1선택 0선택X
 	public static HashMap<JButton, ActionListener> btnHandler = new HashMap<>();
 
-	
 	public GameChatPanel getChatPanel() {
 		return chatPanel;
 	}
-	
+
 	public JPanel getVotePanel() {
 		return votePanel;
 	}
-	
 
 	public JTextField getChatTf() {
 		return chatTf;
@@ -77,22 +84,20 @@ public class GameFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1100, 600);
 		setResizable(false);
-		setLocation(FrameLocation.X,FrameLocation.Y);
+		setLocation(FrameLocation.X, FrameLocation.Y);
 		setLayout(new GridLayout(0, 2));
 
 		newComponents();
 		setComponents();
 		addComponents();
-		
-		
+
 		this.addMouseListener(new MoveWindows());
 		this.addMouseMotionListener(new MoveWindows());
 		setUndecorated(true);
 		setVisible(true);
 		
-		GameHandler.addPersonList(votePanel, 1);
-		GameHandler.deadBtnSetting(btnMap.get(1), 1);
-	
+		votePanel.revalidate();
+		votePanel.repaint();
 	}
 
 	public void newComponents() {
@@ -102,14 +107,14 @@ public class GameFrame extends JFrame {
 		doubtPanel = new JPanel();
 		centerChatPanel = new JPanel();
 		chatPanel = new GameChatPanel();
-		scroll = new JScrollPane(centerChatPanel,scroll.VERTICAL_SCROLLBAR_AS_NEEDED,scroll.HORIZONTAL_SCROLLBAR_NEVER);
-		chatTf = new JTextField(25);
+		scroll = new JScrollPane(centerChatPanel, scroll.VERTICAL_SCROLLBAR_AS_NEEDED,
+				scroll.HORIZONTAL_SCROLLBAR_NEVER);
+		chatTf = new JTextField();
 		sendBtn = new JButton(new ImageIcon("btnImg/gameSendBtn.png"));
 		nightInf = new JTextField();
 		timer = new JTextField();
 		page = new JButton(new ImageIcon("btnImg/rightArrow.png"));
 		vote = new JButton(new ImageIcon("btnImg/vote.png"));
-		
 
 	}
 
@@ -127,7 +132,9 @@ public class GameFrame extends JFrame {
 		doubtPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 21, 15));
 		doubtPanel.setVisible(false);
 
-		centerChatPanel.setBackground(new Color(0,0,0,0));
+		centerChatPanel.setBackground(new Color(0, 0, 0, 0));
+		centerChatPanel.setOpaque(false);
+
 		btnInvisible(sendBtn);
 		btnInvisible(vote);
 		sendBtn.setBounds(420, 500, 70, 50);
@@ -137,12 +144,19 @@ public class GameFrame extends JFrame {
 		scroll.setOpaque(false);
 		scroll.setBackground(new Color(0, 0, 0, 0));
 		scroll.getViewport().setOpaque(false);
+		scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
 
 		chatTf.setBounds(60, 500, 350, 50);
 		chatTf.setFont(new Font("", Font.BOLD, 20));
 		chatTf.setBackground(new Color(0, 0, 0, 0));
 		chatTf.setOpaque(false);
 		chatTf.setForeground(Color.WHITE);
+		chatTf.setDocument(new BoundDocument(60,chatTf));
+		chatTf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ClientHandler.send(GamePacket.makeMessagePacket(chatTf.getText()));
+			}
+		});
 
 		nightInf.setBounds(60, 40, 430, 70);
 		nightInf.setFont(new Font("", Font.BOLD, 20));
@@ -253,6 +267,26 @@ public class GameFrame extends JFrame {
 		protected void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			g.drawImage(rightBackImg, 0, 0, this);
+		}
+	}
+
+	class BoundDocument extends PlainDocument {
+		protected int charLimit;
+		protected JTextComponent textComp;
+
+		public BoundDocument(int charLimit) {
+			this.charLimit = charLimit;
+		}
+
+		public BoundDocument(int charLimit, JTextComponent textComp) {
+			this.charLimit = charLimit;
+			this.textComp = textComp;
+		}
+
+		public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+			if (textComp.getText().getBytes().length + str.getBytes().length <= charLimit) {
+				super.insertString(offs, str, a);
+			}
 		}
 	}
 

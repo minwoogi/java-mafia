@@ -12,6 +12,7 @@ import handling.lobby.WaitingRoom;
 import handling.packet.ClientPacketCreator;
 import handling.packet.GamePacketCreator;
 import handling.packet.LobbyPacketCreator;
+import handling.packet.RoomPacketCreator;
 import information.LocationInformation;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -115,9 +116,6 @@ public class MafiaClient {
 		this.setConnected(true);
 		this.getSession().writeAndFlush(ClientPacketCreator.userInformation(this));
 		this.warp(LocationInformation.LOBBY);
-		for (WaitingRoom room : Lobby.getRooms()) {
-			this.getSession().writeAndFlush(LobbyPacketCreator.updateRoom(room));
-		}
 		this.clients.add(this);
 	}
 
@@ -234,14 +232,20 @@ public class MafiaClient {
 				Lobby.addClient(this);
 				System.out.println("[MafiaClient] 로그인 창에서 로비로 이동");
 			}
+			for (WaitingRoom r : Lobby.getRooms()) {
+				this.getSession().writeAndFlush(LobbyPacketCreator.updateRoom(r));
+			}
 		} else if (location == LocationInformation.WAITING_ROOM) { // 대기실로 이동할 때
 			if (before_location == LocationInformation.LOBBY) { // 로비 -> 대기실
 				if(!room.enterRoom(this)) {
 					this.location = before_location;
-					this.getSession().writeAndFlush(ClientPacketCreator.warp(before_location, -1));
+					this.warp(before_location);
 				}
 				
-			} else if (this.location == LocationInformation.GAME_ROOM) { // 게임장 -> 대기실
+			} else if (before_location == LocationInformation.GAME_ROOM) { // 게임장 -> 대기실
+				for (MafiaClient client : room.getClients()) {
+					this.getSession().writeAndFlush(RoomPacketCreator.updateRoom(client, room.getLeader().getAccId()));
+				}
 				System.out.println("[MafiaClient] 게임장에서 대기실로 이동");
 
 			}

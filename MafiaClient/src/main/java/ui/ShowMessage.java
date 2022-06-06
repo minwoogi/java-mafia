@@ -23,8 +23,10 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import handling.game.GameHandler;
 import handling.netty.ClientHandler;
 import handlinig.packet.ShowMsgPacket;
+import information.FrameLocation;
 
 public class ShowMessage extends JFrame {
 
@@ -47,7 +49,7 @@ public class ShowMessage extends JFrame {
 //		viewInformationMsg("Information", "Information");
 //		viewQuestionMsg("Question", "Question");
 //      viewWarningMsg("Warning","Warning");
-//      letYouKnowYourJob(3);
+//      showJobCard(3);
 //      doubtJob();
 //		gameMsg(7,"투표가 모두 끝났습니다.");
 //		new ShowConfirm(9,"Yes or No","Yes or No or Cancel",1);
@@ -125,9 +127,10 @@ public class ShowMessage extends JFrame {
 	public void showJobCard(int job) {
 		setSize(300, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(GameHandler.getGameFrame());
 		setResizable(false);
 		setUndecorated(true);
+		setAlwaysOnTop(true);
 
 		setLayout(new BorderLayout());
 		// 0 - 시민
@@ -156,8 +159,10 @@ public class ShowMessage extends JFrame {
 		setTitle(title);
 		setSize(400, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
+		FrameHandler.setFrameLocation();
+		setLocation(FrameLocation.X+330,FrameLocation.Y+150);
 		setResizable(false);
+		setAlwaysOnTop(true);
 
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
@@ -212,8 +217,9 @@ public class ShowMessage extends JFrame {
 			setTitle(title);
 			setSize(400, 200);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setLocationRelativeTo(null);
+			setLocation(FrameLocation.X+330,FrameLocation.Y+150);
 			setResizable(false);
+			setAlwaysOnTop(true);
 			Image icon = getToolkit().getImage("optionPaneIcon/question.png");
 			setIconImage(icon);
 

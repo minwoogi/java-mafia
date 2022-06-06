@@ -202,16 +202,10 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			GameHandler.setNightText(isNight,day, GameHandler.getGameFrame().getNightInf());
 			break;
 		}
-		case ReceieveHeader.VOTE: {
-			
-			
-			break;
-		}
 		case ReceieveHeader.CHAT: {
 			int type = reader.readInt();
-			int size = reader.readInt();
 			String text = reader.readString();
-			GameHandler.addTextPanel(type, size, text);
+			GameHandler.addTextPanel(type, text);
 			break;
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //

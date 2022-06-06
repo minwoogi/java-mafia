@@ -1,19 +1,22 @@
 package ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 
+public class TextPanel extends JPanel {
 
-public class TextPanel extends JPanel{
-	
-	public TextPanel(int type, int size, String text) {
-		setBackground(new Color(0,0,0,0));
+	public TextPanel(int type, String text) {
+		setBackground(new Color(0, 0, 0, 0));
 		setOpaque(true);
 		JLabel lbl = new JLabel(text);
-		lbl.setPreferredSize(new Dimension(430,20));
+		lbl.setPreferredSize(new Dimension(430, 13));
+		lbl.setFont(new Font("", Font.BOLD, 14));
+		lineOverRap(lbl);
 		switch (type) {
 		case 5: { // Èò»ö ±Û¾¾
 			lbl.setForeground(Color.WHITE);
@@ -32,13 +35,23 @@ public class TextPanel extends JPanel{
 			break;
 		}
 		}
-		lbl.setFont(new Font("", Font.BOLD, size));
 		this.add(lbl);
 	}
-	
-	public void setLineWarp(JLabel lbl) {
-		
-		
-		
+
+	public void lineOverRap(JLabel lbl) {
+		String text = "<html>";
+		char[] arr = lbl.getText().toCharArray();
+		if (arr.length >= 28) {
+			for (int i = 0; i < 28; i++) {
+				text += arr[i];
+			}
+			text += "<br>";
+			for (int i = 28; i < arr.length; i++) {
+				text += arr[i];
+			}
+			text += "</html>";
+			lbl.setText(text);
+			lbl.setPreferredSize(new Dimension(430, 37));
+		}
 	}
 }

@@ -166,25 +166,40 @@ public class FrameHandler {
 	}
 	
 	public static void quitLobbyFrame() {
-		FrameLocation.X = FrameHandler.getLobbyFrame().getX();
-		FrameLocation.Y = FrameHandler.getLobbyFrame().getY();
-		lobbyFrame.dispose();
+		try {
+			FrameLocation.X = FrameHandler.getLobbyFrame().getX();
+			FrameLocation.Y = FrameHandler.getLobbyFrame().getY();
+			lobbyFrame.dispose();			
+		}catch(NullPointerException e) {
+		}
 	}
 	
 	public static void quitWaittingFrame() {
-		FrameLocation.X = FrameHandler.getWaitingRoomFrame().getX();
-		FrameLocation.Y = FrameHandler.getWaitingRoomFrame().getY();
 		try{
+			FrameLocation.X = FrameHandler.getWaitingRoomFrame().getX();
+			FrameLocation.Y = FrameHandler.getWaitingRoomFrame().getY();
 			waitingRoomFrame.dispose();
 		}catch(NullPointerException e) {
 		}
 	}
 	
 	public static void quitGameFrame(){
-		FrameLocation.X = GameHandler.getGameFrame().getX();
-		FrameLocation.Y = GameHandler.getGameFrame().getY();
 		try {
+			FrameLocation.X = GameHandler.getGameFrame().getX();
+			FrameLocation.Y = GameHandler.getGameFrame().getY();
 			GameHandler.getGameFrame().dispose();			
+		}catch(NullPointerException e) {
+		}
+	}
+	
+	public static void setFrameLocation() {
+		try {
+			FrameLocation.X = GameHandler.getGameFrame().getX();
+			FrameLocation.Y = GameHandler.getGameFrame().getY();
+			FrameLocation.X = FrameHandler.getWaitingRoomFrame().getX();
+			FrameLocation.Y = FrameHandler.getWaitingRoomFrame().getY();
+			FrameLocation.X = FrameHandler.getLobbyFrame().getX();
+			FrameLocation.Y = FrameHandler.getLobbyFrame().getY();
 		}catch(NullPointerException e) {
 		}
 	}

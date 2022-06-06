@@ -149,8 +149,12 @@ public class WaitingRoom {
 		 * 1. 인원 수 변경 사항 로비에 전달 2. 추가되는 인원 대기실에 전달
 		 * 
 		 */
-		if (getOnlines() == this.getMaxPerson()) {
+		if (this.getOnlines() == this.getMaxPerson()) {
 			c.dropMessage(4, "해당 방에 입장 할 수 있는 자리가 없습니다.");
+			return false;
+		}
+		if (this.isStart()) {
+			c.dropMessage(4, "게임이 이미 시작된 방입니다.");
 			return false;
 		}
 		boolean suc = clients.add(c);
@@ -169,6 +173,7 @@ public class WaitingRoom {
 		} else { 
 			c.dropMessage(4, "알 수 없는 이유로 방에 입장이 불가합니다.");
 			System.out.println("[WaitingRoom] 알 수 없는 이유로 방에 입장이 불가능합니다.");
+			
 		}
 		return suc;
 	}
@@ -194,7 +199,6 @@ public class WaitingRoom {
 				c.setId(++id);
 				c.setDead(false);
 				c.warp(LocationInformation.GAME_ROOM); // 게임장으로 이동
-				c.dropMessage(2, "게임을 시작합니다.");
 				c.getSession().writeAndFlush(GamePacketCreator.startGame(this.getOnlines(), id));
 			}
 			this.isStart = true;
