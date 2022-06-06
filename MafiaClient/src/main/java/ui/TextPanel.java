@@ -1,17 +1,15 @@
 package ui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
 
 public class TextPanel extends JPanel {
 
 	public TextPanel(int type, String text) {
-		setBackground(new Color(0, 0, 0, 0));
+		setBackground(new Color(0,0,0,0));
 		setOpaque(true);
 		JLabel lbl = new JLabel(text);
 		lbl.setPreferredSize(new Dimension(430, 13));
@@ -33,6 +31,10 @@ public class TextPanel extends JPanel {
 		case 8: { // È¸»ö ±Û¾¾
 			lbl.setForeground(Color.GRAY);
 			break;
+		}
+		case 9: {
+			setBackground(new Color(255,212,0));
+			lbl.setForeground(Color.BLUE);
 		}
 		}
 		this.add(lbl);

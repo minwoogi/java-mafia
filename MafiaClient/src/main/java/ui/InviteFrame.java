@@ -141,8 +141,4 @@ public class InviteFrame extends JFrame {
 			jf.setLocation(X, Y);
 		}
 	}
-
-	public static void main(String[] args) {
-		new InviteFrame();
-	}
 }

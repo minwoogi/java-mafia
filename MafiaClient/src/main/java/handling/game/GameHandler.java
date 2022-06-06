@@ -3,12 +3,14 @@ package handling.game;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -85,6 +87,10 @@ public class GameHandler {
 		VoteBtnHandler handler = new VoteBtnHandler();
 		GameFrame.btnHandler.put(btn, handler);
 		btn.addActionListener(handler);
+	}
+	
+	public static void setScrollMax(JScrollPane scroll) {
+		scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
 	}
 	
 	public static void setTextMe(JButton btn) { // * 내 버튼 ME 로 설정 

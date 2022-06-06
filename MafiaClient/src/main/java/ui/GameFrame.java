@@ -36,10 +36,6 @@ public class GameFrame extends JFrame {
 	private JPanel votePanel;
 	private JPanel doubtPanel;
 	private JPanel centerChatPanel;
-	public JPanel getCenterChatPanel() {
-		return centerChatPanel;
-	}
-
 	private GameChatPanel chatPanel;
 	private JTextField chatTf;
 	private JTextField timer;
@@ -54,6 +50,14 @@ public class GameFrame extends JFrame {
 	public static HashMap<JButton, Integer> btnState = new HashMap<>(); // 1선택 0선택X
 	public static HashMap<JButton, ActionListener> btnHandler = new HashMap<>();
 
+	public JScrollPane getScroll() {
+		return scroll;
+	}
+	
+	public JPanel getCenterChatPanel() {
+		return centerChatPanel;
+	}
+	
 	public GameChatPanel getChatPanel() {
 		return chatPanel;
 	}
@@ -96,8 +100,8 @@ public class GameFrame extends JFrame {
 		setUndecorated(true);
 		setVisible(true);
 		
-		votePanel.revalidate();
-		votePanel.repaint();
+		GameHandler.addTextPanel(9, "현재 [투표시간]입니다.");
+
 	}
 
 	public void newComponents() {
@@ -144,17 +148,17 @@ public class GameFrame extends JFrame {
 		scroll.setOpaque(false);
 		scroll.setBackground(new Color(0, 0, 0, 0));
 		scroll.getViewport().setOpaque(false);
-		scroll.getVerticalScrollBar().setValue(scroll.getVerticalScrollBar().getMaximum());
 
 		chatTf.setBounds(60, 500, 350, 50);
 		chatTf.setFont(new Font("", Font.BOLD, 20));
 		chatTf.setBackground(new Color(0, 0, 0, 0));
 		chatTf.setOpaque(false);
 		chatTf.setForeground(Color.WHITE);
-		chatTf.setDocument(new BoundDocument(60,chatTf));
+		chatTf.setDocument(new BoundDocument(60, chatTf));
 		chatTf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClientHandler.send(GamePacket.makeMessagePacket(chatTf.getText()));
+				chatTf.setText("");
 			}
 		});
 
@@ -218,6 +222,7 @@ public class GameFrame extends JFrame {
 		sendBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ClientHandler.send(GamePacket.makeMessagePacket(chatTf.getText()));
+				chatTf.setText("");
 			}
 		});
 

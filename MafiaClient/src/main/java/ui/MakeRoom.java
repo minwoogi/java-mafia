@@ -136,8 +136,4 @@ public class MakeRoom extends JFrame {
 		}
 	}
 
-	public static void main(String[] arsg) {
-		new MakeRoom();
-	}
-
 }

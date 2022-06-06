@@ -43,16 +43,8 @@ public class ShowMessage extends JFrame {
 	private JPanel btnPanel;
 	private JButton okBtn;
 	private JTextArea textArea;
-
+	
 	public ShowMessage() {
-//	    viewErrorMsg("error", "ERROR");
-//		viewInformationMsg("Information", "Information");
-//		viewQuestionMsg("Question", "Question");
-//      viewWarningMsg("Warning","Warning");
-//      showJobCard(3);
-//      doubtJob();
-//		gameMsg(7,"투표가 모두 끝났습니다.");
-//		new ShowConfirm(9,"Yes or No","Yes or No or Cancel",1);
 	}
 
 	public ShowMessage(int type, String title, String message,int msgId) {
@@ -217,6 +209,7 @@ public class ShowMessage extends JFrame {
 			setTitle(title);
 			setSize(400, 200);
 			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			FrameHandler.setFrameLocation();
 			setLocation(FrameLocation.X+330,FrameLocation.Y+150);
 			setResizable(false);
 			setAlwaysOnTop(true);
@@ -385,10 +378,6 @@ public class ShowMessage extends JFrame {
 			super.paintComponent(g);
 			g.drawImage(background, 0, 0, this);
 		}
-	}
-
-	public static void main(String[] args) {
-		new ShowMessage();
 	}
 
 }

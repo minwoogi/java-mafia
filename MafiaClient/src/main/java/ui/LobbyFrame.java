@@ -21,6 +21,7 @@ import javax.swing.border.Border;
 import handling.netty.ClientHandler;
 import handlinig.packet.LobbyPacket;
 import information.ClientInf;
+import information.FrameLocation;
 import information.RoomInf;
 
 public class LobbyFrame extends JFrame {
@@ -75,7 +76,7 @@ public class LobbyFrame extends JFrame {
 		setTitle("Roby");
 		setSize(1100, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);;
+		setLocation(FrameLocation.X, FrameLocation.Y);
 		setResizable(false);
 		setLayout(new GridLayout(0, 2));
 
@@ -329,10 +330,6 @@ public class LobbyFrame extends JFrame {
 			int Y = thisY + yMoved;
 			jf.setLocation(X, Y);
 		}
-	}
-
-	public static void main(String[] args) {
-		new LobbyFrame();
 	}
 
 }

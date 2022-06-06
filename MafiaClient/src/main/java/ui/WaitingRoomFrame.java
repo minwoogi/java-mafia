@@ -325,8 +325,4 @@ public class WaitingRoomFrame extends JFrame {
 		}
 	}
 
-	public static void main(String[] args) {
-		new WaitingRoomFrame();
-	}
-
 }

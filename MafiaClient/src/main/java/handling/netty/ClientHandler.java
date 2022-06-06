@@ -173,25 +173,25 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			}
 			break;
 		}
-		case ReceieveHeader.SHOW_JOBCARD:{
+		case ReceieveHeader.SHOW_JOBCARD:{ // * show 직업 정보  * //
 			int jobNum = reader.readInt();
 			ShowMessage show = new ShowMessage();
 			show.showJobCard(jobNum);
 			break;
 		}
-		case ReceieveHeader.SET_IMAGE:{
-			int gameNumber = reader.readInt();
+		case ReceieveHeader.SET_IMAGE:{ // * 직업 이미지 set * //
+			int gameNumber = reader.readInt(); 
 			int job = reader.readInt();
 			GameHandler.jobImgSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);
 			break;
 		}
-		case ReceieveHeader.DEAD_PLAYER:{
+		case ReceieveHeader.DEAD_PLAYER:{ // * 죽은 사람 set * //
 			int gameNumber = reader.readInt();
 			int job = reader.readInt();
 			GameHandler.deadBtnSetting(GameHandler.getGameFrame().btnMap.get(gameNumber), job);
 			break;
 		}
-		case ReceieveHeader.TIMER: {
+		case ReceieveHeader.TIMER: { // * 남은시간 set * //
 			long remainTime = reader.readLong();
 			GameHandler.setTimer(remainTime);
 			break;
@@ -202,10 +202,11 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			GameHandler.setNightText(isNight,day, GameHandler.getGameFrame().getNightInf());
 			break;
 		}
-		case ReceieveHeader.CHAT: {
+		case ReceieveHeader.CHAT: { // * 채팅 * //
 			int type = reader.readInt();
 			String text = reader.readString();
 			GameHandler.addTextPanel(type, text);
+			GameHandler.setScrollMax(GameHandler.getGameFrame().getScroll());
 			break;
 		}
 		case ReceieveHeader.SHOW_MESSAGE: { // * 알림창 생성 * //
@@ -216,7 +217,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 			ShowMessage showMsg = new ShowMessage(msgType, title, message,messageId);
 			break;
 		}
-		case ReceieveHeader.CLOSE_MESSAGE:{
+		case ReceieveHeader.CLOSE_MESSAGE:{ // * SHOW_MESSAGE 지우기 * //
 			int msgId = reader.readInt();
 			FrameHandler.closeMsg(msgId);
 			break;

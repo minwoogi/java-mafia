@@ -12,7 +12,7 @@ public class GameChatPanel extends JPanel {
 	public GameChatPanel() {
 		setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		setOpaque(false);
-		setBackground(new Color(0, 0, 0, 0));
+		setBackground(new Color(0,0,0,0));
 		setVisible(true);
 	}
 
