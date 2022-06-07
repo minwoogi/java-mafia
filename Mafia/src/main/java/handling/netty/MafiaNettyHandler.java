@@ -196,15 +196,10 @@ public class MafiaNettyHandler extends SimpleChannelInboundHandler<byte[]> {
 		case ReceiveHeader.SHOW_MESSAGE: {
 			int msgId = pr.readInt();
 			int flag = pr.readInt();
-			if(c.getMsgType() == 0 && c.getWaitingRoom() != null && c.getWaitingRoom().getGame() != null) {
-				MafiaGame g = c.getWaitingRoom().getGame();
-				g.receiveAgreeOppose(msgId, flag);
-			} else if(c.getMsgType() == 1) {
-				if(flag == 1) {
-					System.out.println(c.getInviteRoomId());
-					c.warp(LocationInformation.WAITING_ROOM, Lobby.getRoom(c.getInviteRoomId()));
-				}
-			}
+			if(flag == 1 && c.getLocation() == LocationInformation.LOBBY) {
+                System.out.println(c.getInviteRoomId());
+                c.warp(LocationInformation.WAITING_ROOM, Lobby.getRoom(c.getInviteRoomId()));
+            }
 			System.out.println("msgType : " + c.getMsgType());
 			System.out.println("roomId : " + c.getInviteRoomId());
 			System.out.println("SHOW_MESSAGE : msgId : " + msgId + ", flag : " + flag);

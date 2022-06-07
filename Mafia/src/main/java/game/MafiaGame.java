@@ -290,7 +290,7 @@ public class MafiaGame {
 			this.skipPhase(4);
 			return;
 		} else {
-			this.chat(7, "[알림] 현재 " + this.getVote() + "명이 찬반투표에 임했습니다. " + this.getAlivePerson() + "명이 모두 투표하면 시간이 줄어듭니다.");
+			this.chat(7, "[알림] 현재 " + (this.getAgree() + this.getOppose()) + "명이 찬반투표에 임했습니다. " + this.getAlivePerson() + "명이 모두 투표하면 시간이 줄어듭니다.");
 		}
 	}
 

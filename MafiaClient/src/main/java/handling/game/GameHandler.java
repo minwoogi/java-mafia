@@ -17,11 +17,6 @@ import ui.GameFrame;
 import ui.ShowMessage;
 import ui.TextPanel;
 
-/**
- * Handler for game action
- * 게임핸들러
- */
-
 public class GameHandler {
 
 	static GameFrame gameFrame;
@@ -122,7 +117,7 @@ public class GameHandler {
 	
 	public static void setTextMe(JButton btn) { // * 내 버튼 ME 로 설정 
 		btn.setText("ME");
-		btn.setForeground(Color.BLUE);
+        btn.setForeground(Color.BLUE);
 	}
 	
 	public static void addTextPanel(int type, String text) {
