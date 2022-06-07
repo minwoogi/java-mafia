@@ -255,17 +255,17 @@ public class WaitingRoomFrame extends JFrame {
 				ClientHandler.send(WaitingRoomPacket.makeGameStartPacket(1));
 			}else {
 				if (ClientInf.isReadyState()) {
-					System.out.println("준비완료");
+					System.out.println("[레디 -> 레디해제]");
 					ClientInf.setReadyState(false);
-					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
-					readyBtn.setIcon(new ImageIcon("btnImg/readyXBtn.png"));
-					readyBtn.setPressedIcon(new ImageIcon("btnImg/readyXBtnPush.png"));
-				} else {
-					System.out.println("준비해제상태");
-					ClientInf.setReadyState(true);
 					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
 					readyBtn.setIcon(new ImageIcon("btnImg/readyBtn.png"));
 					readyBtn.setPressedIcon(new ImageIcon("btnImg/readyBtnPush.png"));
+				} else {
+					System.out.println("[레디해제 -> 레디]");
+					ClientInf.setReadyState(true);
+					ClientHandler.send(WaitingRoomPacket.makeReadyPacket(ClientInf.isReadyState()));
+					readyBtn.setIcon(new ImageIcon("btnImg/readyXBtn.png"));
+					readyBtn.setPressedIcon(new ImageIcon("btnImg/readyXBtnPush.png"));
 				}
 			}
 		}
