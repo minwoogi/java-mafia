@@ -3,14 +3,12 @@ package handling.game;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -18,6 +16,11 @@ import information.ClientInf;
 import ui.GameFrame;
 import ui.ShowMessage;
 import ui.TextPanel;
+
+/**
+ * Handler for game action
+ * 게임핸들러
+ */
 
 public class GameHandler {
 

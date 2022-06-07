@@ -19,6 +19,12 @@ import javax.swing.JScrollPane;
 
 import information.FrameLocation;
 
+/**
+ *  Frame for invitation
+ *  초대하기 프레임
+ */
+
+
 public class InviteFrame extends JFrame {
 
 	private JPanel mainPanel;

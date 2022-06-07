@@ -14,6 +14,11 @@ import handling.netty.ClientHandler;
 import handlinig.packet.LobbyPacket;
 import information.FrameLocation;
 
+/**
+ *  Frame for making a room
+ *  방만들기 프레임 
+ */
+
 public class MakeRoom extends JFrame {
 
 	private JButton cancelBtn;

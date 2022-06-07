@@ -17,6 +17,11 @@ import tools.BackgroundMusic;
 import ui.ShowMessage.ShowConfirm;
 import information.ClientInf;
 
+/**
+ * Handler for screen action
+ */
+
+
 public class FrameHandler {
 
 	static LoginFrame loginFrame;
