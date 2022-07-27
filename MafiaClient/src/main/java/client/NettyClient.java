@@ -20,6 +20,9 @@ import ui.LoginFrame;
 
 public class NettyClient {
 
+	/**
+	 *  Port number for connection
+	 */
 	private final static int PORT = 7777;
 	private final static String HOST = "localhost";  
 

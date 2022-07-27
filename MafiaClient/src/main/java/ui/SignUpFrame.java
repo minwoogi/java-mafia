@@ -1,12 +1,16 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import handling.netty.ClientHandler;
@@ -166,6 +170,48 @@ public class SignUpFrame {
 		certificationBtn.setPressedIcon(new ImageIcon("btnImg/cerPush.png"));
 		backBtn.setPressedIcon(new ImageIcon("btnImg/backBtnPush.png"));
 		
+		idTf.setForeground(Color.GRAY);
+		pwdTf.setForeground(Color.GRAY);
+		pwdCheckTf.setForeground(Color.GRAY);
+		emailTf.setForeground(Color.GRAY);
+		certificationTf.setForeground(Color.GRAY);
+		nickNameTf.setForeground(Color.GRAY);
+		
+		
+		
+		nickNameTf.addFocusListener(new PlaceHolder(nickNameTf,nickNameTf.getText()));
+		idTf.addFocusListener(new PlaceHolder(idTf,idTf.getText()));
+		pwdTf.addFocusListener(new PlaceHolder(pwdTf,pwdTf.getText()));
+		pwdCheckTf.addFocusListener(new PlaceHolder(pwdCheckTf,pwdCheckTf.getText()));
+		emailTf.addFocusListener(new PlaceHolder(emailTf,emailTf.getText()));
+		certificationTf.addFocusListener(new PlaceHolder(certificationTf,certificationTf.getText()));
+		
+	}
+	
+	class PlaceHolder implements FocusListener{
+		String text;
+		JTextField tf;
+		public PlaceHolder(JTextField tf, String text) {
+			this.tf = tf;
+			this.text = text;
+		}
+		
+		public void focusGained(FocusEvent e) {
+			if (tf.getText().equals(text)) {
+	            tf.setText("");
+	            tf.setForeground(Color.BLACK);
+	        }
+		}
+
+		@Override
+		public void focusLost(FocusEvent e) {
+			if (tf.getText().isEmpty()) {
+	            tf.setForeground(Color.GRAY);
+	            tf.setText(text);
+	        }
+		}
+		
+		
 	}
 
 	public void setTfFont() {
@@ -263,5 +309,9 @@ public class SignUpFrame {
 			super.paintComponent(g);
 			g.drawImage(background, 0, 0, this);
 		}
+	}
+	
+	public static void main(String[] args) {
+		new SignUpFrame();
 	}
 }

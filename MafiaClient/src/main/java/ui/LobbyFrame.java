@@ -16,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.sound.sampled.AudioInputStream;
@@ -82,7 +83,7 @@ public class LobbyFrame extends JFrame {
 	public JProgressBar getExpBar() {
 		return expBar;
 	}
-	
+
 	public boolean isMakeRoomState() {
 		return makeRoomState;
 	}
@@ -263,7 +264,7 @@ public class LobbyFrame extends JFrame {
 	public void addActionBtn() {
 		makeRoomBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(!makeRoomState) {
+				if (!makeRoomState) {
 					FrameHandler.setFrameLocation();
 					new MakeRoom();
 					makeRoomState = true;
@@ -276,8 +277,14 @@ public class LobbyFrame extends JFrame {
 				FrameHandler.removeAllPanel();
 				if (!searchRoomTf.getText().equals("")) {
 					String keyword = searchRoomTf.getText();
-					if (roomNameList.containsValue(keyword)) {
-						FrameHandler.getLobbyFrame().rowsPanel.addRoomPanel(roomList.get(getKey(roomNameList,keyword)));
+					Iterator<Integer> iter = roomNameList.keySet().iterator();
+					while(iter.hasNext()) {
+						Integer key = iter.next();
+						String value = roomNameList.get(key);
+						if (value.contains(keyword)) {
+							FrameHandler.getLobbyFrame().rowsPanel
+							.addRoomPanel(roomList.get(key));
+						}						
 					}
 				} else {
 					roomList.forEach((key, value) -> {
@@ -289,7 +296,7 @@ public class LobbyFrame extends JFrame {
 
 		logOutBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int isLogOut = JOptionPane.showConfirmDialog(getLayeredPane(),"로그아웃 하시겠습니까?", "LogOut",
+				int isLogOut = JOptionPane.showConfirmDialog(getLayeredPane(), "로그아웃 하시겠습니까?", "LogOut",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (isLogOut == 0) {
 					ClientHandler.send(LobbyPacket.makeLogOutPacket(ClientInf.getUserId()));
@@ -299,7 +306,7 @@ public class LobbyFrame extends JFrame {
 		});
 	}
 
-	public static <Integer,String> Integer getKey(Map<Integer, String> map, String value) { // * value값으로 key 얻기 * //
+	public static <Integer, String> Integer getKey(Map<Integer, String> map, String value) { // * value값으로 key 얻기 * //
 		for (Integer key : map.keySet()) {
 			if (value.equals(map.get(key))) {
 				return key;
